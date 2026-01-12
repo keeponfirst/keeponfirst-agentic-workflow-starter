@@ -240,27 +240,47 @@ cmd_watch() {
                 echo -e "${GREEN}✓ 已拉取並套用 patch${NC}"
                 
                 # 記錄完成的 session
-                echo "Session: $session_id" > "$completed_dir/${session_id}_completed.md"
-                echo "Completed: $(date)" >> "$completed_dir/${session_id}_completed.md"
-                echo "" >> "$completed_dir/${session_id}_completed.md"
-                echo "## Review Prompt" >> "$completed_dir/${session_id}_completed.md"
-                echo "" >> "$completed_dir/${session_id}_completed.md"
-                echo "請使用 Antigravity Review 此次變更：" >> "$completed_dir/${session_id}_completed.md"
-                echo "1. 檢查 git diff 確認變更內容" >> "$completed_dir/${session_id}_completed.md"
-                echo "2. 執行測試確認功能正常" >> "$completed_dir/${session_id}_completed.md"
-                echo "3. 如需修正，產生新的 Jules task" >> "$completed_dir/${session_id}_completed.md"
+                local review_file="$completed_dir/${session_id}_completed.md"
+                cat > "$review_file" << REVIEWEOF
+# Jules Session Review
+
+**Session ID**: $session_id
+**Completed**: $(date)
+
+## Review 任務
+
+請 Review Jules 完成的變更：
+
+1. 執行 \`git diff\` 確認變更內容
+2. 確認程式碼符合專案規範
+3. 執行相關測試確認功能正常
+4. 如有問題，請說明需要修正的地方
+
+## 變更摘要
+
+請分析本次變更並提供：
+- 主要修改的檔案
+- 功能影響範圍
+- 潛在風險評估
+REVIEWEOF
                 
-                # 開啟 Antigravity
-                echo -e "${BLUE}正在開啟 Antigravity...${NC}"
-                if command -v antigravity &> /dev/null; then
+                # 使用 agy chat 喚醒 Antigravity agent
+                echo -e "${BLUE}正在喚醒 Antigravity agent 進行 Review...${NC}"
+                if command -v agy &> /dev/null; then
+                    # 使用 agent mode 並傳入 review prompt
+                    agy chat --mode agent --add-file "$review_file" \
+                        "Jules session $session_id 已完成。請執行 git diff 查看變更，並進行 code review。如有問題請指出，確認無誤後協助整理 commit message。" &
+                    echo -e "${GREEN}✓ 已喚醒 Antigravity agent${NC}"
+                elif command -v antigravity &> /dev/null; then
+                    # fallback: 開啟 IDE
                     antigravity "$PROJECT_ROOT" &
-                    echo -e "${GREEN}✓ 已開啟 Antigravity${NC}"
+                    echo -e "${GREEN}✓ 已開啟 Antigravity IDE（請手動啟動 Review）${NC}"
                 else
-                    echo -e "${YELLOW}⚠ 找不到 antigravity 命令，請手動開啟 IDE${NC}"
+                    echo -e "${YELLOW}⚠ 找不到 agy/antigravity 命令，請手動進行 Review${NC}"
                 fi
                 
                 # 最終通知
-                notify_system "Jules 結果已套用！請在 Antigravity 中進行 Review"
+                notify_system "Jules 結果已套用！Antigravity agent 已啟動 Review"
                 
             else
                 echo -e "${RED}✗ 拉取結果失敗${NC}"

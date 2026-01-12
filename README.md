@@ -135,7 +135,26 @@ cd keeponfirst-agentic-workflow-starter
 # 你可以複製內容到 Jules 執行
 ```
 
-### 5. 驗證專案結構
+### 5. 監控 Jules 並自動 Review（可選）
+
+```bash
+# 建立 Jules session
+jules new "implement feature X"
+
+# 取得 session ID
+jules remote list --session
+
+# 啟動監控 - 完成後自動喚醒 Antigravity agent 進行 Review
+./scripts/agent.sh watch <session_id>
+```
+
+`watch` 命令會：
+- 每 30 秒輪詢 Jules session 狀態
+- 偵測到 completed 後自動執行 `jules remote pull --apply`
+- 使用 `agy chat --mode agent` 喚醒 Antigravity 進行 code review
+- 發送系統通知
+
+### 6. 驗證專案結構
 
 ```bash
 ./scripts/agent.sh verify
