@@ -1,0 +1,39 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Structure and Secrets
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+      
+      - name: Check for secrets
+        run: ./scripts/check_secrets.sh
+      
+      - name: Verify project structure
+        run: ./scripts/agent.sh verify
+      
+      - name: Check file permissions
+        run: |
+          echo "Checking script permissions..."
+          ls -la scripts/
+      
+      - name: Validate markdown files
+        run: |
+          echo "Checking for required files..."
+          test -f README.md || exit 1
+          test -f LICENSE || exit 1
+          test -f docs/ARCHITECTURE.md || exit 1
+          test -f docs/WORKFLOW.md || exit 1
+          echo "All required files present."

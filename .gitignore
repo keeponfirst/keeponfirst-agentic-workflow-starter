@@ -1,0 +1,40 @@
+# 環境變數（絕對不要 commit）
+.env
+.env.local
+.env.*.local
+
+# 產出檔案（依專案需求決定是否 commit）
+assets/generated/*
+!assets/generated/.gitkeep
+
+# 任務佇列（通常不需要 commit）
+nanobanana/queue/*
+!nanobanana/queue/.gitkeep
+jules/tasks/*
+!jules/tasks/.gitkeep
+
+# 執行產出
+PLAN.md
+
+# OS 檔案
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node（如果有使用）
+node_modules/
+npm-debug.log
+
+# Python（如果有使用）
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
