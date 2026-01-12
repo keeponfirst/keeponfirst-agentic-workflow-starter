@@ -105,7 +105,7 @@ Gemini CLI 和 Jules **不一定需要手動設定 API Key**：
 ### 1. Clone & Bootstrap
 
 ```bash
-git clone https://github.com/你的帳號/keeponfirst-agentic-workflow-starter.git
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
 cd keeponfirst-agentic-workflow-starter
 
 # 初始化資料夾與環境變數
