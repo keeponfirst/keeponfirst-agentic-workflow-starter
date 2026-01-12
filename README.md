@@ -100,7 +100,49 @@ Gemini CLI 和 Jules **不一定需要手動設定 API Key**：
 
 ---
 
-## 快速開始
+## 實際使用流程
+
+> 💡 **重點**：日常使用時，你只需要對 Antigravity 下指令。腳本是輔助工具，不是必須手動執行。
+
+### 典型工作流程
+
+1. **在 Antigravity 中描述需求**
+   ```
+   我要新增一個 Tag Selector 功能，請幫我規劃並產生 Jules task
+   ```
+
+2. **Antigravity 會自動**：
+   - 產生 `PLAN.md`
+   - 準備 Jules 任務到 `jules/tasks/`
+   - 如需產圖，準備 prompts 到 `nanobanana/queue/`
+
+3. **提交 Jules 任務後，對 Antigravity 說**：
+   ```
+   我已經提交 Jules task，session ID 是 123456，請幫我監控
+   ```
+
+4. **Antigravity 執行 watch**，Jules 完成後自動進入 Review
+
+5. **Review 完成後**：
+   ```
+   確認無誤，請幫我整理 commit message 並提交
+   ```
+
+### 腳本用途說明
+
+`scripts/agent.sh` 是給進階使用者或自動化場景使用：
+
+| 指令 | 用途 | 通常何時用 |
+|------|------|-----------|
+| `plan` | 產生 PLAN.md 模板 | Antigravity 會自動呼叫 |
+| `assets` | 準備產圖任務 | Antigravity 會自動呼叫 |
+| `jules` | 準備程式任務 | Antigravity 會自動呼叫 |
+| `watch <id>` | 監控 Jules session | Antigravity 會自動呼叫，或手動執行 |
+| `verify` | 驗證專案結構 | CI 或手動檢查時 |
+
+---
+
+## 快速開始（初次設定）
 
 ### 1. Clone & Bootstrap
 
