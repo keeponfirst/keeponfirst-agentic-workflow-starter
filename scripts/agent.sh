@@ -2,7 +2,7 @@
 
 # agent.sh - Agentic Workflow 單一入口腳本
 # 用法: ./scripts/agent.sh [command]
-# 命令: plan, assets, jules, verify
+# 命令: plan, assets, jules, watch, verify
 
 set -e
 
@@ -32,14 +32,16 @@ show_usage() {
     echo "用法: ./scripts/agent.sh [command]"
     echo ""
     echo "命令:"
-    echo "  plan     產生 PLAN.md（規劃文件）"
-    echo "  assets   準備產圖任務到 nanobanana/queue/"
-    echo "  jules    準備程式任務到 jules/tasks/"
-    echo "  verify   驗證專案結構與安全性"
+    echo "  plan           產生 PLAN.md（規劃文件）"
+    echo "  assets         準備產圖任務到 nanobanana/queue/"
+    echo "  jules          準備程式任務到 jules/tasks/"
+    echo "  watch <id>     監控 Jules session，完成後自動 fetch 並喚醒 Antigravity"
+    echo "  verify         驗證專案結構與安全性"
     echo ""
     echo "範例:"
     echo "  ./scripts/agent.sh plan"
     echo "  ./scripts/agent.sh assets"
+    echo "  ./scripts/agent.sh watch 123456"
     echo "  ./scripts/agent.sh verify"
 }
 
@@ -170,6 +172,120 @@ cmd_jules() {
     echo "4. Review 產出的程式碼"
 }
 
+# Watch 命令 - 監控 Jules session
+cmd_watch() {
+    local session_id="$1"
+    
+    if [ -z "$session_id" ]; then
+        echo -e "${RED}錯誤: 請提供 session ID${NC}"
+        echo "用法: ./scripts/agent.sh watch <session_id>"
+        echo ""
+        echo "取得 session ID："
+        echo "  jules remote list --session"
+        exit 1
+    fi
+    
+    echo -e "${BLUE}[Watch] 開始監控 Jules session: ${session_id}${NC}"
+    
+    local poll_interval=30
+    local completed_dir="$PROJECT_ROOT/jules/completed"
+    mkdir -p "$completed_dir"
+    
+    # 系統通知函數（macOS）
+    notify_system() {
+        local message="$1"
+        if command -v osascript &> /dev/null; then
+            osascript -e "display notification \"$message\" with title \"Jules Watcher\" sound name \"Glass\""
+        elif command -v notify-send &> /dev/null; then
+            notify-send "Jules Watcher" "$message"
+        fi
+    }
+    
+    # 檢查 session 狀態
+    check_status() {
+        local output
+        output=$(jules remote list --session 2>/dev/null || echo "")
+        if echo "$output" | grep -q "$session_id.*completed"; then
+            return 0
+        elif echo "$output" | grep -q "$session_id.*failed"; then
+            return 2
+        else
+            return 1
+        fi
+    }
+    
+    # 輪詢迴圈
+    echo -e "${YELLOW}每 ${poll_interval} 秒檢查一次狀態...${NC}"
+    echo -e "${YELLOW}按 Ctrl+C 停止監控${NC}"
+    echo ""
+    
+    local attempt=0
+    while true; do
+        attempt=$((attempt + 1))
+        local current_time=$(date +"%H:%M:%S")
+        
+        check_status
+        local status=$?
+        
+        if [ $status -eq 0 ]; then
+            echo ""
+            echo -e "${GREEN}✓ Session $session_id 已完成！${NC}"
+            
+            # 發送通知
+            notify_system "Session $session_id 已完成！正在拉取結果..."
+            
+            # 拉取結果並套用
+            echo -e "${BLUE}正在拉取結果...${NC}"
+            if jules remote pull --session "$session_id" --apply; then
+                echo -e "${GREEN}✓ 已拉取並套用 patch${NC}"
+                
+                # 記錄完成的 session
+                echo "Session: $session_id" > "$completed_dir/${session_id}_completed.md"
+                echo "Completed: $(date)" >> "$completed_dir/${session_id}_completed.md"
+                echo "" >> "$completed_dir/${session_id}_completed.md"
+                echo "## Review Prompt" >> "$completed_dir/${session_id}_completed.md"
+                echo "" >> "$completed_dir/${session_id}_completed.md"
+                echo "請使用 Antigravity Review 此次變更：" >> "$completed_dir/${session_id}_completed.md"
+                echo "1. 檢查 git diff 確認變更內容" >> "$completed_dir/${session_id}_completed.md"
+                echo "2. 執行測試確認功能正常" >> "$completed_dir/${session_id}_completed.md"
+                echo "3. 如需修正，產生新的 Jules task" >> "$completed_dir/${session_id}_completed.md"
+                
+                # 開啟 Antigravity
+                echo -e "${BLUE}正在開啟 Antigravity...${NC}"
+                if command -v antigravity &> /dev/null; then
+                    antigravity "$PROJECT_ROOT" &
+                    echo -e "${GREEN}✓ 已開啟 Antigravity${NC}"
+                else
+                    echo -e "${YELLOW}⚠ 找不到 antigravity 命令，請手動開啟 IDE${NC}"
+                fi
+                
+                # 最終通知
+                notify_system "Jules 結果已套用！請在 Antigravity 中進行 Review"
+                
+            else
+                echo -e "${RED}✗ 拉取結果失敗${NC}"
+                notify_system "拉取 Jules 結果失敗！"
+            fi
+            
+            break
+            
+        elif [ $status -eq 2 ]; then
+            echo ""
+            echo -e "${RED}✗ Session $session_id 執行失敗${NC}"
+            notify_system "Session $session_id 執行失敗！"
+            break
+            
+        else
+            echo -ne "\r[$current_time] 檢查 #$attempt: session 仍在執行中..."
+        fi
+        
+        sleep $poll_interval
+    done
+    
+    echo ""
+    echo -e "${GREEN}監控結束${NC}"
+}
+
 # Verify 命令
 cmd_verify() {
     echo -e "${BLUE}[Verify] 驗證專案結構...${NC}"
@@ -244,6 +360,7 @@ main() {
     show_banner
     
     local command="${1:-help}"
+    shift 2>/dev/null || true
     
     case "$command" in
         plan)
@@ -254,6 +371,9 @@ main() {
             ;;
         jules)
             cmd_jules
+            ;;
+        watch)
+            cmd_watch "$1"
             ;;
         verify)
             cmd_verify
@@ -271,3 +391,4 @@ main() {
 }
 
 main "$@"
+
