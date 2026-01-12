@@ -69,9 +69,11 @@
 
 1. 執行 `./scripts/agent.sh jules`
 2. 腳本會產出任務到 `jules/tasks/`
-3. 把任務內容貼到 Jules
-4. 等待 Jules 執行完成
-5. Review Jules 的產出
+3. 使用 Jules CLI 建立 session：`jules new "task description"`
+4. **自動化流程**：執行 `./scripts/agent.sh watch <session_id>`
+   - 自動輪詢 Jules 狀態
+   - 完成後自動拉取並套用 patch
+   - 喚醒 Antigravity agent 進行 Review
 
 ### 任務拆分原則
 
@@ -87,7 +89,15 @@
 **輸入**：Jules 的產出  
 **輸出**：Review 意見或 Approval
 
-### 步驟
+### 自動化 Review（使用 watch）
+
+當使用 `./scripts/agent.sh watch` 時，Jules 完成後會自動：
+
+1. 執行 `jules remote pull --apply` 拉取並套用變更
+2. 使用 `agy chat --mode agent` 喚醒 Antigravity
+3. Antigravity 自動執行 `git diff` 並進行 code review
+
+### 手動 Review
 
 1. 使用 `prompts/antigravity/review.md` 模板
 2. 提供 Jules 產出的程式碼
