@@ -289,6 +289,27 @@ gemini --version
 
 ---
 
+## 已知限制
+
+### agy chat 無法自動執行 prompt
+
+目前 `agy chat` CLI 只能**開啟視窗**，但**無法自動填入並執行 prompt**。
+
+```bash
+# 這個命令只會開啟 Antigravity，不會執行 prompt
+agy chat --mode agent "請幫我 review"
+```
+
+**影響**：
+- Watch 命令完成後，無法自動喚醒 Antigravity 執行 Review
+- 需要手動對 Antigravity 說：「請 review 剛才 Jules 完成的變更」
+
+**期望的未來改進**：
+- Antigravity CLI 支援直接發送 prompt 並執行
+- 或提供 extension API 讓第三方 extension 可以控制 chat
+
+---
+
 ## License
 
 MIT License - 詳見 [LICENSE](LICENSE)
