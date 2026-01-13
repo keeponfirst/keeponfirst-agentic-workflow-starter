@@ -172,138 +172,38 @@ cmd_jules() {
     echo "4. Review 產出的程式碼"
 }
 
-# Watch 命令 - 監控 Jules session
+# Watch 命令 - 啟動背景監控 Jules session
 cmd_watch() {
     local session_id="$1"
+    local max_retries="${2:-3}"
     
     if [ -z "$session_id" ]; then
         echo -e "${RED}錯誤: 請提供 session ID${NC}"
-        echo "用法: ./scripts/agent.sh watch <session_id>"
+        echo "用法: ./scripts/agent.sh watch <session_id> [max_retries]"
         echo ""
         echo "取得 session ID："
         echo "  jules remote list --session"
         exit 1
     fi
     
-    echo -e "${BLUE}[Watch] 開始監控 Jules session: ${session_id}${NC}"
+    # 確保 watcher.sh 可執行
+    chmod +x "$SCRIPT_DIR/watcher.sh"
     
-    local poll_interval=30
-    local completed_dir="$PROJECT_ROOT/jules/completed"
-    mkdir -p "$completed_dir"
+    # 使用 nohup 在背景啟動 watcher
+    local log_file="$PROJECT_ROOT/jules/watcher.log"
+    nohup "$SCRIPT_DIR/watcher.sh" "$session_id" "$max_retries" "$PROJECT_ROOT" > "$log_file" 2>&1 &
+    local watcher_pid=$!
     
-    # 系統通知函數（macOS）
-    notify_system() {
-        local message="$1"
-        if command -v osascript &> /dev/null; then
-            osascript -e "display notification \"$message\" with title \"Jules Watcher\" sound name \"Glass\""
-        elif command -v notify-send &> /dev/null; then
-            notify-send "Jules Watcher" "$message"
-        fi
-    }
-    
-    # 檢查 session 狀態
-    check_status() {
-        local output
-        output=$(jules remote list --session 2>/dev/null || echo "")
-        if echo "$output" | grep -q "$session_id.*completed"; then
-            return 0
-        elif echo "$output" | grep -q "$session_id.*failed"; then
-            return 2
-        else
-            return 1
-        fi
-    }
-    
-    # 輪詢迴圈
-    echo -e "${YELLOW}每 ${poll_interval} 秒檢查一次狀態...${NC}"
-    echo -e "${YELLOW}按 Ctrl+C 停止監控${NC}"
+    echo -e "${GREEN}✅ Watcher 已在背景啟動${NC}"
     echo ""
-    
-    local attempt=0
-    while true; do
-        attempt=$((attempt + 1))
-        local current_time=$(date +"%H:%M:%S")
-        
-        check_status
-        local status=$?
-        
-        if [ $status -eq 0 ]; then
-            echo ""
-            echo -e "${GREEN}✓ Session $session_id 已完成！${NC}"
-            
-            # 發送通知
-            notify_system "Session $session_id 已完成！正在拉取結果..."
-            
-            # 拉取結果並套用
-            echo -e "${BLUE}正在拉取結果...${NC}"
-            if jules remote pull --session "$session_id" --apply; then
-                echo -e "${GREEN}✓ 已拉取並套用 patch${NC}"
-                
-                # 記錄完成的 session
-                local review_file="$completed_dir/${session_id}_completed.md"
-                cat > "$review_file" << REVIEWEOF
-# Jules Session Review
-
-**Session ID**: $session_id
-**Completed**: $(date)
-
-## Review 任務
-
-請 Review Jules 完成的變更：
-
-1. 執行 \`git diff\` 確認變更內容
-2. 確認程式碼符合專案規範
-3. 執行相關測試確認功能正常
-4. 如有問題，請說明需要修正的地方
-
-## 變更摘要
-
-請分析本次變更並提供：
-- 主要修改的檔案
-- 功能影響範圍
-- 潛在風險評估
-REVIEWEOF
-                
-                # 使用 agy chat 喚醒 Antigravity agent
-                echo -e "${BLUE}正在喚醒 Antigravity agent 進行 Review...${NC}"
-                if command -v agy &> /dev/null; then
-                    # 使用 agent mode 並傳入 review prompt
-                    agy chat --mode agent --add-file "$review_file" \
-                        "Jules session $session_id 已完成。請執行 git diff 查看變更，並進行 code review。如有問題請指出，確認無誤後協助整理 commit message。" &
-                    echo -e "${GREEN}✓ 已喚醒 Antigravity agent${NC}"
-                elif command -v antigravity &> /dev/null; then
-                    # fallback: 開啟 IDE
-                    antigravity "$PROJECT_ROOT" &
-                    echo -e "${GREEN}✓ 已開啟 Antigravity IDE（請手動啟動 Review）${NC}"
-                else
-                    echo -e "${YELLOW}⚠ 找不到 agy/antigravity 命令，請手動進行 Review${NC}"
-                fi
-                
-                # 最終通知
-                notify_system "Jules 結果已套用！Antigravity agent 已啟動 Review"
-                
-            else
-                echo -e "${RED}✗ 拉取結果失敗${NC}"
-                notify_system "拉取 Jules 結果失敗！"
-            fi
-            
-            break
-            
-        elif [ $status -eq 2 ]; then
-            echo ""
-            echo -e "${RED}✗ Session $session_id 執行失敗${NC}"
-            notify_system "Session $session_id 執行失敗！"
-            break
-            
-        else
-            echo -ne "\r[$current_time] 檢查 #$attempt: session 仍在執行中..."
-        fi
-        
-        sleep $poll_interval
-    done
-    
+    echo "  Session ID: $session_id"
+    echo "  Max Retries: $max_retries"
+    echo "  Process ID: $watcher_pid"
+    echo "  Log File: $log_file"
     echo ""
-    echo -e "${GREEN}監控結束${NC}"
+    echo -e "${YELLOW}你可以繼續其他工作。${NC}"
+    echo -e "${YELLOW}監控狀態: tail -f $log_file${NC}"
+    echo -e "${YELLOW}停止監控: kill $watcher_pid${NC}"
 }
 
 # Verify 命令

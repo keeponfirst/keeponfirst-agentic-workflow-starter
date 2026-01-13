@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Workflow Starter - Onboarding</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Agentic Workflow Starter</h1>
+            <p class="subtitle">人不一定在場，任務也能前進</p>
+            <div class="hero-placeholder">
+                <img src="assets/hero.png" alt="Agentic Workflow - Three robots working together"
+                    style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+        </header>
+
+        <main class="onboarding-container">
+            <section class="step active" data-step="1">
+                <div class="step-image-placeholder">
+                    <img src="assets/step1_antigravity.png" alt="Antigravity - Planning and Orchestration"
+                        style="width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="step-content">
+                    <h2>Antigravity (Orchestrator)</h2>
+                    <h3>規劃與決策</h3>
+                    <p>Antigravity 是你的大腦延伸，負責規劃功能、決策和 Review</p>
+                </div>
+            </section>
+
+            <section class="step" data-step="2">
+                <div class="step-image-placeholder">
+                    <img src="assets/step2_gemini.png" alt="Gemini CLI - Image Generation"
+                        style="width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="step-content">
+                    <h2>Gemini CLI (Asset Generator)</h2>
+                    <h3>圖像生成</h3>
+                    <p>使用 Nano Banana 策略，一次產一張圖，避免 quota 耗盡</p>
+                </div>
+            </section>
+
+            <section class="step" data-step="3">
+                <div class="step-image-placeholder">
+                    <img src="assets/step3_jules.png" alt="Jules - Cloud Code Execution"
+                        style="width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="step-content">
+                    <h2>Jules (Task Executor)</h2>
+                    <h3>雲端執行</h3>
+                    <p>Jules 在雲端執行程式任務，你可以去做其他事</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="progress-indicator">
+                <span class="dot active" data-step="1"></span>
+                <span class="dot" data-step="2"></span>
+                <span class="dot" data-step="3"></span>
+            </div>
+            <div class="navigation-buttons">
+                <button id="prevBtn" disabled>上一步</button>
+                <button id="nextBtn">下一步</button>
+            </div>
+            <a href="../../README.md" class="cta-button">開始使用</a>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
