@@ -33,13 +33,14 @@ log_error() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $1" | tee -a "$LOG_FILE"
 }
 
-# 系統通知
+# 系統通知（使用 Antigravity 品牌）
 notify_system() {
     local message="$1"
     if command -v osascript &> /dev/null; then
-        osascript -e "display notification \"$message\" with title \"Jules Watcher\" sound name \"Glass\"" 2>/dev/null || true
+        # 使用 subtitle 讓通知更清楚
+        osascript -e "display notification \"$message\" with title \"Antigravity\" subtitle \"Jules Task 完成\" sound name \"Glass\"" 2>/dev/null || true
     elif command -v notify-send &> /dev/null; then
-        notify-send "Jules Watcher" "$message" 2>/dev/null || true
+        notify-send "Antigravity" "$message" 2>/dev/null || true
     fi
 }
 
@@ -123,7 +124,19 @@ main() {
             log "正在拉取結果..."
             cd "$PROJECT_ROOT"
             
-            if jules remote pull --session "$SESSION_ID" --apply; then
+            # 捕獲 jules pull 輸出以檢查是否有實際變更
+            local pull_output
+            pull_output=$(jules remote pull --session "$SESSION_ID" --apply 2>&1)
+            echo "$pull_output"
+            
+            # 檢查是否有實際 diff
+            if echo "$pull_output" | grep -qi "No diff found"; then
+                log "⚠ Jules 完成但沒有產生任何檔案變更"
+                notify_system "Jules 完成但沒有產生變更，請檢查 task 內容"
+                break
+            fi
+            
+            if echo "$pull_output" | grep -qi "applied successfully\|Patch applied"; then
                 log "✓ 已拉取並套用 patch"
                 
                 if validate_output; then
@@ -152,19 +165,27 @@ main() {
 - 潛在風險評估
 REVIEWEOF
                     
-                    log "正在喚醒 Antigravity agent..."
+                    log "準備 Review..."
+                    
+                    # 直接在 Antigravity 中開啟 review 檔案
                     if command -v agy &> /dev/null; then
-                        agy chat --mode agent --add-file "$review_file" \
-                            "Jules session $SESSION_ID 已完成。請執行 git diff 查看變更，並進行 code review。如有問題請指出，確認無誤後協助整理 commit message。" &
-                        log "✓ 已喚醒 Antigravity agent"
+                        agy "$review_file" &
+                        log "✓ 已在 Antigravity 開啟 review 檔案"
                     elif command -v antigravity &> /dev/null; then
-                        antigravity "$PROJECT_ROOT" &
-                        log "✓ 已開啟 Antigravity IDE"
-                    else
-                        log "⚠ 找不到 agy/antigravity 命令"
+                        antigravity "$review_file" &
+                        log "✓ 已在 Antigravity 開啟 review 檔案"
                     fi
                     
-                    notify_system "Jules 結果已套用！Antigravity agent 已啟動 Review"
+                    # 顯示詳細通知，引導使用者下一步
+                    notify_system "請對 Antigravity 說：請 review 剛才 Jules 完成的變更"
+                    
+                    log ""
+                    log "====== REVIEW 任務 ======"
+                    log "請對 Antigravity 說："
+                    log "  請 review 剛才 Jules 完成的變更，並幫我整理 commit"
+                    log "========================"
+                    log ""
+                    
                     break
                     
                 else
