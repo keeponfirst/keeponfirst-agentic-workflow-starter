@@ -106,7 +106,25 @@ Gemini CLI 和 Jules **不一定需要手動設定 API Key**：
 
 > 💡 **重點**：日常使用時，你只需要對 Antigravity 下指令。腳本是輔助工具，不是必須手動執行。
 
-### 典型工作流程
+### 啟動 Workflow
+
+對 Antigravity（如本 IDE）說以下任一指令：
+
+```
+/workflow 幫我新增一個「暗黑模式切換」功能
+```
+
+```
+按照 agentic workflow 幫我實作一個收藏功能
+```
+
+```
+使用這個 repo 的 workflow 開發 XXX
+```
+
+Antigravity 會自動執行完整的 **PLAN → ASSETS → CODE → REVIEW → RELEASE** 流程。
+
+### 典型工作流程（手動）
 
 1. **在 Antigravity 中描述需求**
    ```
