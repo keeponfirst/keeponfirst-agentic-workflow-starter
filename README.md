@@ -4,6 +4,8 @@
 
 一套以 **Antigravity（主控）+ Gemini CLI（Nano Banana 產圖）+ Jules（雲端 Task Executor）** 為核心的 Agentic Workflow 起手式。
 
+**[🚀 互動式新手引導 (Onboarding Guide)](docs/onboarding/index.html)**
+
 ---
 
 ## 我為什麼做這個 Repo
