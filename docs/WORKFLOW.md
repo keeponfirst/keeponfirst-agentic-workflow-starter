@@ -91,11 +91,15 @@
 
 ### 自動化 Review（使用 watch）
 
-當使用 `./scripts/agent.sh watch` 時，Jules 完成後會自動：
+當使用 `./scripts/agent.sh watch` 時，Jules 完成後會：
 
 1. 執行 `jules remote pull --apply` 拉取並套用變更
-2. 使用 `agy chat --mode agent` 喚醒 Antigravity
-3. Antigravity 自動執行 `git diff` 並進行 code review
+2. 驗證產出品質（檢查是否有實際檔案變更）
+3. 開啟 review 檔案並顯示通知
+4. **你需要說**：「請 review 剛才 Jules 完成的變更，並幫我整理 commit」
+
+> **注意**：由於 Antigravity CLI 限制，目前無法自動執行 prompt。
+> Watch 會發送通知提醒你手動觸發 Review。
 
 ### 手動 Review
 
