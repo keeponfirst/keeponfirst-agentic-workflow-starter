@@ -4,7 +4,8 @@
 # 這個腳本會被 agent.sh watch 透過 nohup 在背景啟動
 # 日誌輸出到 jules/watcher.log
 
-set -e
+# Don't use set -e because grep returns 1 when no match
+# set -e
 
 # 顏色定義
 RED='\033[0;31m'
@@ -46,9 +47,10 @@ notify_system() {
 check_status() {
     local output
     output=$(jules remote list --session 2>/dev/null || echo "")
-    if echo "$output" | grep -q "$SESSION_ID.*completed"; then
+    # Case insensitive grep for Completed/completed
+    if echo "$output" | grep -qi "$SESSION_ID.*completed"; then
         return 0
-    elif echo "$output" | grep -q "$SESSION_ID.*failed"; then
+    elif echo "$output" | grep -qi "$SESSION_ID.*failed"; then
         return 2
     else
         return 1
@@ -111,8 +113,8 @@ main() {
     while true; do
         attempt=$((attempt + 1))
         
-        check_status
-        local status=$?
+        # Capture status without set -e interference
+        check_status && status=0 || status=$?
         
         if [ $status -eq 0 ]; then
             log "✓ Session $SESSION_ID 已完成！"
