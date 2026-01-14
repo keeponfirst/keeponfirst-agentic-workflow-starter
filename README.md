@@ -1,168 +1,168 @@
 # keeponfirst-agentic-workflow-starter
 
-> 人不一定在場，任務也能前進。
+> Tasks keep moving forward, even when you're not around.
 
-一套以 **Antigravity（主控）+ Gemini CLI（Nano Banana 產圖）+ Jules（雲端 Task Executor）** 為核心的 Agentic Workflow 起手式。
+An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Gemini CLI (Nano Banana for asset generation) + Jules (Cloud Task Executor)**.
 
-**[🚀 互動式新手引導 (Onboarding Guide)](docs/onboarding/index.html)**
-
----
-
-## 我為什麼做這個 Repo
-
-這套 workflow 的誕生過程：
-
-1. **訂閱 Gemini Pro** → 開始研究 Google 生態系的 AI 工具
-2. **發現 Gemini CLI** → 嘗試用來產圖、做素材；但很快就遇到 **quota limit**
-3. **看到 Jules 開放試用** → 發現每日 100 tasks 的雲端 executor 潛力
-4. **整合思路成形** → Antigravity 做主控規劃、Gemini CLI 只負責輕量產圖（Nano Banana 策略）、Jules 處理需要時間的程式任務
-
-**核心價值：**
-- **非同步協作**：人睡覺時，Jules 還在工作
-- **避免單點 Quota 崩潰**：分散任務到不同工具
-- **可追溯**：所有 prompt 和 task 都有留存
+**[🚀 Interactive Onboarding Guide](docs/onboarding/index.html)** | **[🇹🇼 繁體中文版](docs/zh-TW/README.md)**
 
 ---
 
-## 三角色分工
+## Why I Built This Repo
 
-| 角色 | 工具 | 職責 | Quota 策略 |
-|------|------|------|------------|
-| **Orchestrator** | Antigravity | 規劃、決策、Review、Release | 人在場時使用 |
-| **Asset Generator** | Gemini CLI | 產生圖片、Icon、UI 素材 | Nano Banana（每次只做一張） |
-| **Task Executor** | Jules | 實作 UI、寫程式、重構 | 每日 100 tasks 上限 |
+The story behind this workflow:
+
+1. **Subscribed to Gemini Pro** → Started exploring Google's AI tools ecosystem
+2. **Discovered Gemini CLI** → Tried using it for asset generation; quickly hit **quota limits**
+3. **Jules opened for beta** → Found potential in 100 daily tasks as a cloud executor
+4. **Integration concept formed** → Antigravity handles planning, Gemini CLI only does lightweight asset generation (Nano Banana strategy), Jules processes time-consuming coding tasks
+
+**Core Values:**
+- **Asynchronous Collaboration**: Jules keeps working while you sleep
+- **Avoid Single-Point Quota Failures**: Distribute tasks across different tools
+- **Full Traceability**: All prompts and tasks are preserved
+
+---
+
+## Three-Role Division
+
+| Role | Tool | Responsibility | Quota Strategy |
+|------|------|----------------|----------------|
+| **Orchestrator** | Antigravity | Planning, Decision-making, Review, Release | Used when present |
+| **Asset Generator** | Gemini CLI | Generate images, icons, UI assets | Nano Banana (one at a time) |
+| **Task Executor** | Jules | Implement UI, write code, refactor | 100 tasks/day limit |
 
 ```
 ┌─────────────────┐
-│   Antigravity   │  ← 你的大腦延伸，做規劃與決策
+│   Antigravity   │  ← Extension of your brain for planning & decisions
 │  (Orchestrator) │
 └────────┬────────┘
          │
     ┌────┴────┐
     ▼         ▼
 ┌───────┐  ┌───────┐
-│Gemini │  │ Jules │  ← 兩個 Executor，各司其職
+│Gemini │  │ Jules │  ← Two Executors, each with its own role
 │  CLI  │  │       │
 └───────┘  └───────┘
     │           │
     ▼           ▼
- assets/    程式碼
+ assets/     code
 ```
 
 ---
 
 ## Execution Model
 
-本 repo 基於 **Google-first 工具鏈**設計，核心概念如下：
+This repo is designed around a **Google-first toolchain** with the following core concepts:
 
-### 角色定義
+### Role Definitions
 
-| 層級 | 角色 | 說明 |
-|------|------|------|
-| Orchestrator | Antigravity | 規劃、決策、協調各 Agent |
-| Agent (Asset) | Gemini CLI | 執行產圖任務 |
-| Agent (Code) | Jules | 執行程式碼任務 |
-| Adapter | `scripts/agent.sh` | CLI 統一入口，銜接 Orchestrator 與 Agents |
+| Layer | Role | Description |
+|-------|------|-------------|
+| Orchestrator | Antigravity | Planning, decision-making, coordinating Agents |
+| Agent (Asset) | Gemini CLI | Execute asset generation tasks |
+| Agent (Code) | Jules | Execute code tasks |
+| Adapter | `scripts/agent.sh` | Unified CLI entry point, bridging Orchestrator and Agents |
 
-### agent.sh 的定位
+### agent.sh Positioning
 
-`agent.sh` 是 **Orchestrator Adapter**，不是單一工具：
+`agent.sh` is an **Orchestrator Adapter**, not a standalone tool:
 
-- **plan**：產生規劃模板（供 Antigravity 使用）
-- **assets**：準備產圖任務到 `nanobanana/queue/`（供 Gemini CLI 執行）
-- **jules**：準備程式任務到 `jules/tasks/`（供 Jules 執行）
-- **verify**：驗證專案結構
+- **plan**: Generate planning templates (for Antigravity)
+- **assets**: Prepare asset tasks to `nanobanana/queue/` (for Gemini CLI)
+- **jules**: Prepare code tasks to `jules/tasks/` (for Jules)
+- **verify**: Validate project structure
 
-### 預設安全模式
+### Safe Mode by Default
 
-本 repo 的腳本 **不會直接呼叫外部 API**，你可以安全地執行所有指令：
+Scripts in this repo **do not directly call external APIs** — you can safely execute all commands:
 
 ```bash
-./scripts/agent.sh plan    # 產生 PLAN.md 模板，不消耗 quota
-./scripts/agent.sh assets  # 產生任務 queue，不消耗 quota
-./scripts/agent.sh jules   # 產生任務檔案，不消耗 quota
+./scripts/agent.sh plan    # Generates PLAN.md template, no quota consumed
+./scripts/agent.sh assets  # Generates task queue, no quota consumed
+./scripts/agent.sh jules   # Generates task files, no quota consumed
 ```
 
-實際執行 Agent 是由你手動進行：
-- Gemini CLI：`gemini generate ...`
-- Jules：複製任務內容到 Jules 介面
+Actual Agent execution is done manually:
+- Gemini CLI: `gemini generate ...`
+- Jules: Copy task content to Jules interface
 
-這樣的設計讓你可以先 **dry-run** 整個流程，確認任務內容正確後再執行。
+This design lets you **dry-run** the entire workflow, confirm task content, then execute.
 
-> **簡單說**：`agent.sh` 是「任務準備工具」。它只負責產生 plan、prompts、tasks 等檔案，不會呼叫 Gemini API 也不會觸發 Jules。你可以放心執行，不會消耗任何 quota。
+> **In short**: `agent.sh` is a "task preparation tool". It only generates plan, prompts, and task files — it won't call Gemini API or trigger Jules. You can run it safely without consuming any quota.
 
-### 關於 API Key 與登入
+### API Keys & Login
 
-Gemini CLI 和 Jules **不一定需要手動設定 API Key**：
+Gemini CLI and Jules **don't necessarily require manual API key setup**:
 
-- **多數情況**：安裝後登入 Google 帳戶即可使用
-- **API Key 主要用於**：非互動式環境、自動化腳本、或特定 API 呼叫
+- **Most cases**: Just log in with your Google account after installation
+- **API Keys are mainly for**: Non-interactive environments, automation scripts, or specific API calls
 
-本 repo 的 `.env.example` 提供 API Key 設定欄位，但這**並非必要條件**。如果你只是互動式使用 Gemini CLI 或 Jules，登入即可開始。
+The `.env.example` in this repo provides API key fields, but this is **not required**. For interactive use of Gemini CLI or Jules, just log in to get started.
 
 ---
 
-## 實際使用流程
+## Practical Usage Flow
 
-> 💡 **重點**：日常使用時，你只需要對 Antigravity 下指令。腳本是輔助工具，不是必須手動執行。
+> 💡 **Key Point**: In daily use, you only need to give commands to Antigravity. Scripts are helper tools, not required for manual execution.
 
-### 啟動 Workflow
+### Starting the Workflow
 
-對 Antigravity（如本 IDE）說以下任一指令：
-
-```
-/workflow 幫我新增一個「暗黑模式切換」功能
-```
+Tell Antigravity (e.g., this IDE) any of the following:
 
 ```
-按照 agentic workflow 幫我實作一個收藏功能
+/workflow Add a "dark mode toggle" feature for me
 ```
 
 ```
-使用這個 repo 的 workflow 開發 XXX
+Follow the agentic workflow to implement a favorites feature
 ```
 
-Antigravity 會自動執行完整的 **PLAN → ASSETS → CODE → REVIEW → RELEASE** 流程。
+```
+Use this repo's workflow to develop XXX
+```
 
-### 典型工作流程（手動）
+Antigravity will automatically execute the complete **PLAN → ASSETS → CODE → REVIEW → RELEASE** flow.
 
-1. **在 Antigravity 中描述需求**
+### Typical Workflow (Manual)
+
+1. **Describe requirements in Antigravity**
    ```
-   我要新增一個 Tag Selector 功能，請幫我規劃並產生 Jules task
-   ```
-
-2. **Antigravity 會自動**：
-   - 產生 `PLAN.md`
-   - 準備 Jules 任務到 `jules/tasks/`
-   - 如需產圖，準備 prompts 到 `nanobanana/queue/`
-
-3. **提交 Jules 任務後，對 Antigravity 說**：
-   ```
-   我已經提交 Jules task，session ID 是 123456，請幫我監控
+   I want to add a Tag Selector feature, please plan and generate a Jules task
    ```
 
-4. **Antigravity 執行 watch**，Jules 完成後自動進入 Review
+2. **Antigravity will automatically**:
+   - Generate `PLAN.md`
+   - Prepare Jules tasks to `jules/tasks/`
+   - If assets needed, prepare prompts to `nanobanana/queue/`
 
-5. **Review 完成後**：
+3. **After submitting Jules task, tell Antigravity**:
    ```
-   確認無誤，請幫我整理 commit message 並提交
+   I've submitted the Jules task, session ID is 123456, please monitor it
    ```
 
-### 腳本用途說明
+4. **Antigravity runs watch**, automatically enters Review when Jules completes
 
-`scripts/agent.sh` 是給進階使用者或自動化場景使用：
+5. **After Review is complete**:
+   ```
+   Looks good, please help organize the commit message and submit
+   ```
 
-| 指令 | 用途 | 通常何時用 |
-|------|------|-----------|
-| `plan` | 產生 PLAN.md 模板 | Antigravity 會自動呼叫 |
-| `assets` | 準備產圖任務 | Antigravity 會自動呼叫 |
-| `jules` | 準備程式任務 | Antigravity 會自動呼叫 |
-| `watch <id>` | 監控 Jules session | Antigravity 會自動呼叫，或手動執行 |
-| `verify` | 驗證專案結構 | CI 或手動檢查時 |
+### Script Command Reference
+
+`scripts/agent.sh` is for advanced users or automation scenarios:
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `plan` | Generate PLAN.md template | Antigravity calls automatically |
+| `assets` | Prepare asset tasks | Antigravity calls automatically |
+| `jules` | Prepare code tasks | Antigravity calls automatically |
+| `watch <id>` | Monitor Jules session | Antigravity calls automatically, or run manually |
+| `verify` | Validate project structure | CI or manual checks |
 
 ---
 
-## 快速開始（初次設定）
+## Quick Start (Initial Setup)
 
 ### 1. Clone & Bootstrap
 
@@ -170,53 +170,53 @@ Antigravity 會自動執行完整的 **PLAN → ASSETS → CODE → REVIEW → R
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
 cd keeponfirst-agentic-workflow-starter
 
-# 初始化資料夾與環境變數
+# Initialize folders and environment variables
 ./scripts/bootstrap.sh
 ```
 
-### 2. 產生一份 Plan
+### 2. Generate a Plan
 
 ```bash
 ./scripts/agent.sh plan
-# 輸出：PLAN.md
+# Output: PLAN.md
 ```
 
-### 3. 產生產圖任務（給 Gemini CLI）
+### 3. Generate Asset Tasks (for Gemini CLI)
 
 ```bash
 ./scripts/agent.sh assets
-# 輸出：nanobanana/queue/*.md
-# 你可以用 Gemini CLI 逐一執行
+# Output: nanobanana/queue/*.md
+# Execute with Gemini CLI one by one
 ```
 
-### 4. 產生程式任務（給 Jules）
+### 4. Generate Code Tasks (for Jules)
 
 ```bash
 ./scripts/agent.sh jules
-# 輸出：jules/tasks/*.md
-# 你可以複製內容到 Jules 執行
+# Output: jules/tasks/*.md
+# Copy content to Jules for execution
 ```
 
-### 5. 監控 Jules 並自動 Review（可選）
+### 5. Monitor Jules & Auto-Review (Optional)
 
 ```bash
-# 建立 Jules session
+# Create Jules session
 jules new "implement feature X"
 
-# 取得 session ID
+# Get session ID
 jules remote list --session
 
-# 啟動監控 - 完成後自動喚醒 Antigravity agent 進行 Review
+# Start monitoring - auto-triggers Antigravity for code review upon completion
 ./scripts/agent.sh watch <session_id>
 ```
 
-`watch` 命令會：
-- 每 30 秒輪詢 Jules session 狀態
-- 偵測到 completed 後自動執行 `jules remote pull --apply`
-- 使用 `agy chat --mode agent` 喚醒 Antigravity 進行 code review
-- 發送系統通知
+The `watch` command will:
+- Poll Jules session status every 30 seconds
+- Auto-execute `jules remote pull --apply` upon completion
+- Wake Antigravity for code review via `agy chat --mode agent`
+- Send system notifications
 
-### 6. 驗證專案結構
+### 6. Validate Project Structure
 
 ```bash
 ./scripts/agent.sh verify
@@ -224,98 +224,98 @@ jules remote list --session
 
 ---
 
-## 快速驗證（Optional）
+## Quick Verification (Optional)
 
-完成 Quick Start 後，可執行以下指令確認環境正確：
+After Quick Start, run these commands to confirm the environment is correct:
 
 ```bash
-# 檢查 Gemini CLI 是否已安裝（可選，僅供確認）
+# Check if Gemini CLI is installed (optional, just for confirmation)
 gemini --version
 
-# 驗證專案結構與安全性
+# Validate project structure and security
 ./scripts/agent.sh verify
 ```
 
-這一步的目的是確認：
-- 專案目錄結構完整
-- 沒有敏感資訊被意外 commit
-- 環境設定正確
+This step confirms:
+- Project directory structure is complete
+- No sensitive information accidentally committed
+- Environment is configured correctly
 
-> **注意**：`gemini --version` 只是確認工具已安裝，不會消耗 quota。如果你尚未安裝 Gemini CLI，可以跳過此步驟。
+> **Note**: `gemini --version` only confirms the tool is installed, it won't consume quota. If you haven't installed Gemini CLI yet, you can skip this step.
 
 ---
 
-## 目錄結構
+## Directory Structure
 
 ```
 .
-├── docs/                  # 工作流程文件
-│   ├── ARCHITECTURE.md    # 架構演進故事
-│   ├── WORKFLOW.md        # 標準流程
-│   ├── PROS_CONS.md       # 優缺點分析
-│   ├── QUOTA_STRATEGY.md  # Quota 控制策略
-│   └── SECURITY.md        # 安全實踐
+├── docs/                  # Workflow documentation
+│   ├── ARCHITECTURE.md    # Architecture evolution story
+│   ├── WORKFLOW.md        # Standard workflow
+│   ├── PROS_CONS.md       # Pros and cons analysis
+│   ├── QUOTA_STRATEGY.md  # Quota control strategy
+│   └── SECURITY.md        # Security practices
 │
-├── prompts/               # 可直接使用的 Prompt 模板
-│   ├── antigravity/       # 給 Orchestrator 的 prompts
-│   ├── gemini-cli/        # 給 Gemini CLI 的產圖 prompts
-│   └── jules/             # 給 Jules 的任務模板
+├── prompts/               # Ready-to-use prompt templates
+│   ├── antigravity/       # Prompts for Orchestrator
+│   ├── gemini-cli/        # Asset generation prompts for Gemini CLI
+│   └── jules/             # Task templates for Jules
 │
-├── scripts/               # 自動化腳本
-│   ├── agent.sh           # 單一入口
-│   ├── bootstrap.sh       # 初始化
-│   └── check_secrets.sh   # 敏感資訊檢查
+├── scripts/               # Automation scripts
+│   ├── agent.sh           # Single entry point
+│   ├── bootstrap.sh       # Initialization
+│   └── check_secrets.sh   # Sensitive info check
 │
-├── examples/              # 範例
+├── examples/              # Examples
 │   └── feature_tag_selector/
 │
-├── nanobanana/queue/      # Gemini CLI 任務佇列
-├── assets/generated/      # 產出的素材
-└── jules/tasks/           # Jules 任務佇列
+├── nanobanana/queue/      # Gemini CLI task queue
+├── assets/generated/      # Generated assets
+└── jules/tasks/           # Jules task queue
 ```
 
 ---
 
-## 文件導覽
+## Documentation
 
-| 文件 | 說明 |
-|------|------|
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | 這套 workflow 怎麼演進來的 |
-| [WORKFLOW.md](docs/WORKFLOW.md) | 標準 Feature Pipeline |
-| [PROS_CONS.md](docs/PROS_CONS.md) | 優缺點與適用情境 |
-| [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md) | Quota 控制策略 |
-| [SECURITY.md](docs/SECURITY.md) | API Key 安全管理 |
-| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 常見問題排除（quota、Jules、重試） |
+| Document | Description |
+|----------|-------------|
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | How this workflow evolved |
+| [WORKFLOW.md](docs/WORKFLOW.md) | Standard Feature Pipeline |
+| [PROS_CONS.md](docs/PROS_CONS.md) | Pros, cons, and use cases |
+| [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md) | Quota control strategy |
+| [SECURITY.md](docs/SECURITY.md) | API Key security management |
+| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues (quota, Jules, retries) |
 
 ---
 
-## 已知限制
+## Known Limitations
 
-### agy chat 無法自動執行 prompt
+### agy chat Cannot Auto-Execute Prompts
 
-目前 `agy chat` CLI 只能**開啟視窗**，但**無法自動填入並執行 prompt**。
+Currently, `agy chat` CLI can only **open the window** but **cannot auto-fill and execute prompts**.
 
 ```bash
-# 這個命令只會開啟 Antigravity，不會執行 prompt
-agy chat --mode agent "請幫我 review"
+# This command only opens Antigravity, doesn't execute the prompt
+agy chat --mode agent "Please review for me"
 ```
 
-**影響**：
-- Watch 命令完成後，無法自動喚醒 Antigravity 執行 Review
-- 需要手動對 Antigravity 說：「請 review 剛才 Jules 完成的變更」
+**Impact**:
+- After watch completes, cannot automatically wake Antigravity for Review
+- Need to manually tell Antigravity: "Please review the changes Jules just completed"
 
-**期望的未來改進**：
-- Antigravity CLI 支援直接發送 prompt 並執行
-- 或提供 extension API 讓第三方 extension 可以控制 chat
+**Hoped Future Improvements**:
+- Antigravity CLI supports sending and executing prompts directly
+- Or provide extension API for third-party extensions to control chat
 
 ---
 
 ## License
 
-MIT License - 詳見 [LICENSE](LICENSE)
+MIT License - See [LICENSE](LICENSE)
 
 ---
 
 ## Contributing
 
-歡迎貢獻 prompts 和 examples！詳見 [CONTRIBUTING.md](CONTRIBUTING.md)
+Contributions to prompts and examples are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
