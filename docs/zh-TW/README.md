@@ -8,6 +8,52 @@
 
 ---
 
+## 🧩 安裝為 Antigravity Skill（新功能！）
+
+這套 workflow 可以安裝為 **全域 Antigravity Skill** — 在任何專案中使用，無需 clone 整個 repo！
+
+### 安裝方式
+
+```bash
+# Clone 並安裝
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.gemini/antigravity/skills/
+```
+
+### 使用方式
+
+安裝後，在任何 workspace 對 Antigravity 說：
+
+```
+/kof                           # 簡短觸發詞
+KOF workflow 新增深色模式       # 自然語言
+用 KOF 開發新功能               # 中文也可以
+```
+
+**觸發關鍵字**：`/kof`、`KOF workflow`、`KOF agentic`、`keeponfirst workflow`、`keeponfirst agentic`
+
+> 💡 **為什麼用 KOF？** 為了避免與其他 agentic 類型的 skill 衝突，我們特意使用專屬觸發詞。如果你想改成其他名稱，直接編輯 `skills/keeponfirst-agentic-workflow/SKILL.md` 中的 `description` 欄位即可。
+
+### Skill 內容
+
+| 元件 | 說明 |
+|------|------|
+| `SKILL.md` | 5 階段工作流程指南 (PLAN → ASSETS → CODE → REVIEW → RELEASE) |
+| `scripts/init.sh` | 在任何專案初始化 workflow 結構 |
+| `scripts/jules-watcher.sh` | 可攜式 Jules session 監控器 |
+| `assets/plan-template.md` | 即用的規劃文件範本 |
+
+### 在新專案初始化 Workflow
+
+```bash
+# 從 skill 目錄執行
+bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /path/to/your/project
+```
+
+這會建立：`plans/`、`jules/tasks/`、`nanobanana/queue/`、`assets/generated/`
+
+---
+
 ## 我為什麼做這個 Repo
 
 這套 workflow 的誕生過程：
