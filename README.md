@@ -8,6 +8,52 @@ An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Gemini
 
 ---
 
+## 🧩 Install as Antigravity Skill (NEW!)
+
+This workflow can be installed as a **global Antigravity Skill** — use it in any project without cloning this repo!
+
+### Installation
+
+```bash
+# Clone and install
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.gemini/antigravity/skills/
+```
+
+### Usage
+
+Once installed, just say to Antigravity in any workspace:
+
+```
+/kof                           # Shorthand trigger
+KOF workflow add dark mode     # Natural language
+用 KOF 開發新功能               # Chinese also works
+```
+
+**Trigger Keywords**: `/kof`, `KOF workflow`, `KOF agentic`, `keeponfirst workflow`, `keeponfirst agentic`
+
+> 💡 **Why KOF?** We use specific trigger keywords to avoid conflicts with other agentic-type skills. Want different keywords? Just edit the `description` field in `skills/keeponfirst-agentic-workflow/SKILL.md`.
+
+### What the Skill Provides
+
+| Component | Description |
+|-----------|-------------|
+| `SKILL.md` | 5-phase workflow guide (PLAN → ASSETS → CODE → REVIEW → RELEASE) |
+| `scripts/init.sh` | Initialize workflow structure in any project |
+| `scripts/jules-watcher.sh` | Portable Jules session monitor |
+| `assets/plan-template.md` | Ready-to-use plan template |
+
+### Initialize Workflow in a New Project
+
+```bash
+# From the skill directory
+bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /path/to/your/project
+```
+
+This creates: `plans/`, `jules/tasks/`, `nanobanana/queue/`, `assets/generated/`
+
+---
+
 ## Why I Built This Repo
 
 The story behind this workflow:
