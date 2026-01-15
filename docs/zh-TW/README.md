@@ -12,6 +12,26 @@
 
 這套 workflow 可以安裝為 **全域 Antigravity Skill** — 在任何專案中使用，無需 clone 整個 repo！
 
+### 前置需求
+
+使用此 skill 前，請先安裝必要的 CLI 工具：
+
+```bash
+# Gemini CLI（用於產圖）
+# 參考: https://github.com/google-gemini/gemini-cli
+npm install -g @google/gemini-cli
+gemini  # 首次執行會引導登入
+
+# Nanobanana 擴充套件（用於 Gemini CLI 圖片生成）
+# 參考: https://github.com/gemini-cli-extensions/nanobanana
+# 透過 Gemini CLI 擴充套件管理器安裝
+
+# Jules CLI（用於雲端程式執行）
+# 參考: https://jules.google
+npm install -g @google/jules
+jules login
+```
+
 ### 安裝方式
 
 ```bash

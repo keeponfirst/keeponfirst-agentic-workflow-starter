@@ -70,14 +70,30 @@ Create a plan file with:
 
 If assets are needed:
 
-1. Use `generate_image` tool to create each image
-2. Save to appropriate location (e.g., `assets/`, `docs/*/assets/`)
-3. Verify quality with user
+1. **Create prompt files** in `nanobanana/queue/`:
+   ```markdown
+   # nanobanana/queue/hero-image.md
+   A modern, minimalist illustration of...
+   ```
+
+2. **Generate with Gemini CLI** (one at a time):
+   ```bash
+   # Check Gemini CLI is authenticated
+   gemini --version
+   
+   # Generate each image
+   gemini -p "$(cat nanobanana/queue/hero-image.md)" > assets/generated/hero-image.png
+   ```
+
+3. **Verify quality** and move to target location
 
 **Nano Banana Principles**:
-- One image at a time
-- Clear, specific prompts
-- Immediate quality check
+- One image at a time (avoid quota spikes)
+- Explicit, detailed prompts
+- Verify quality immediately
+- Move completed prompts to `nanobanana/completed/`
+
+**If Gemini CLI auth fails**: Run `gemini auth login`
 
 **Skip this phase if no assets needed.**
 

@@ -22,13 +22,19 @@ description: 使用 Agentic Workflow 開發新功能（PLAN → ASSETS → CODE 
 如果有圖片需求：
 
 1. 在 `nanobanana/queue/` 建立 prompt 檔案
-2. 使用 `generate_image` tool 一張一張產生圖片
-3. 將圖片複製到目標位置（如 `docs/xxx/assets/`）
+2. 使用 Gemini CLI 逐一產圖：
+   ```bash
+   gemini -p "$(cat nanobanana/queue/xxx.md)" > assets/generated/xxx.png
+   ```
+3. 驗證品質後將圖片複製到目標位置（如 `docs/xxx/assets/`）
+4. 將完成的 prompt 移到 `nanobanana/completed/`
 
 **Nano Banana 原則**：
-- 一次一張圖
+- 一次一張圖（避免 quota 爆量）
 - 明確描述
 - 立即確認品質
+
+**如果 Gemini CLI auth 失敗**：執行 `gemini auth login`
 
 ## Phase 3: CODE (Jules)
 

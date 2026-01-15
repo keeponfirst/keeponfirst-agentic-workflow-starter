@@ -12,6 +12,26 @@ An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Gemini
 
 This workflow can be installed as a **global Antigravity Skill** — use it in any project without cloning this repo!
 
+### Prerequisites
+
+Before using this skill, install the required CLI tools:
+
+```bash
+# Gemini CLI (for asset generation)
+# See: https://github.com/google-gemini/gemini-cli
+npm install -g @google/gemini-cli
+gemini  # First run will prompt for auth
+
+# Nanobanana extension (for image generation with Gemini CLI)
+# See: https://github.com/gemini-cli-extensions/nanobanana
+# Install via Gemini CLI extension manager
+
+# Jules CLI (for cloud code execution)
+# See: https://jules.google
+npm install -g @google/jules
+jules login
+```
+
 ### Installation
 
 ```bash
