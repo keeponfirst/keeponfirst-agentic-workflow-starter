@@ -63,6 +63,8 @@ KOF workflow add dark mode     # Natural language
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
 | `assets/plan-template.md` | Ready-to-use plan template |
 
+> ⚠️ **Note**: Phase 2 (ASSETS) now uses an async workflow. See [Nano Banana Limitation](#nano-banana-free-tier-limitation) for details.
+
 ### Initialize Workflow in a New Project
 
 ```bash
@@ -356,6 +358,31 @@ This step confirms:
 ---
 
 ## Known Limitations
+
+### Nano Banana Free Tier Limitation
+
+> ⚠️ **Important**: Gemini CLI's Nano Banana extension does **NOT** support Free Tier API keys for image generation.
+
+The image generation models (`gemini-2.5-flash-preview-image`, `gemini-3-pro-image`) have **quota limit: 0** on Free Tier accounts.
+
+**Current Workaround (Phase 2 Async Workflow)**:
+
+```mermaid
+flowchart LR
+    A[Phase 2A: Antigravity creates prompts] --> B[PAUSE: User generates images]
+    B --> C[Phase 2B: Antigravity validates assets]
+```
+
+1. **Phase 2A**: Antigravity creates detailed `.prompt.md` files in `nanobanana/queue/`
+2. **PAUSE**: User generates images using:
+   - [Gemini App](https://gemini.google.com) (mobile/web)
+   - [Gemini Web](https://gemini.google.com) (browser)
+   - Other AI tools (Midjourney, DALL-E, etc.)
+3. **Phase 2B**: User tells Antigravity "圖產好了" or "/kof resume" to continue
+
+**Resume Keywords**: `/kof resume`, `圖產好了`, `assets ready`
+
+---
 
 ### agy chat Cannot Auto-Execute Prompts
 

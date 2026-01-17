@@ -66,36 +66,98 @@ Create a plan file with:
 
 ---
 
-### Phase 2: ASSETS (Nano Banana)
+### Phase 2A: PROMPT DESIGN (Antigravity)
 
-If assets are needed:
+If assets are needed, Antigravity creates detailed prompts for Nano Banana:
 
 1. **Create prompt files** in `nanobanana/queue/`:
    ```markdown
-   # nanobanana/queue/hero-image.md
-   A modern, minimalist illustration of...
+   # nanobanana/queue/<asset-name>.prompt.md
+
+   ## Asset Information
+   - **Filename**: hero-illustration.png
+   - **Size**: 1200x630
+   - **Purpose**: Landing page hero image
+   - **Target**: assets/generated/heroes/
+
+   ## Nano Banana Command
+   /generate "<prompt>" --styles="photorealistic" --count=1
+
+   ## Prompt
+   A modern, minimalist illustration showing [detailed description].
+   The color palette should use [specific colors].
+   Style: [specific style instructions].
+   Mood: [emotional tone].
+
+   ## Acceptance Criteria
+   - [ ] High resolution, no artifacts
+   - [ ] Matches brand colors
+   - [ ] Works on light/dark backgrounds
    ```
 
-2. **Generate with Gemini CLI** (one at a time):
+2. **Notify user** that prompts are ready for generation
+
+**Prompt Design Principles**:
+- Explicit, detailed descriptions
+- Include style, mood, and color guidance
+- Specify exact dimensions and format
+- Define acceptance criteria upfront
+
+---
+
+### PAUSE: External Image Generation
+
+> ⚠️ **ASYNC STEP**: Antigravity pauses here. User generates images externally.
+
+**Option 1: Gemini CLI + Nano Banana** (when quota available)
+```bash
+source .env
+gemini -y -e nanobanana "$(cat nanobanana/queue/hero-image.prompt.md)"
+```
+
+**Option 2: Nano Banana Web Tool**
+1. Visit https://nano-banana.ai
+2. Copy prompt content from `.prompt.md` file
+3. Download generated image to `assets/generated/`
+
+**Option 3: Alternative AI Tools**
+- Midjourney, DALL-E, Stable Diffusion, Adobe Firefly
+
+**To resume workflow**, tell Antigravity:
+- "圖產好了，繼續 Phase 2B"
+- "/kof resume"
+
+---
+
+### Phase 2B: ASSET VALIDATION (Antigravity)
+
+When user reports images are ready:
+
+1. **Verify images exist**:
    ```bash
-   # Check Gemini CLI is authenticated
-   gemini --version
-   
-   # Generate each image
-   gemini -p "$(cat nanobanana/queue/hero-image.md)" > assets/generated/hero-image.png
+   ls -la assets/generated/
    ```
 
-3. **Verify quality** and move to target location
+2. **Validate file integrity**:
+   - File size > 0
+   - Correct format (PNG/JPEG)
+   - Dimensions match spec
 
-**Nano Banana Principles**:
-- One image at a time (avoid quota spikes)
-- Explicit, detailed prompts
-- Verify quality immediately
-- Move completed prompts to `nanobanana/completed/`
+3. **Update prompt status**:
+   ```bash
+   mv nanobanana/queue/<asset>.prompt.md nanobanana/completed/
+   ```
 
-**If Gemini CLI auth fails**: Run `gemini auth login`
+4. **Record in plan file**:
+   ```markdown
+   ## Phase 2 ASSETS ✓
+   - [x] hero-image.png - Generated via Nano Banana
+   - [x] app-icon.png - Generated via [tool used]
+   ```
 
-**Skip this phase if no assets needed.**
+5. **Proceed to Phase 3**
+
+**Skip Phase 2 entirely if no assets needed.**
 
 ---
 
@@ -170,7 +232,9 @@ If assets are needed:
 | Phase | Action | Agent |
 |-------|--------|-------|
 | PLAN | Create spec, get approval | Antigravity |
-| ASSETS | Generate images | Gemini CLI |
+| 2A: PROMPT | Design image prompts | Antigravity |
+| PAUSE | Generate images externally | User / Nano Banana |
+| 2B: VALIDATE | Verify assets | Antigravity |
 | CODE | Submit task, monitor | Jules |
 | REVIEW | Verify changes | Antigravity |
 | RELEASE | Commit and push | Antigravity |
@@ -185,9 +249,19 @@ Activate this workflow ONLY when user says:
 - "keeponfirst agentic"
 - "用 KOF 開發..."
 
+## Resume Keywords
+
+After external image generation, resume with:
+- "/kof resume"
+- "圖產好了"
+- "圖產好了，繼續 Phase 2B"
+- "assets ready"
+
 ## Important Notes
 
 - Never skip phases
 - Phase 2 (ASSETS) is optional for code-only features
+- Phase 2A → PAUSE → 2B is an async workflow (user generates images externally)
 - Update plan file status after each phase
 - Watch command runs in background - returns immediately
+
