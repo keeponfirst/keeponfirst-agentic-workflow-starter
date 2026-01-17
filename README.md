@@ -2,7 +2,7 @@
 
 > Tasks keep moving forward, even when you're not around.
 
-An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Gemini CLI (Nano Banana for asset generation) + Jules (Cloud Task Executor)**.
+An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano Banana (Asset Generation) + Jules (Cloud Task Executor)**.
 
 **[🚀 Interactive Onboarding Guide](docs/onboarding/index.html)** | **[🇹🇼 繁體中文版](docs/zh-TW/README.md)**
 
@@ -17,15 +17,6 @@ This workflow can be installed as a **global Antigravity Skill** — use it in a
 Before using this skill, install the required CLI tools:
 
 ```bash
-# Gemini CLI (for asset generation)
-# See: https://github.com/google-gemini/gemini-cli
-npm install -g @google/gemini-cli
-gemini  # First run will prompt for auth
-
-# Nanobanana extension (for image generation with Gemini CLI)
-# See: https://github.com/gemini-cli-extensions/nanobanana
-# Install via Gemini CLI extension manager
-
 # Jules CLI (for cloud code execution)
 # See: https://jules.google
 npm install -g @google/jules
@@ -81,9 +72,9 @@ This creates: `plans/`, `jules/tasks/`, `nanobanana/queue/`, `assets/generated/`
 The story behind this workflow:
 
 1. **Subscribed to Gemini Pro** → Started exploring Google's AI tools ecosystem
-2. **Discovered Gemini CLI** → Tried using it for asset generation; quickly hit **quota limits**
+2. **Discovered Nano Banana** → Tried using it for asset generation; quickly hit **quota limits**
 3. **Jules opened for beta** → Found potential in 100 daily tasks as a cloud executor
-4. **Integration concept formed** → Antigravity handles planning, Gemini CLI only does lightweight asset generation (Nano Banana strategy), Jules processes time-consuming coding tasks
+4. **Integration concept formed** → Antigravity handles planning, Nano Banana handles prompt design (for external generation), Jules processes time-consuming coding tasks
 
 **Core Values:**
 - **Asynchronous Collaboration**: Jules keeps working while you sleep
@@ -97,7 +88,7 @@ The story behind this workflow:
 | Role | Tool | Responsibility | Quota Strategy |
 |------|------|----------------|----------------|
 | **Orchestrator** | Antigravity | Planning, Decision-making, Review, Release | Used when present |
-| **Asset Generator** | Gemini CLI | Generate images, icons, UI assets | Nano Banana (one at a time) |
+| **Asset Generator** | Nano Banana | Generate images, icons, UI assets | External Generation (Async) |
 | **Task Executor** | Jules | Implement UI, write code, refactor | 100 tasks/day limit |
 
 ```
@@ -109,8 +100,8 @@ The story behind this workflow:
     ┌────┴────┐
     ▼         ▼
 ┌───────┐  ┌───────┐
-│Gemini │  │ Jules │  ← Two Executors, each with its own role
-│  CLI  │  │       │
+│ Asset │  │ Jules │  ← Two Executors, each with its own role
+│  Gen  │  │       │
 └───────┘  └───────┘
     │           │
     ▼           ▼
@@ -128,7 +119,7 @@ This repo is designed around a **Google-first toolchain** with the following cor
 | Layer | Role | Description |
 |-------|------|-------------|
 | Orchestrator | Antigravity | Planning, decision-making, coordinating Agents |
-| Agent (Asset) | Gemini CLI | Execute asset generation tasks |
+| Agent (Asset) | Nano Banana | Design asset prompts for external generation |
 | Agent (Code) | Jules | Execute code tasks |
 | Adapter | `scripts/agent.sh` | Unified CLI entry point, bridging Orchestrator and Agents |
 
@@ -137,7 +128,7 @@ This repo is designed around a **Google-first toolchain** with the following cor
 `agent.sh` is an **Orchestrator Adapter**, not a standalone tool:
 
 - **plan**: Generate planning templates (for Antigravity)
-- **assets**: Prepare asset tasks to `nanobanana/queue/` (for Gemini CLI)
+- **assets**: Prepare asset tasks to `nanobanana/queue/` (for Nano Banana)
 - **jules**: Prepare code tasks to `jules/tasks/` (for Jules)
 - **verify**: Validate project structure
 
@@ -152,21 +143,21 @@ Scripts in this repo **do not directly call external APIs** — you can safely e
 ```
 
 Actual Agent execution is done manually:
-- Gemini CLI: `gemini generate ...`
+- Nano Banana: Generate via Web/App using prepared prompts
 - Jules: Copy task content to Jules interface
 
 This design lets you **dry-run** the entire workflow, confirm task content, then execute.
 
-> **In short**: `agent.sh` is a "task preparation tool". It only generates plan, prompts, and task files — it won't call Gemini API or trigger Jules. You can run it safely without consuming any quota.
+> **In short**: `agent.sh` is a "task preparation tool". It only generates plan, prompts, and task files — it won't call external APIs or trigger Jules. You can run it safely without consuming any quota.
 
 ### API Keys & Login
 
-Gemini CLI and Jules **don't necessarily require manual API key setup**:
+**Jules** doesn't necessarily require manual API key setup:
 
 - **Most cases**: Just log in with your Google account after installation
 - **API Keys are mainly for**: Non-interactive environments, automation scripts, or specific API calls
 
-The `.env.example` in this repo provides API key fields, but this is **not required**. For interactive use of Gemini CLI or Jules, just log in to get started.
+The `.env.example` in this repo provides API key fields, but this is **not required**. For interactive use of Jules, just log in to get started.
 
 ---
 
@@ -249,12 +240,12 @@ cd keeponfirst-agentic-workflow-starter
 # Output: PLAN.md
 ```
 
-### 3. Generate Asset Tasks (for Gemini CLI)
+### 3. Generate Asset Tasks (for Nano Banana)
 
 ```bash
 ./scripts/agent.sh assets
 # Output: nanobanana/queue/*.md
-# Execute with Gemini CLI one by one
+# Execute with Nano Banana Web/App one by one
 ```
 
 ### 4. Generate Code Tasks (for Jules)
@@ -297,9 +288,6 @@ The `watch` command will:
 After Quick Start, run these commands to confirm the environment is correct:
 
 ```bash
-# Check if Gemini CLI is installed (optional, just for confirmation)
-gemini --version
-
 # Validate project structure and security
 ./scripts/agent.sh verify
 ```
@@ -308,8 +296,6 @@ This step confirms:
 - Project directory structure is complete
 - No sensitive information accidentally committed
 - Environment is configured correctly
-
-> **Note**: `gemini --version` only confirms the tool is installed, it won't consume quota. If you haven't installed Gemini CLI yet, you can skip this step.
 
 ---
 
@@ -326,7 +312,7 @@ This step confirms:
 │
 ├── prompts/               # Ready-to-use prompt templates
 │   ├── antigravity/       # Prompts for Orchestrator
-│   ├── gemini-cli/        # Asset generation prompts for Gemini CLI
+│   ├── gemini-cli/        # Asset generation prompts for Nano Banana
 │   └── jules/             # Task templates for Jules
 │
 ├── scripts/               # Automation scripts

@@ -1,6 +1,6 @@
 ---
 name: keeponfirst-agentic-workflow
-description: "KeepOnFirst multi-agent development workflow (Antigravity + Gemini CLI + Jules). Use ONLY when user explicitly mentions: 'KOF workflow', 'KOF agentic', 'keeponfirst workflow', 'keeponfirst agentic', or '/kof'. This is a specific workflow methodology, not a generic agentic pattern."
+description: "KeepOnFirst multi-agent development workflow (Antigravity + Nano Banana + Jules). Use ONLY when user explicitly mentions: 'KOF workflow', 'KOF agentic', 'keeponfirst workflow', 'keeponfirst agentic', or '/kof'. This is a specific workflow methodology, not a generic agentic pattern."
 ---
 
 # Agentic Workflow Skill
@@ -12,7 +12,7 @@ A 5-phase development workflow that coordinates multiple AI agents to deliver co
 | Agent | Role | Tool |
 |-------|------|------|
 | **Antigravity** | Orchestrator - plans, reviews, releases | This AI |
-| **Gemini CLI** | Asset Generator (Nano Banana) - creates images | `gemini` CLI |
+| **Nano Banana** | Asset Generator - creates images | External Tool |
 | **Jules** | Cloud Coder - implements code in background | `jules` CLI |
 
 ## Prerequisites Check
@@ -22,12 +22,9 @@ Before starting, verify CLI tools are installed and authenticated:
 ```bash
 # Check Jules
 jules --version && jules remote list
-
-# Check Gemini CLI  
-gemini --version
 ```
 
-**If auth fails**: Ask user to run `jules auth login` or `gemini auth login`.
+**If auth fails**: Ask user to run `jules auth login`.
 
 ## 5-Phase Workflow
 
@@ -36,7 +33,7 @@ gemini --version
 Create a plan file with:
 - Feature overview
 - Technical design
-- Asset requirements (for Gemini CLI)
+- Asset requirements (for Nano Banana)
 - Code tasks (for Jules)
 - Acceptance criteria
 
@@ -109,18 +106,12 @@ If assets are needed, Antigravity creates detailed prompts for Nano Banana:
 
 > ⚠️ **ASYNC STEP**: Antigravity pauses here. User generates images externally.
 
-**Option 1: Gemini CLI + Nano Banana** (when quota available)
-```bash
-source .env
-gemini -y -e nanobanana "$(cat nanobanana/queue/hero-image.prompt.md)"
-```
-
-**Option 2: Nano Banana Web Tool**
+**Option 1: Nano Banana Web Tool**
 1. Visit https://nano-banana.ai
 2. Copy prompt content from `.prompt.md` file
 3. Download generated image to `assets/generated/`
 
-**Option 3: Alternative AI Tools**
+**Option 2: Alternative AI Tools**
 - Midjourney, DALL-E, Stable Diffusion, Adobe Firefly
 
 **To resume workflow**, tell Antigravity:
