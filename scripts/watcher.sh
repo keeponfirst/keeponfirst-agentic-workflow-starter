@@ -48,11 +48,18 @@ notify_system() {
 check_status() {
     local output
     output=$(jules remote list --session 2>/dev/null || echo "")
-    # Case insensitive grep for Completed/completed
+    
+    # Debug: 顯示目前狀態（可選）
+    # echo "Current status output: $output" >> "$LOG_FILE"
+
     if echo "$output" | grep -qi "$SESSION_ID.*completed"; then
         return 0
     elif echo "$output" | grep -qi "$SESSION_ID.*failed"; then
         return 2
+    elif echo "$output" | grep -qi "$SESSION_ID.*awaiting_user_feedback"; then
+        # 如果狀態是 AWAITING_USER_FEEDBACK，可能是 Jules 完成了但等待 Review/Publish
+        # 我們回傳 3 代表 "可能完成"，讓 main 函數嘗試 pull
+        return 3
     else
         return 1
     fi
@@ -117,9 +124,13 @@ main() {
         # Capture status without set -e interference
         check_status && status=0 || status=$?
         
-        if [ $status -eq 0 ]; then
-            log "✓ Session $SESSION_ID 已完成！"
-            notify_system "Session $SESSION_ID 已完成！正在拉取結果..."
+        if [ $status -eq 0 ] || [ $status -eq 3 ]; then
+            if [ $status -eq 0 ]; then
+                log "✓ Session $SESSION_ID 已完成！"
+                notify_system "Session $SESSION_ID 已完成！正在拉取結果..."
+            else
+                log "ℹ Session $SESSION_ID 處於等待回饋狀態，嘗試先拉取結果..."
+            fi
             
             log "正在拉取結果..."
             cd "$PROJECT_ROOT"
@@ -131,9 +142,16 @@ main() {
             
             # 檢查是否有實際 diff
             if echo "$pull_output" | grep -qi "No diff found"; then
-                log "⚠ Jules 完成但沒有產生任何檔案變更"
-                notify_system "Jules 完成但沒有產生變更，請檢查 task 內容"
-                break
+                if [ $status -eq 3 ]; then
+                    log "Jules 等待中且無變更，繼續等待..."
+                    # status=3 且無變更，當作還沒跑完，繼續 loop
+                    sleep $poll_interval
+                    continue
+                else
+                    log "⚠ Jules 完成但沒有產生任何檔案變更"
+                    notify_system "Jules 完成但沒有產生變更，請檢查 task 內容"
+                    break
+                fi
             fi
             
             if echo "$pull_output" | grep -qi "applied successfully\|Patch applied"; then
