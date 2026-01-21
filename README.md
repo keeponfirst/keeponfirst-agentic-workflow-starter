@@ -54,7 +54,7 @@ KOF workflow add dark mode     # Natural language
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
 | `assets/plan-template.md` | Ready-to-use plan template |
 
-> ⚠️ **Note**: Phase 2 (ASSETS) now uses an async workflow. See [Nano Banana Limitation](#nano-banana-free-tier-limitation) for details.
+> 💡 **Note**: Phase 2 (ASSETS) uses Browser Generation to automate Gemini web UI. See [Nano Banana Limitation](#nano-banana-free-tier-limitation) for details.
 
 ### Initialize Workflow in a New Project
 
@@ -88,7 +88,7 @@ The story behind this workflow:
 | Role | Tool | Responsibility | Quota Strategy |
 |------|------|----------------|----------------|
 | **Orchestrator** | Antigravity | Planning, Decision-making, Review, Release | Used when present |
-| **Asset Generator** | Nano Banana | Generate images, icons, UI assets | External Generation (Async) |
+| **Asset Generator** | Nano Banana | Generate images, icons, UI assets | Browser Automation (Hybrid) |
 | **Task Executor** | Jules | Implement UI, write code, refactor | 100 tasks/day limit |
 
 ```
@@ -351,20 +351,28 @@ This step confirms:
 
 The image generation models (`gemini-2.5-flash-preview-image`, `gemini-3-pro-image`) have **quota limit: 0** on Free Tier accounts.
 
-**Current Workaround (Phase 2 Async Workflow)**:
+**Current Solution: Browser Generation Hybrid Flow**
 
 ```mermaid
 flowchart LR
-    A[Phase 2A: Antigravity creates prompts] --> B[PAUSE: User generates images]
-    B --> C[Phase 2B: Antigravity validates assets]
+    A[Phase 2A: Prompt Design] --> B{Logged in?}
+    B -->|Yes| C[Phase 2B: Browser Generation]
+    B -->|No| D[User logs in to Google]
+    D --> C
+    C --> E[Phase 2C: Asset Validation]
 ```
 
 1. **Phase 2A**: Antigravity creates detailed `.prompt.md` files in `nanobanana/queue/`
-2. **PAUSE**: User generates images using:
-   - [Gemini App](https://gemini.google.com) (mobile/web)
-   - [Gemini Web](https://gemini.google.com) (browser)
-   - Other AI tools (Midjourney, DALL-E, etc.)
-3. **Phase 2B**: User tells Antigravity "圖產好了" or "/kof resume" to continue
+2. **Phase 2B**: Antigravity uses `browser_subagent` to:
+   - Open [Gemini Web](https://gemini.google.com) in browser
+   - **Check login status**: If not logged in, pauses and asks you to log in within that window
+   - Submit prompt and wait for image generation
+   - Capture generated image via element screenshot
+3. **Phase 2C**: Antigravity validates assets and moves prompt to `completed/`
+
+**Fallback (Manual Mode)**: If browser automation fails:
+- User generates images manually at Gemini
+- Tells Antigravity "圖產好了" or "/kof resume" to continue
 
 **Resume Keywords**: `/kof resume`, `圖產好了`, `assets ready`
 

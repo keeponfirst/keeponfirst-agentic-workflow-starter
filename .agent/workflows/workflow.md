@@ -17,24 +17,27 @@ description: 使用 Agentic Workflow 開發新功能（PLAN → ASSETS → CODE 
    - 驗收標準
 3. 請用戶確認規劃
 
-## Phase 2: ASSETS (Nano Banana)
+## Phase 2: ASSETS (Browser Generation)
 
 如果有圖片需求：
 
 1. 在 `nanobanana/queue/` 建立 prompt 檔案
-2. 使用 Gemini CLI 逐一產圖：
-   ```bash
-   gemini -p "$(cat nanobanana/queue/xxx.md)" > assets/generated/xxx.png
-   ```
-3. 驗證品質後將圖片複製到目標位置（如 `docs/xxx/assets/`）
-4. 將完成的 prompt 移到 `nanobanana/completed/`
+2. 使用 browser_subagent 開啟 Gemini 網頁版：
+   - 檢查登入狀態
+   - **若未登入**：Antigravity 暫停，請用戶在該視窗完成登入
+   - 輸入 prompt 並產圖
+3. 下載圖片到 `assets/generated/`
+4. 驗證品質後將圖片複製到目標位置
+5. 將完成的 prompt 移到 `nanobanana/completed/`
 
-**Nano Banana 原則**：
-- 一次一張圖（避免 quota 爆量）
-- 明確描述
-- 立即確認品質
+**Hybrid 原則**：
+- 用戶需先登入 Google 帳號（一次性）
+- Antigravity 自動化操作 Gemini 介面
+- 若自動化失敗，回退到手動模式
 
-**如果 Gemini CLI auth 失敗**：執行 `gemini auth login`
+**Fallback（手動模式）**：
+- 用戶手動在 Gemini 網頁產圖
+- 完成後告知 Antigravity："圖產好了" 或 "/kof resume"
 
 ## Phase 3: CODE (Jules)
 

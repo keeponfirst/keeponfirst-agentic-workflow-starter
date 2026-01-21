@@ -2,7 +2,7 @@
 
 > 人不一定在場，任務也能前進。
 
-一套以 **Antigravity（主控）+ Gemini CLI（Nano Banana 產圖）+ Jules（雲端 Task Executor）** 為核心的 Agentic Workflow 起手式。
+一套以 **Antigravity（主控）+ Nano Banana（瀏覽器自動化產圖）+ Jules（雲端 Task Executor）** 為核心的 Agentic Workflow 起手式。
 
 **[🚀 互動式新手引導 (Onboarding Guide)](../onboarding/index.html)**
 
@@ -17,20 +17,13 @@
 使用此 skill 前，請先安裝必要的 CLI 工具：
 
 ```bash
-# Gemini CLI（用於產圖）
-# 參考: https://github.com/google-gemini/gemini-cli
-npm install -g @google/gemini-cli
-gemini  # 首次執行會引導登入
-
-# Nanobanana 擴充套件（用於 Gemini CLI 圖片生成）
-# 參考: https://github.com/gemini-cli-extensions/nanobanana
-# 透過 Gemini CLI 擴充套件管理器安裝
-
 # Jules CLI（用於雲端程式執行）
 # 參考: https://jules.google
 npm install -g @google/jules
 jules login
 ```
+
+> 💡 **Note**: Phase 2 (ASSETS) 使用瀏覽器自動化操作 Gemini 網頁版產圖。Antigravity 開啟瀏覽器後，若檢測到未登入，會提示您在該視窗完成登入。
 
 ### 安裝方式
 
@@ -95,7 +88,7 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 | 角色 | 工具 | 職責 | Quota 策略 |
 |------|------|------|------------|
 | **Orchestrator** | Antigravity | 規劃、決策、Review、Release | 人在場時使用 |
-| **Asset Generator** | Gemini CLI | 產生圖片、Icon、UI 素材 | Nano Banana（每次只做一張） |
+| **Asset Generator** | Nano Banana | 透過瀏覽器自動化產生圖片、Icon、UI 素材 | Browser Automation (Hybrid) |
 | **Task Executor** | Jules | 實作 UI、寫程式、重構 | 每日 100 tasks 上限 |
 
 ```
@@ -126,7 +119,7 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 | 層級 | 角色 | 說明 |
 |------|------|------|
 | Orchestrator | Antigravity | 規劃、決策、協調各 Agent |
-| Agent (Asset) | Gemini CLI | 執行產圖任務 |
+| Agent (Asset) | Nano Banana | 透過瀏覽器自動化執行產圖任務 |
 | Agent (Code) | Jules | 執行程式碼任務 |
 | Adapter | `scripts/agent.sh` | CLI 統一入口，銜接 Orchestrator 與 Agents |
 
@@ -356,6 +349,37 @@ gemini --version
 ---
 
 ## 已知限制
+
+### Nano Banana Free Tier 限制
+
+> ⚠️ **重要**：Gemini CLI 的 Nano Banana 擴充套件在 Free Tier API Key 下**無法**使用圖片生成功能。
+
+**當前方案：Browser Generation Hybrid Flow**
+
+```mermaid
+flowchart LR
+    A[Phase 2A: Prompt Design] --> B{已登入?}
+    B -->|是| C[Phase 2B: Browser Generation]
+    B -->|否| D[用戶登入 Google]
+    D --> C
+    C --> E[Phase 2C: Asset Validation]
+```
+
+1. **Phase 2A**：Antigravity 在 `nanobanana/queue/` 建立詳細的 `.prompt.md` 檔案
+2. **Phase 2B**：Antigravity 使用 `browser_subagent` ：
+   - 在瀏覽器中開啟 [Gemini 網頁版](https://gemini.google.com)
+   - **檢查登入狀態**：若未登入，Antigravity 會暫停並請您在該視窗完成登入
+   - 提交 prompt 並等待圖片生成
+   - 透過 element screenshot 擷取生成的圖片
+3. **Phase 2C**：Antigravity 驗證素材並將 prompt 移到 `completed/`
+
+**Fallback（手動模式）**：如果瀏覽器自動化失敗：
+- 用戶在 Gemini 手動產圖
+- 完成後告訴 Antigravity：「圖產好了」或 "/kof resume"
+
+**恢復關鍵字**：`/kof resume`、`圖產好了`、`assets ready`
+
+---
 
 ### agy chat 無法自動執行 prompt
 

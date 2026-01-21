@@ -77,9 +77,6 @@ If assets are needed, Antigravity creates detailed prompts for Nano Banana:
    - **Purpose**: Landing page hero image
    - **Target**: assets/generated/heroes/
 
-   ## Nano Banana Command
-   /generate "<prompt>" --styles="photorealistic" --count=1
-
    ## Prompt
    A modern, minimalist illustration showing [detailed description].
    The color palette should use [specific colors].
@@ -92,7 +89,7 @@ If assets are needed, Antigravity creates detailed prompts for Nano Banana:
    - [ ] Works on light/dark backgrounds
    ```
 
-2. **Notify user** that prompts are ready for generation
+2. **Proceed to Phase 2B** for browser-based generation
 
 **Prompt Design Principles**:
 - Explicit, detailed descriptions
@@ -102,27 +99,45 @@ If assets are needed, Antigravity creates detailed prompts for Nano Banana:
 
 ---
 
-### PAUSE: External Image Generation
+### Phase 2B: BROWSER GENERATION (Antigravity + Gemini Web)
 
-> ⚠️ **ASYNC STEP**: Antigravity pauses here. User generates images externally.
+> 🌐 **Hybrid Flow**: Antigravity automates Gemini web UI for image generation
 
-**Option 1: Nano Banana Web Tool**
-1. Visit https://nano-banana.ai
-2. Copy prompt content from `.prompt.md` file
-3. Download generated image to `assets/generated/`
+**Pre-requisite**: **Interactive Login Required**. Since Antigravity starts a fresh browser instance, you may need to log in to Google within that window on the first run.
 
-**Option 2: Alternative AI Tools**
-- Midjourney, DALL-E, Stable Diffusion, Adobe Firefly
+1. **Open Gemini in browser**:
+   ```
+   browser_subagent → Navigate to gemini.google.com
+   ```
 
-**To resume workflow**, tell Antigravity:
-- "圖產好了，繼續 Phase 2B"
-- "/kof resume"
+2. **Check login status**:
+   - If logged in → Continue to step 3
+   - **If NOT logged in** → Antigravity pauses. User logs in manually in the open window. Then resume.
+
+3. **Submit prompt**:
+   - Read prompt from `nanobanana/queue/*.md`
+   - Type prompt in Gemini chat input
+   - Wait for image generation (30-60 seconds)
+
+4. **Save generated image**:
+   - Use `capture_browser_screenshot` with element targeting to capture the image
+   - Copy captured image to `assets/generated/` directory
+   - Note: Direct URL download (curl) doesn't work due to 403/CORS restrictions
+
+5. **Handle errors**:
+   - If generation fails → Retry with modified prompt
+   - If timeout → Notify user
+
+**Fallback**: If browser automation fails, revert to manual:
+- User copies prompt to Gemini manually
+- Downloads image to `assets/generated/`
+- Tells Antigravity: "圖產好了" or "/kof resume"
 
 ---
 
-### Phase 2B: ASSET VALIDATION (Antigravity)
+### Phase 2C: ASSET VALIDATION (Antigravity)
 
-When user reports images are ready:
+After images are generated:
 
 1. **Verify images exist**:
    ```bash
@@ -142,7 +157,7 @@ When user reports images are ready:
 4. **Record in plan file**:
    ```markdown
    ## Phase 2 ASSETS ✓
-   - [x] hero-image.png - Generated via Nano Banana
+   - [x] hero-image.png - Generated via Gemini (Browser)
    - [x] app-icon.png - Generated via [tool used]
    ```
 
@@ -224,8 +239,8 @@ When user reports images are ready:
 |-------|--------|-------|
 | PLAN | Create spec, get approval | Antigravity |
 | 2A: PROMPT | Design image prompts | Antigravity |
-| PAUSE | Generate images externally | User / Nano Banana |
-| 2B: VALIDATE | Verify assets | Antigravity |
+| 2B: BROWSER | Generate images via Gemini web | Antigravity + User |
+| 2C: VALIDATE | Verify assets | Antigravity |
 | CODE | Submit task, monitor | Jules |
 | REVIEW | Verify changes | Antigravity |
 | RELEASE | Commit and push | Antigravity |
@@ -242,17 +257,18 @@ Activate this workflow ONLY when user says:
 
 ## Resume Keywords
 
-After external image generation, resume with:
+If browser automation fails and user completes generation manually:
 - "/kof resume"
 - "圖產好了"
-- "圖產好了，繼續 Phase 2B"
+- "圖產好了，繼續 Phase 2C"
 - "assets ready"
 
 ## Important Notes
 
 - Never skip phases
 - Phase 2 (ASSETS) is optional for code-only features
-- Phase 2A → PAUSE → 2B is an async workflow (user generates images externally)
+- Phase 2B requires Google login (one-time setup)
+- If browser automation fails, fallback to manual mode
 - Update plan file status after each phase
 - Watch command runs in background - returns immediately
 
