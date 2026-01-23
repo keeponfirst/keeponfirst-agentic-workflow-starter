@@ -2,7 +2,9 @@
 
 > Tasks keep moving forward, even when you're not around.
 
-An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano Banana (Asset Generation) + Jules (Cloud Task Executor)**.
+An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano Banana (Asset Generation) + Stitch (UI Design) + Jules CLI (Cloud Code Execution)**.
+
+> **Google-first concept**: Default tools are from Google ecosystem (Stitch + Jules CLI). Pencil and Codex CLI are optional alternatives.
 
 **[🚀 Interactive Onboarding Guide](docs/onboarding/index.html)** | **[🇹🇼 繁體中文版](docs/zh-TW/README.md)**
 
@@ -49,12 +51,12 @@ KOF workflow add dark mode     # Natural language
 
 | Component | Description |
 |-----------|-------------|
-| `SKILL.md` | 5-phase workflow guide (PLAN → ASSETS → CODE → REVIEW → RELEASE) |
+| `SKILL.md` | 5-phase workflow guide (PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
 | `scripts/init.sh` | Initialize workflow structure in any project |
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
 | `assets/plan-template.md` | Ready-to-use plan template |
 
-> 💡 **Note**: Phase 2 (ASSETS) uses Browser Generation to automate Gemini web UI. See [Nano Banana Limitation](#nano-banana-free-tier-limitation) for details.
+> 💡 **Note**: Phase 2 (ASSETS) uses Browser Generation to automate Gemini web UI. Phase 2.5 (DESIGN) defaults to Stitch (Google ecosystem). Phase 3 (CODE) defaults to Jules CLI (Google ecosystem). See [Nano Banana Limitation](#nano-banana-free-tier-limitation) for details.
 
 ### Initialize Workflow in a New Project
 
@@ -83,13 +85,16 @@ The story behind this workflow:
 
 ---
 
-## Three-Role Division
+## Workflow Pipeline
 
-| Role | Tool | Responsibility | Quota Strategy |
-|------|------|----------------|----------------|
-| **Orchestrator** | Antigravity | Planning, Decision-making, Review, Release | Used when present |
-| **Asset Generator** | Nano Banana | Generate images, icons, UI assets | Browser Automation (Hybrid) |
-| **Task Executor** | Jules | Implement UI, write code, refactor | 100 tasks/day limit |
+| Phase | Default Tool | Optional Tool | Responsibility |
+|-------|-------------|---------------|----------------|
+| **PLAN** | Antigravity | - | Planning, Decision-making |
+| **ASSETS** | Nano Banana | - | Generate images, icons, UI assets |
+| **DESIGN** | Stitch (Google) | Pencil | UI layout, wireframe, design system |
+| **CODE** | Jules CLI (Google) | Codex CLI | Implement UI, write code, refactor |
+| **REVIEW** | Antigravity | - | Code review, quality check |
+| **RELEASE** | Antigravity | - | Release notes, version tag |
 
 ```
 ┌─────────────────┐
@@ -100,13 +105,21 @@ The story behind this workflow:
     ┌────┴────┐
     ▼         ▼
 ┌───────┐  ┌───────┐
-│ Asset │  │ Jules │  ← Two Executors, each with its own role
-│  Gen  │  │       │
+│ Asset │  │Design │  ← Executors, each with its own role
+│  Gen  │  │ Code  │
 └───────┘  └───────┘
     │           │
     ▼           ▼
  assets/     code
 ```
+
+**Default Tools (Google Ecosystem)**:
+- **Design**: Stitch (via Gemini CLI or MCP)
+- **Code**: Jules CLI (cloud async execution)
+
+**Optional Alternatives**:
+- **Design**: Pencil (mobile apps, design systems)
+- **Code**: Codex CLI (local execution)
 
 ---
 
@@ -120,7 +133,8 @@ This repo is designed around a **Google-first toolchain** with the following cor
 |-------|------|-------------|
 | Orchestrator | Antigravity | Planning, decision-making, coordinating Agents |
 | Agent (Asset) | Nano Banana | Design asset prompts for external generation |
-| Agent (Code) | Jules | Execute code tasks |
+| Agent (Design) | Stitch (default) / Pencil (optional) | UI design and layout |
+| Agent (Code) | Jules CLI (default) / Codex CLI (optional) | Execute code tasks |
 | Adapter | `scripts/agent.sh` | Unified CLI entry point, bridging Orchestrator and Agents |
 
 ### agent.sh Positioning
@@ -129,7 +143,8 @@ This repo is designed around a **Google-first toolchain** with the following cor
 
 - **plan**: Generate planning templates (for Antigravity)
 - **assets**: Prepare asset tasks to `nanobanana/queue/` (for Nano Banana)
-- **jules**: Prepare code tasks to `jules/tasks/` (for Jules)
+- **design**: Prepare design tasks to `stitch/queue/` (for Stitch, default)
+- **jules**: Prepare code tasks to `jules/tasks/` (for Jules CLI, default)
 - **verify**: Validate project structure
 
 ### Safe Mode by Default
@@ -144,7 +159,9 @@ Scripts in this repo **do not directly call external APIs** — you can safely e
 
 Actual Agent execution is done manually:
 - Nano Banana: Generate via Web/App using prepared prompts
-- Jules: Copy task content to Jules interface
+- Stitch: Use Gemini CLI `/stitch` command or MCP tools (default)
+- Jules CLI: Use `jules new` command (default)
+- Optional: Pencil (via Cursor Extension) or Codex CLI
 
 This design lets you **dry-run** the entire workflow, confirm task content, then execute.
 
@@ -181,7 +198,9 @@ Follow the agentic workflow to implement a favorites feature
 Use this repo's workflow to develop XXX
 ```
 
-Antigravity will automatically execute the complete **PLAN → ASSETS → CODE → REVIEW → RELEASE** flow.
+Antigravity will automatically execute the complete **PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE** flow.
+
+> **Default tools**: Stitch (Design) + Jules CLI (Code) - both from Google ecosystem.
 
 ### Typical Workflow (Manual)
 
@@ -192,8 +211,9 @@ Antigravity will automatically execute the complete **PLAN → ASSETS → CODE �
 
 2. **Antigravity will automatically**:
    - Generate `PLAN.md`
-   - Prepare Jules tasks to `jules/tasks/`
    - If assets needed, prepare prompts to `nanobanana/queue/`
+   - If design needed, prepare design tasks to `stitch/queue/` (default: Stitch)
+   - Prepare code tasks to `jules/tasks/` (default: Jules CLI)
 
 3. **After submitting Jules task, tell Antigravity**:
    ```
@@ -215,7 +235,8 @@ Antigravity will automatically execute the complete **PLAN → ASSETS → CODE �
 |---------|---------|-------------|
 | `plan` | Generate PLAN.md template | Antigravity calls automatically |
 | `assets` | Prepare asset tasks | Antigravity calls automatically |
-| `jules` | Prepare code tasks | Antigravity calls automatically |
+| `design` | Prepare design tasks (Stitch) | Antigravity calls automatically |
+| `jules` | Prepare code tasks (Jules CLI) | Antigravity calls automatically |
 | `watch <id>` | Monitor Jules session | Antigravity calls automatically, or run manually |
 | `verify` | Validate project structure | CI or manual checks |
 
@@ -248,15 +269,23 @@ cd keeponfirst-agentic-workflow-starter
 # Execute with Nano Banana Web/App one by one
 ```
 
-### 4. Generate Code Tasks (for Jules)
+### 4. Generate Design Tasks (for Stitch, optional)
+
+```bash
+./scripts/agent.sh design
+# Output: stitch/queue/*.md
+# Use Gemini CLI /stitch command or MCP tools
+```
+
+### 5. Generate Code Tasks (for Jules CLI)
 
 ```bash
 ./scripts/agent.sh jules
 # Output: jules/tasks/*.md
-# Copy content to Jules for execution
+# Use: jules new "task description"
 ```
 
-### 5. Monitor Jules & Auto-Review (Optional)
+### 6. Monitor Jules & Auto-Review (Optional)
 
 ```bash
 # Create Jules session
@@ -275,7 +304,7 @@ The `watch` command will:
 - Wake Antigravity for code review via `agy chat --mode agent`
 - Send system notifications
 
-### 6. Validate Project Structure
+### 7. Validate Project Structure
 
 ```bash
 ./scripts/agent.sh verify
@@ -313,7 +342,8 @@ This step confirms:
 ├── prompts/               # Ready-to-use prompt templates
 │   ├── antigravity/       # Prompts for Orchestrator
 │   ├── gemini-cli/        # Asset generation prompts for Nano Banana
-│   └── jules/             # Task templates for Jules
+│   ├── stitch/            # Design task templates for Stitch
+│   └── jules/             # Task templates for Jules CLI
 │
 ├── scripts/               # Automation scripts
 │   ├── agent.sh           # Single entry point
@@ -325,7 +355,10 @@ This step confirms:
 │
 ├── nanobanana/queue/      # Gemini CLI task queue
 ├── assets/generated/      # Generated assets
-└── jules/tasks/           # Jules task queue
+├── stitch/                # Stitch design files
+│   ├── queue/             # Design task queue
+│   └── designs/           # Generated designs
+└── jules/tasks/           # Jules CLI task queue
 ```
 
 ---
@@ -336,6 +369,8 @@ This step confirms:
 |----------|-------------|
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | How this workflow evolved |
 | [WORKFLOW.md](docs/WORKFLOW.md) | Standard Feature Pipeline |
+| [STITCH_INTEGRATION.md](docs/STITCH_INTEGRATION.md) | Stitch UI design integration |
+| [PENCIL_MCP_SETUP.md](docs/PENCIL_MCP_SETUP.md) | Pencil MCP setup (optional) |
 | [PROS_CONS.md](docs/PROS_CONS.md) | Pros, cons, and use cases |
 | [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md) | Quota control strategy |
 | [SECURITY.md](docs/SECURITY.md) | API Key security management |

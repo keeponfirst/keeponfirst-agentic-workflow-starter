@@ -2,7 +2,9 @@
 
 > 人不一定在場，任務也能前進。
 
-一套以 **Antigravity（主控）+ Nano Banana（瀏覽器自動化產圖）+ Jules（雲端 Task Executor）** 為核心的 Agentic Workflow 起手式。
+一套以 **Antigravity（主控）+ Nano Banana（瀏覽器自動化產圖）+ Stitch（UI 設計）+ Jules CLI（雲端程式執行）** 為核心的 Agentic Workflow 起手式。
+
+> **Google-first 概念**：預設工具來自 Google 生態系（Stitch + Jules CLI）。Pencil 和 Codex CLI 為可選替代方案。
 
 **[🚀 互動式新手引導 (Onboarding Guide)](../onboarding/index.html)**
 
@@ -51,10 +53,12 @@ KOF workflow 新增深色模式       # 自然語言
 
 | 元件 | 說明 |
 |------|------|
-| `SKILL.md` | 5 階段工作流程指南 (PLAN → ASSETS → CODE → REVIEW → RELEASE) |
+| `SKILL.md` | 5 階段工作流程指南 (PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
 | `scripts/init.sh` | 在任何專案初始化 workflow 結構 |
 | `scripts/jules-watcher.sh` | 可攜式 Jules session 監控器 |
 | `assets/plan-template.md` | 即用的規劃文件範本 |
+
+> 💡 **注意**：Phase 2 (ASSETS) 使用瀏覽器自動化操作 Gemini 網頁版產圖。Phase 2.5 (DESIGN) 預設使用 Stitch（Google 生態系）。Phase 3 (CODE) 預設使用 Jules CLI（Google 生態系）。
 
 ### 在新專案初始化 Workflow
 
@@ -83,13 +87,16 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 
 ---
 
-## 三角色分工
+## 工作流程 Pipeline
 
-| 角色 | 工具 | 職責 | Quota 策略 |
-|------|------|------|------------|
-| **Orchestrator** | Antigravity | 規劃、決策、Review、Release | 人在場時使用 |
-| **Asset Generator** | Nano Banana | 透過瀏覽器自動化產生圖片、Icon、UI 素材 | Browser Automation (Hybrid) |
-| **Task Executor** | Jules | 實作 UI、寫程式、重構 | 每日 100 tasks 上限 |
+| 階段 | 預設工具 | 可選工具 | 職責 |
+|------|---------|---------|------|
+| **PLAN** | Antigravity | - | 規劃、決策 |
+| **ASSETS** | Nano Banana | - | 產生圖片、Icon、UI 素材 |
+| **DESIGN** | Stitch (Google) | Pencil | UI layout、wireframe、設計系統 |
+| **CODE** | Jules CLI (Google) | Codex CLI | 實作 UI、寫程式、重構 |
+| **REVIEW** | Antigravity | - | Code review、品質檢查 |
+| **RELEASE** | Antigravity | - | Release notes、版本 tag |
 
 ```
 ┌─────────────────┐
@@ -100,13 +107,21 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
     ┌────┴────┐
     ▼         ▼
 ┌───────┐  ┌───────┐
-│Gemini │  │ Jules │  ← 兩個 Executor，各司其職
-│  CLI  │  │       │
+│素材產出│  │設計+程式│  ← Executors，各司其職
+│       │  │       │
 └───────┘  └───────┘
     │           │
     ▼           ▼
  assets/    程式碼
 ```
+
+**預設工具（Google 生態系）**：
+- **設計**：Stitch（透過 Gemini CLI 或 MCP）
+- **程式**：Jules CLI（雲端非同步執行）
+
+**可選替代方案**：
+- **設計**：Pencil（移動 app、設計系統）
+- **程式**：Codex CLI（本地執行）
 
 ---
 
@@ -120,7 +135,8 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 |------|------|------|
 | Orchestrator | Antigravity | 規劃、決策、協調各 Agent |
 | Agent (Asset) | Nano Banana | 透過瀏覽器自動化執行產圖任務 |
-| Agent (Code) | Jules | 執行程式碼任務 |
+| Agent (Design) | Stitch（預設）/ Pencil（可選） | UI 設計與 layout |
+| Agent (Code) | Jules CLI（預設）/ Codex CLI（可選） | 執行程式碼任務 |
 | Adapter | `scripts/agent.sh` | CLI 統一入口，銜接 Orchestrator 與 Agents |
 
 ### agent.sh 的定位
@@ -129,7 +145,8 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 
 - **plan**：產生規劃模板（供 Antigravity 使用）
 - **assets**：準備產圖任務到 `nanobanana/queue/`（供 Gemini CLI 執行）
-- **jules**：準備程式任務到 `jules/tasks/`（供 Jules 執行）
+- **design**：準備設計任務到 `stitch/queue/`（供 Stitch 執行，預設）
+- **jules**：準備程式任務到 `jules/tasks/`（供 Jules CLI 執行，預設）
 - **verify**：驗證專案結構
 
 ### 預設安全模式
@@ -143,8 +160,10 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 ```
 
 實際執行 Agent 是由你手動進行：
-- Gemini CLI：`gemini generate ...`
-- Jules：複製任務內容到 Jules 介面
+- Gemini CLI：透過瀏覽器自動化產圖
+- Stitch：使用 Gemini CLI `/stitch` 命令或 MCP tools（預設）
+- Jules CLI：使用 `jules new` 命令（預設）
+- 可選：Pencil（透過 Cursor Extension）或 Codex CLI
 
 這樣的設計讓你可以先 **dry-run** 整個流程，確認任務內容正確後再執行。
 
@@ -181,7 +200,9 @@ Gemini CLI 和 Jules **不一定需要手動設定 API Key**：
 使用這個 repo 的 workflow 開發 XXX
 ```
 
-Antigravity 會自動執行完整的 **PLAN → ASSETS → CODE → REVIEW → RELEASE** 流程。
+Antigravity 會自動執行完整的 **PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE** 流程。
+
+> **預設工具**：Stitch（設計）+ Jules CLI（程式）— 兩者皆為 Google 生態系。
 
 ### 典型工作流程（手動）
 
@@ -192,8 +213,9 @@ Antigravity 會自動執行完整的 **PLAN → ASSETS → CODE → REVIEW → R
 
 2. **Antigravity 會自動**：
    - 產生 `PLAN.md`
-   - 準備 Jules 任務到 `jules/tasks/`
    - 如需產圖，準備 prompts 到 `nanobanana/queue/`
+   - 如需設計，準備設計任務到 `stitch/queue/`（預設：Stitch）
+   - 準備程式任務到 `jules/tasks/`（預設：Jules CLI）
 
 3. **提交 Jules 任務後，對 Antigravity 說**：
    ```
@@ -215,7 +237,8 @@ Antigravity 會自動執行完整的 **PLAN → ASSETS → CODE → REVIEW → R
 |------|------|-----------|
 | `plan` | 產生 PLAN.md 模板 | Antigravity 會自動呼叫 |
 | `assets` | 準備產圖任務 | Antigravity 會自動呼叫 |
-| `jules` | 準備程式任務 | Antigravity 會自動呼叫 |
+| `design` | 準備設計任務（Stitch） | Antigravity 會自動呼叫 |
+| `jules` | 準備程式任務（Jules CLI） | Antigravity 會自動呼叫 |
 | `watch <id>` | 監控 Jules session | Antigravity 會自動呼叫，或手動執行 |
 | `verify` | 驗證專案結構 | CI 或手動檢查時 |
 
@@ -248,15 +271,23 @@ cd keeponfirst-agentic-workflow-starter
 # 你可以用 Gemini CLI 逐一執行
 ```
 
-### 4. 產生程式任務（給 Jules）
+### 4. 產生設計任務（給 Stitch，可選）
+
+```bash
+./scripts/agent.sh design
+# 輸出：stitch/queue/*.md
+# 使用 Gemini CLI /stitch 命令或 MCP tools
+```
+
+### 5. 產生程式任務（給 Jules CLI）
 
 ```bash
 ./scripts/agent.sh jules
 # 輸出：jules/tasks/*.md
-# 你可以複製內容到 Jules 執行
+# 使用：jules new "task description"
 ```
 
-### 5. 監控 Jules 並自動 Review（可選）
+### 6. 監控 Jules 並自動 Review（可選）
 
 ```bash
 # 建立 Jules session
@@ -275,7 +306,7 @@ jules remote list --session
 - 使用 `agy chat --mode agent` 喚醒 Antigravity 進行 code review
 - 發送系統通知
 
-### 6. 驗證專案結構
+### 7. 驗證專案結構
 
 ```bash
 ./scripts/agent.sh verify
@@ -318,7 +349,8 @@ gemini --version
 ├── prompts/               # 可直接使用的 Prompt 模板
 │   ├── antigravity/       # 給 Orchestrator 的 prompts
 │   ├── gemini-cli/        # 給 Gemini CLI 的產圖 prompts
-│   └── jules/             # 給 Jules 的任務模板
+│   ├── stitch/            # 給 Stitch 的設計任務模板
+│   └── jules/             # 給 Jules CLI 的任務模板
 │
 ├── scripts/               # 自動化腳本
 │   ├── agent.sh           # 單一入口
@@ -330,7 +362,10 @@ gemini --version
 │
 ├── nanobanana/queue/      # Gemini CLI 任務佇列
 ├── assets/generated/      # 產出的素材
-└── jules/tasks/           # Jules 任務佇列
+├── stitch/                # Stitch 設計檔案
+│   ├── queue/             # 設計任務佇列
+│   └── designs/           # 產出的設計
+└── jules/tasks/           # Jules CLI 任務佇列
 ```
 
 ---
@@ -341,6 +376,8 @@ gemini --version
 |------|------|
 | [ARCHITECTURE.md](../ARCHITECTURE.md) | 這套 workflow 怎麼演進來的 |
 | [WORKFLOW.md](../WORKFLOW.md) | 標準 Feature Pipeline |
+| [STITCH_INTEGRATION.md](../STITCH_INTEGRATION.md) | Stitch UI 設計整合 |
+| [PENCIL_MCP_SETUP.md](../PENCIL_MCP_SETUP.md) | Pencil MCP 設定（可選） |
 | [PROS_CONS.md](../PROS_CONS.md) | 優缺點與適用情境 |
 | [QUOTA_STRATEGY.md](../QUOTA_STRATEGY.md) | Quota 控制策略 |
 | [SECURITY.md](../SECURITY.md) | API Key 安全管理 |
