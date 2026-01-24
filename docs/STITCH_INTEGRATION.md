@@ -212,6 +212,44 @@ cp .mcp.json.example .mcp.json
 }
 ```
 
+#### 3.1 另一種做法：直接用 Git URL 執行（尚未發佈 npm 時可用）
+
+如果你已把 wrapper 推到 GitHub（例如 `keeponfirst/kof-stitch-mcp`），但 **尚未發佈到 npm registry**，可用 Git URL 讓 `npx` 直接抓 repo 來執行：
+
+```json
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": ["-y", "-p", "github:keeponfirst/kof-stitch-mcp", "kof-stitch-mcp"],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "your-project-id"
+      }
+    }
+  }
+}
+```
+
+> 這種方式適合快速驗證與內部使用；正式對外分發建議仍以 npm 發佈（見下節）。
+
+#### 3.2 npm 用法：用 npx 執行（需要已發佈到 npm）
+
+若 `@keeponfirst/kof-stitch-mcp` 已發佈到 npm，可用最簡潔的方式：
+
+```json
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": ["-y", "@keeponfirst/kof-stitch-mcp"],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "your-project-id"
+      }
+    }
+  }
+}
+```
+
 #### 4. 驗證設定
 
 重啟 Claude Code，確認 Stitch tools 可用。
