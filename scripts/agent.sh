@@ -34,14 +34,19 @@ show_usage() {
     echo "命令:"
     echo "  plan           產生 PLAN.md（規劃文件）"
     echo "  assets         準備產圖任務到 nanobanana/queue/"
+    echo "  design         準備設計任務到 stitch/queue/"
     echo "  jules          準備程式任務到 jules/tasks/"
     echo "  watch <id>     監控 Jules session，完成後自動 fetch 並喚醒 Antigravity"
+    echo "  stitch-setup   首次設定 Stitch extension（設定 GCP Project ID）"
+    echo "  stitch-check   檢查 Stitch MCP 連線狀態"
     echo "  verify         驗證專案結構與安全性"
     echo ""
     echo "範例:"
     echo "  ./scripts/agent.sh plan"
     echo "  ./scripts/agent.sh assets"
+    echo "  ./scripts/agent.sh design"
     echo "  ./scripts/agent.sh watch 123456"
+    echo "  ./scripts/agent.sh stitch-setup"
     echo "  ./scripts/agent.sh verify"
 }
 
@@ -206,6 +211,186 @@ cmd_watch() {
     echo -e "${YELLOW}停止監控: kill $watcher_pid${NC}"
 }
 
+# Design 命令 - 準備 Stitch 設計任務
+cmd_design() {
+    echo -e "${BLUE}[Design] 準備設計任務...${NC}"
+
+    local queue_dir="$PROJECT_ROOT/stitch/queue"
+    local designs_dir="$PROJECT_ROOT/stitch/designs"
+    local prompts_dir="$PROJECT_ROOT/prompts/stitch"
+
+    # 確保目錄存在
+    mkdir -p "$queue_dir"
+    mkdir -p "$designs_dir"
+    mkdir -p "$prompts_dir"
+
+    # 如果沒有模板，建立預設模板
+    if [ ! -f "$prompts_dir/ui_screen.md" ]; then
+        cat > "$prompts_dir/ui_screen.md" << 'EOF'
+# UI Screen Design Request
+
+## 目標用戶
+<!-- 描述使用這個畫面的用戶 -->
+
+## 功能描述
+<!-- 這個畫面要完成什麼？ -->
+
+## 設計需求
+<!-- 風格、顏色、元件等 -->
+
+## Stitch Prompt
+<!-- 實際給 Stitch 的 prompt -->
+
+Design a mobile screen for [描述]...
+EOF
+        echo -e "${YELLOW}已建立預設模板: prompts/stitch/ui_screen.md${NC}"
+    fi
+
+    # 複製 prompt 模板到 queue
+    local count=0
+    for prompt in "$prompts_dir"/*.md; do
+        if [ -f "$prompt" ]; then
+            local filename=$(basename "$prompt")
+            local timestamp=$(date +%Y%m%d_%H%M%S)
+            cp "$prompt" "$queue_dir/${timestamp}_${filename}"
+            count=$((count + 1))
+        fi
+    done
+
+    echo -e "${GREEN}✓ 已複製 ${count} 個設計模板到 stitch/queue/${NC}"
+    echo ""
+    echo "下一步："
+    echo "1. 編輯 stitch/queue/ 中的設計需求"
+    echo "2. 開啟 Gemini CLI: gemini"
+    echo "3. 執行設計: /stitch <你的設計描述>"
+    echo "4. 下載設計: /stitch Download the image of screen <id>"
+    echo "5. 將下載檔案移到 stitch/designs/<feature>/"
+    echo "6. 告知 Antigravity「設計完成」繼續流程"
+}
+
+# Stitch Setup 命令 - 首次設定
+cmd_stitch_setup() {
+    echo -e "${BLUE}[Stitch] 設定 Stitch extension...${NC}"
+
+    local extension_config="$HOME/.gemini/extensions/Stitch/gemini-extension.json"
+
+    # 檢查 extension 是否安裝
+    if [ ! -f "$extension_config" ]; then
+        echo -e "${RED}錯誤: Stitch extension 未安裝${NC}"
+        echo ""
+        echo "請執行以下命令安裝："
+        echo "  gemini extensions install https://github.com/gemini-cli-extensions/stitch --auto-update"
+        exit 1
+    fi
+
+    # 取得目前的 Project ID
+    local current_project=$(gcloud config get-value project 2>/dev/null)
+
+    if [ -z "$current_project" ]; then
+        echo -e "${YELLOW}警告: 尚未設定 GCP Project${NC}"
+        echo ""
+        echo "請先設定 GCP Project："
+        echo "  export PROJECT_ID=\"your-project-id\""
+        echo "  gcloud config set project \$PROJECT_ID"
+        echo ""
+        read -p "輸入你的 GCP Project ID: " current_project
+
+        if [ -z "$current_project" ]; then
+            echo -e "${RED}錯誤: 未提供 Project ID${NC}"
+            exit 1
+        fi
+
+        # 驗證 Project ID 格式 (GCP 規則: 6-30 字元, 小寫字母開頭, 只能包含小寫字母、數字、連字號)
+        if [[ ! "$current_project" =~ ^[a-z][a-z0-9-]{4,28}[a-z0-9]$ ]]; then
+            echo -e "${RED}錯誤: 無效的 Project ID 格式${NC}"
+            echo "GCP Project ID 規則："
+            echo "  - 6-30 個字元"
+            echo "  - 必須以小寫字母開頭"
+            echo "  - 只能包含小寫字母、數字、連字號"
+            echo "  - 不能以連字號結尾"
+            exit 1
+        fi
+
+        gcloud config set project "$current_project"
+    fi
+
+    echo "使用 Project ID: $current_project"
+
+    # 更新 extension 設定
+    if grep -q "YOUR_PROJECT_ID" "$extension_config"; then
+        # 使用跨平台相容的 sed 語法
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            sed -i '' "s/YOUR_PROJECT_ID/$current_project/g" "$extension_config"
+        else
+            # Linux
+            sed -i "s/YOUR_PROJECT_ID/$current_project/g" "$extension_config"
+        fi
+        echo -e "${GREEN}✓ 已更新 Stitch extension 設定${NC}"
+    else
+        echo -e "${YELLOW}Stitch extension 已設定過${NC}"
+    fi
+
+    # 設定 ADC
+    echo ""
+    echo "設定 Application Default Credentials..."
+    gcloud auth application-default set-quota-project "$current_project" 2>/dev/null || true
+
+    echo ""
+    echo -e "${GREEN}✓ Stitch 設定完成${NC}"
+    echo ""
+    echo "下一步："
+    echo "1. 確認登入狀態: gcloud auth application-default login"
+    echo "2. 檢查連線: ./scripts/agent.sh stitch-check"
+    echo "3. 開始設計: gemini → /stitch Design a..."
+}
+
+# Stitch Check 命令 - 檢查連線狀態
+cmd_stitch_check() {
+    echo -e "${BLUE}[Stitch] 檢查連線狀態...${NC}"
+    echo ""
+
+    # 檢查 gcloud
+    if ! command -v gcloud &> /dev/null; then
+        echo -e "${RED}✗ gcloud CLI 未安裝${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓${NC} gcloud CLI 已安裝"
+
+    # 檢查 Project
+    local project=$(gcloud config get-value project 2>/dev/null)
+    if [ -z "$project" ]; then
+        echo -e "${RED}✗ 未設定 GCP Project${NC}"
+    else
+        echo -e "${GREEN}✓${NC} GCP Project: $project"
+    fi
+
+    # 檢查 ADC
+    if [ -f "$HOME/.config/gcloud/application_default_credentials.json" ]; then
+        echo -e "${GREEN}✓${NC} Application Default Credentials 已設定"
+    else
+        echo -e "${YELLOW}⚠${NC} Application Default Credentials 未設定"
+        echo "  執行: gcloud auth application-default login"
+    fi
+
+    # 檢查 Gemini CLI
+    echo ""
+    if ! command -v gemini &> /dev/null; then
+        echo -e "${YELLOW}⚠${NC} Gemini CLI 未安裝"
+        echo "  安裝: https://github.com/anthropics/gemini-cli"
+    else
+        echo -e "${GREEN}✓${NC} Gemini CLI 已安裝"
+        echo ""
+        echo "檢查 Gemini CLI MCP 連線..."
+        if gemini mcp list 2>&1 | grep -qiE "(stitch|Stitch)"; then
+            echo -e "${GREEN}✓${NC} Stitch MCP 已連線"
+        else
+            echo -e "${RED}✗${NC} Stitch MCP 未連線"
+            echo "  請確認 Stitch extension 已安裝並設定"
+        fi
+    fi
+}
+
 # Verify 命令
 cmd_verify() {
     echo -e "${BLUE}[Verify] 驗證專案結構...${NC}"
@@ -294,6 +479,15 @@ main() {
             ;;
         watch)
             cmd_watch "$1"
+            ;;
+        design)
+            cmd_design
+            ;;
+        stitch-setup)
+            cmd_stitch_setup
+            ;;
+        stitch-check)
+            cmd_stitch_check
             ;;
         verify)
             cmd_verify

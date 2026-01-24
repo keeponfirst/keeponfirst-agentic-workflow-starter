@@ -3,6 +3,18 @@
 .env.local
 .env.*.local
 
+# MCP 設定（包含 Project ID）
+.mcp.json
+
+# Claude Code 本地設定
+.claude/
+
+# Nano Banana 輸出（測試用）
+nanobanana-output/
+
+# Stitch MCP Server（獨立 repo: github:keeponfirst/kof-stitch-mcp）
+stitch/mcp-server/
+
 # 產出檔案（依專案需求決定是否 commit）
 assets/generated/*
 !assets/generated/.gitkeep
