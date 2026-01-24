@@ -1,0 +1,14 @@
+{
+  "projectId": "5804119508173637902",
+  "projectName": "projects/5804119508173637902",
+  "projectTitle": "BabyLog",
+  "sessionId": "13394353588662222159",
+  "screenId": "44ff348990744db28292fa8267575bf6",
+  "screenName": "projects/5804119508173637902/screens/44ff348990744db28292fa8267575bf6",
+  "screenTitle": "BabyLog Home Screen",
+  "artifact": {
+    "html": "screen_main.html",
+    "png": "screen_main.png"
+  }
+}
+

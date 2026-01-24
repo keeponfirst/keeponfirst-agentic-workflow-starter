@@ -73,15 +73,26 @@ gcloud auth application-default login
 
 2. **Antigravity 直接呼叫 Stitch MCP Tools**
    - 使用 `list_projects` 列出現有專案
-   - 使用 `generate_screen_from_text` 生成新設計
-   - 使用 `fetch_screen_image` 下載截圖
-   - 使用 `fetch_screen_code` 下載 HTML
+   - 如需新專案：使用 `create_project`（注意參數是 `title`）
+   - 使用 `generate_screen_from_text` 生成新設計（注意參數是 `projectId` / `prompt` / `deviceType` / `modelId`）
+   - 使用 `get_screen` 取得 screen 的 `screenshot.downloadUrl` 與 `htmlCode.downloadUrl`
+   - 下載/落地產物（見下方「輸出契約」）
 
-3. **儲存設計到專案**
-   - 將下載的檔案存到 `stitch/designs/<feature>/`
+3. **落地產物（輸出契約 / Artifact Contract）**
+   - 目標是讓下一步 CODE 任務可直接引用固定路徑，避免「設計完成但找不到檔案」而卡住
+
+```
+stitch/designs/<feature>/
+  screen_main.png
+  screen_main.html
+  screen_main.meta.json
+```
+
+   - `screen_main.meta.json` 至少包含：`projectId`、`screenId`、`sessionId`、`screenshot.downloadUrl`、`htmlCode.downloadUrl`
 
 4. **繼續 CODE Phase**
    - 設計作為 Jules 任務的輸入參考
+   - 將 `stitch/queue/<feature>.md` 移到 `stitch/completed/<feature>.md`（代表 DESIGN 完成，可繼續）
 
 ### Stitch MCP Tools 參考
 
@@ -142,6 +153,15 @@ stitch/
 
 > **預設使用 Jules CLI**（Google 生態系，支援非同步執行，每日 100 tasks 免費）。  
 > **可選：Codex CLI**（本地即時執行，需要 OpenAI API key）。
+
+### DESIGN 交接（若 Phase 2.5 有使用 Stitch/Pencil）
+
+- 如果存在 `stitch/designs/<feature>/`（或 `designs/<feature>/` 的 `.pen`），請在 `jules/tasks/<task>.md` 的 **Input Files (Read Only)** 明確列出：
+  - `stitch/designs/<feature>/screen_main.png`
+  - `stitch/designs/<feature>/screen_main.html`（若有）
+  - `stitch/designs/<feature>/screen_main.meta.json`
+  - 以及 Phase 2 產生的圖片素材（如 `assets/generated/...`）
+- Jules 的 UI 實作規格以這些設計產物為準，避免「設計做了但 CODE 端不知道要照哪個版本」。
 
 ### 選項 A：使用 Jules CLI（預設，推薦）
 

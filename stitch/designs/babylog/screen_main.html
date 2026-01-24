@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f9d406",
+              "background-light": "#F5F1E8",
+              "background-dark": "#23200f",
+              "soft-pink": "#FFB6C1",
+              "soft-blue": "#B0E0E6",
+              "warm-gold": "#FFD700",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "1.5rem", "lg": "2.25rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#3d3a2e] dark:text-[#f8f8f5] antialiased">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 justify-between">
+<div class="size-12 rounded-full bg-white dark:bg-[#332f1a] flex items-center justify-center shadow-sm border border-[#e9e5ce]/40">
+<span class="material-symbols-outlined text-[#1c1a0d] dark:text-primary">face_6</span>
+</div>
+<h2 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-xl font-extrabold leading-tight tracking-tight flex-1 text-center">Today</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-white dark:bg-[#332f1a] shadow-sm border border-[#e9e5ce]/40 text-[#1c1a0d] dark:text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<main class="flex flex-col gap-6 px-4 pb-24">
+<!-- Quick Actions Section -->
+<section>
+<h3 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-lg font-bold px-2 pb-4 pt-2">Quick Actions</h3>
+<div class="grid grid-cols-2 gap-4">
+<!-- Feed Button -->
+<button class="flex flex-col gap-3 rounded-xl border-2 border-[#FFB6C1]/30 bg-white dark:bg-[#2d2a1b] p-5 items-center justify-center shadow-sm transition-transform active:scale-95">
+<div class="size-14 rounded-full bg-soft-pink/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-soft-pink text-3xl">child_care</span>
+</div>
+<h2 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-base font-bold">Feed</h2>
+</button>
+<!-- Diaper Button -->
+<button class="flex flex-col gap-3 rounded-xl border-2 border-[#FFD700]/30 bg-white dark:bg-[#2d2a1b] p-5 items-center justify-center shadow-sm transition-transform active:scale-95">
+<div class="size-14 rounded-full bg-warm-gold/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-warm-gold text-3xl">opacity</span>
+</div>
+<h2 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-base font-bold">Diaper</h2>
+</button>
+<!-- Sleep Button -->
+<button class="flex flex-col gap-3 rounded-xl border-2 border-[#B0E0E6]/30 bg-white dark:bg-[#2d2a1b] p-5 items-center justify-center shadow-sm transition-transform active:scale-95">
+<div class="size-14 rounded-full bg-soft-blue/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-soft-blue text-3xl">bedtime</span>
+</div>
+<h2 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-base font-bold">Sleep</h2>
+</button>
+<!-- Play Button -->
+<button class="flex flex-col gap-3 rounded-xl border-2 border-primary/30 bg-white dark:bg-[#2d2a1b] p-5 items-center justify-center shadow-sm transition-transform active:scale-95">
+<div class="size-14 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#e1b600] text-3xl">extension</span>
+</div>
+<h2 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-base font-bold">Play</h2>
+</button>
+</div>
+</section>
+<!-- Today's Summary Section -->
+<section>
+<div class="flex items-center justify-between px-2 pb-4 pt-2">
+<h3 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-lg font-bold">Today's Summary</h3>
+<span class="text-xs font-bold text-gray-400 uppercase tracking-widest">View All</span>
+</div>
+<div class="flex flex-nowrap gap-4 overflow-x-auto pb-2 no-scrollbar">
+<div class="flex min-w-[140px] flex-col gap-2 rounded-xl p-5 bg-white dark:bg-[#2d2a1b] shadow-sm border border-[#e9e5ce]/40">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Feeds</p>
+<p class="text-[#1c1a0d] dark:text-[#fcfbf8] text-xl font-bold">6 times</p>
+<div class="w-full h-1 bg-soft-pink/30 rounded-full mt-1 overflow-hidden">
+<div class="bg-soft-pink h-full w-2/3"></div>
+</div>
+</div>
+<div class="flex min-w-[140px] flex-col gap-2 rounded-xl p-5 bg-white dark:bg-[#2d2a1b] shadow-sm border border-[#e9e5ce]/40">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Diapers</p>
+<p class="text-[#1c1a0d] dark:text-[#fcfbf8] text-xl font-bold">4 changes</p>
+<div class="w-full h-1 bg-warm-gold/30 rounded-full mt-1 overflow-hidden">
+<div class="bg-warm-gold h-full w-1/2"></div>
+</div>
+</div>
+<div class="flex min-w-[140px] flex-col gap-2 rounded-xl p-5 bg-white dark:bg-[#2d2a1b] shadow-sm border border-[#e9e5ce]/40">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Sleep</p>
+<p class="text-[#1c1a0d] dark:text-[#fcfbf8] text-xl font-bold">12h 30m</p>
+<div class="w-full h-1 bg-soft-blue/30 rounded-full mt-1 overflow-hidden">
+<div class="bg-soft-blue h-full w-4/5"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Activity Section -->
+<section>
+<h3 class="text-[#1c1a0d] dark:text-[#fcfbf8] text-lg font-bold px-2 pb-4 pt-2">Recent Activity</h3>
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#2d2a1b] border border-[#e9e5ce]/40 shadow-sm divide-y divide-[#e9e5ce]/30 dark:divide-[#3d3a2e]">
+<div class="flex items-center gap-4 p-4">
+<div class="size-10 rounded-full bg-soft-blue/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-soft-blue text-xl">bedtime</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-[#1c1a0d] dark:text-[#fcfbf8]">Morning Nap</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">Duration: 1h 15m</p>
+</div>
+<p class="text-xs font-medium text-gray-400">10:45 AM</p>
+</div>
+<div class="flex items-center gap-4 p-4">
+<div class="size-10 rounded-full bg-soft-pink/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-soft-pink text-xl">child_care</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-[#1c1a0d] dark:text-[#fcfbf8]">Bottle Feeding</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">Amount: 120ml</p>
+</div>
+<p class="text-xs font-medium text-gray-400">09:15 AM</p>
+</div>
+<div class="flex items-center gap-4 p-4">
+<div class="size-10 rounded-full bg-warm-gold/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-warm-gold text-xl">opacity</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-[#1c1a0d] dark:text-[#fcfbf8]">Diaper Change</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">Type: Wet</p>
+</div>
+<p class="text-xs font-medium text-gray-400">08:30 AM</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm h-16 bg-white dark:bg-[#2d2a1b] rounded-full shadow-xl border border-[#e9e5ce]/40 flex items-center justify-around px-6 z-20">
+<button class="flex flex-col items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">analytics</span>
+</button>
+<div class="size-12 -mt-10 rounded-full bg-primary flex items-center justify-center shadow-lg border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-[#1c1a0d] text-3xl">add</span>
+</div>
+<button class="flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">photo_library</span>
+</button>
+<button class="flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</button>
+</nav>
+<!-- Decoration for Picture-Book Vibe -->
+<div class="fixed top-0 left-0 -z-10 w-full h-full opacity-5 pointer-events-none">
+<div class="absolute top-10 right-10 size-32 rounded-full border-4 border-warm-gold"></div>
+<div class="absolute bottom-20 left-10 size-24 rounded-full bg-soft-pink"></div>
+<div class="absolute top-1/2 right-4 size-48 rounded-full bg-soft-blue"></div>
+</div>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

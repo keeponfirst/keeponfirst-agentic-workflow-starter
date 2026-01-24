@@ -98,33 +98,47 @@ Antigravity  Gemini CLI     Stitch* /   Jules CLI* / Antigravity   Antigravity
 
 ### 選項 A：使用 Stitch（預設，推薦）
 
-#### 前置設定
+#### 前置設定（推薦：MCP 自動化）
+
+1. 確認 Cursor/IDE 已載入 Stitch MCP tools（可用 `list_projects` 測試）
+2. 確認 gcloud ADC 已登入：
 
 ```bash
-# 首次設定
-./scripts/agent.sh stitch-setup
-
-# 驗證連線
-./scripts/agent.sh stitch-check
+gcloud auth application-default login
+gcloud config set project <PROJECT_ID>
 ```
 
-#### 步驟
+> 若 MCP tools 不可用，再使用 Gemini CLI `/stitch` 當 fallback（見下方）。
 
-1. 執行 `./scripts/agent.sh design` 準備設計任務
-2. 編輯 `stitch/queue/` 中的設計需求
-3. 開啟 Gemini CLI 執行設計：
-   ```bash
-   gemini
-   > /stitch Design a mobile login screen with email and social login
-   > /stitch Download the image of screen <screen_id>
-   > /stitch Download the HTML of screen <screen_id>
-   ```
-4. 將下載的檔案移到 `stitch/designs/<feature>/`
-5. 通知 Antigravity「設計完成」繼續流程
+#### 步驟（MCP 自動化，讓 workflow 能無人值守繼續往下）
+
+1. 在 `stitch/queue/<feature>.md` 寫清楚設計需求（可包含一段 `Design Prompt for Stitch`）
+2. 使用 Stitch MCP tools 生成畫面：
+   - `list_projects`（找既有專案或確認連線）
+   - `create_project { "title": "<feature>" }`（若尚無專案）
+   - `generate_screen_from_text { projectId, prompt, deviceType:"MOBILE" }`
+   - `get_screen { projectId, screenId }`（取得 downloadUrl/尺寸等）
+3. **落地產物（輸出契約）**到固定位置（建議用固定檔名，讓後續 CODE 容易引用）：
+
+```
+stitch/designs/<feature>/
+  screen_main.png
+  screen_main.html
+  screen_main.meta.json
+```
+
+其中 `screen_main.meta.json` 至少包含：`projectId`、`screenId`、`sessionId`、`screenshot.downloadUrl`、`htmlCode.downloadUrl`
+
+4. **交接到 CODE**（讓 workflow 自動前進）：
+   - 將 `stitch/queue/<feature>.md` 移到 `stitch/completed/<feature>.md`
+   - 在 Jules 任務中把設計產物加入 Input Files（例如 `stitch/designs/<feature>/screen_main.png`、`screen_main.html`）
+   - 進入 Phase 3: CODE（Jules CLI 預設）
 
 #### 更多資訊
 
-詳見 [STITCH_INTEGRATION.md](./STITCH_INTEGRATION.md)。
+詳見：
+- [STITCH_INTEGRATION.md](./STITCH_INTEGRATION.md)
+- [STITCH_MCP_RUN_LOG.md](./STITCH_MCP_RUN_LOG.md)（BabyLog 實測紀錄與交接建議）
 
 ---
 
@@ -186,7 +200,7 @@ Pencil 可以將設計轉換為對應框架的程式碼：
 
 **預設執行者**：Jules CLI（Google 生態系）  
 **可選執行者**：Codex CLI（本地即時執行）  
-**輸入**：`PLAN.md` 中的程式任務 + 素材  
+**輸入**：`PLAN.md` 中的程式任務 + 素材 +（若 Phase 2.5 有使用）`stitch/designs/<feature>/` 的設計產物  
 **輸出**：程式碼 PR 或 patch
 
 > **預設使用 Jules CLI**（Google 生態系，與 Antigravity 整合良好，支援非同步執行）。Codex CLI 為可選替代方案。
