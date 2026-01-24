@@ -18,11 +18,13 @@
 
 ### 當前推薦
 
-**Primary**: Strategy C (自建 MCP Server at `stitch/mcp-server/`)
+**Primary**: Strategy C (npm 套件 `@keeponfirst/kof-stitch-mcp`)
+- 📦 **npm**: [`@keeponfirst/kof-stitch-mcp`](https://www.npmjs.com/package/@keeponfirst/kof-stitch-mcp)
+- 📂 **GitHub**: [`keeponfirst/kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
 - 基於官方 Google Stitch MCP API (`stitch.googleapis.com/mcp`)
 - Antigravity 可直接呼叫 Stitch tools
 - 完全自動化，認證使用 gcloud ADC
-- 專案內自維護，不依賴第三方套件
+- 使用 `npx` 自動下載執行，零設定
 
 **Fallback**: Strategy A (Gemini CLI Interactive)
 - 用於互動式設計探索
@@ -86,18 +88,18 @@ Antigravity → 準備需求 → 用戶 → Gemini CLI → /stitch → 輸出
 **風險等級**: 🟢 低
 **角色**: Fallback / 互動式探索
 
-### Strategy C: 自建 MCP Server (推薦)
+### Strategy C: MCP Server (推薦)
 
 ```
-Antigravity → MCP tools → stitch/mcp-server/ → Google Stitch API
+Antigravity → MCP tools → kof-stitch-mcp → Google Stitch API
                                ↑                    ↑
-                          自建 wrapper         官方 JSON-RPC API
-                                              (stitch.googleapis.com/mcp)
+                          npm 套件             官方 JSON-RPC API
+                    @keeponfirst/kof-stitch-mcp   (stitch.googleapis.com/mcp)
 ```
 
 **架構**：
 - 官方 API：`https://stitch.googleapis.com/mcp` (JSON-RPC 2.0)
-- 自建 Server：`stitch/mcp-server/index.js` (stdio MCP)
+- MCP Server：[`@keeponfirst/kof-stitch-mcp`](https://www.npmjs.com/package/@keeponfirst/kof-stitch-mcp) (stdio MCP)
 - 認證：gcloud Application Default Credentials
 
 **設定**：
@@ -106,8 +108,8 @@ Antigravity → MCP tools → stitch/mcp-server/ → Google Stitch API
 {
   "mcpServers": {
     "stitch": {
-      "command": "node",
-      "args": ["stitch/mcp-server/index.js"],
+      "command": "npx",
+      "args": ["-y", "@keeponfirst/kof-stitch-mcp"],
       "env": {
         "GOOGLE_CLOUD_PROJECT": "your-project-id"
       }
@@ -180,15 +182,15 @@ gcloud config set project $PROJECT_ID
 gcloud auth application-default login
 ```
 
-#### 2. 安裝 MCP Server 依賴
+#### 2. 確認 Node.js 已安裝
 
 ```bash
-cd stitch/mcp-server
-npm install
-cd ../..
+node --version  # 需要 v18+
 ```
 
-#### 3. 建立 MCP 設定
+> 💡 使用 npm 套件不需要本地安裝依賴，`npx` 會自動處理。
+
+#### 3. 建立 MCP 設定（推薦：npm）
 
 複製範例設定：
 
@@ -197,44 +199,6 @@ cp .mcp.json.example .mcp.json
 ```
 
 編輯 `.mcp.json`，填入你的 Project ID：
-
-```json
-{
-  "mcpServers": {
-    "stitch": {
-      "command": "node",
-      "args": ["stitch/mcp-server/index.js"],
-      "env": {
-        "GOOGLE_CLOUD_PROJECT": "your-project-id"
-      }
-    }
-  }
-}
-```
-
-#### 3.1 另一種做法：直接用 Git URL 執行（尚未發佈 npm 時可用）
-
-如果你已把 wrapper 推到 GitHub（例如 `keeponfirst/kof-stitch-mcp`），但 **尚未發佈到 npm registry**，可用 Git URL 讓 `npx` 直接抓 repo 來執行：
-
-```json
-{
-  "mcpServers": {
-    "stitch": {
-      "command": "npx",
-      "args": ["-y", "-p", "github:keeponfirst/kof-stitch-mcp", "kof-stitch-mcp"],
-      "env": {
-        "GOOGLE_CLOUD_PROJECT": "your-project-id"
-      }
-    }
-  }
-}
-```
-
-> 這種方式適合快速驗證與內部使用；正式對外分發建議仍以 npm 發佈（見下節）。
-
-#### 3.2 npm 用法：用 npx 執行（需要已發佈到 npm）
-
-若 `@keeponfirst/kof-stitch-mcp` 已發佈到 npm，可用最簡潔的方式：
 
 ```json
 {
@@ -249,6 +213,55 @@ cp .mcp.json.example .mcp.json
   }
 }
 ```
+
+> 📦 **npm 套件**：[`@keeponfirst/kof-stitch-mcp`](https://www.npmjs.com/package/@keeponfirst/kof-stitch-mcp)
+>
+> 這是最簡單的方式，`npx` 會自動下載並執行最新版本。
+
+#### 3.1 替代方式：本地開發模式
+
+如果你需要修改 MCP Server 或進行除錯：
+
+```bash
+# 安裝本地依賴
+cd stitch/mcp-server
+npm install
+cd ../..
+```
+
+```json
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "node",
+      "args": ["stitch/mcp-server/src/index.js"],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "your-project-id"
+      }
+    }
+  }
+}
+```
+
+#### 3.2 替代方式：Git URL（開發測試用）
+
+直接從 GitHub 執行：
+
+```json
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": ["-y", "github:keeponfirst/kof-stitch-mcp"],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "your-project-id"
+      }
+    }
+  }
+}
+```
+
+> 適合測試未發佈的版本或特定 branch。
 
 #### 4. 驗證設定
 
@@ -300,8 +313,8 @@ gemini
 
 ```
 stitch/
-├── mcp-server/           # 自建 MCP Server
-│   ├── index.js          # Server 主程式
+├── mcp-server/           # MCP Server 原始碼（已發佈為 npm 套件）
+│   ├── src/index.js      # Server 主程式
 │   ├── package.json      # 依賴定義
 │   └── README.md         # Server 文件
 ├── queue/                # 待設計的需求（由 Antigravity 建立）
@@ -315,7 +328,13 @@ prompts/stitch/
 └── ui_screen.md          # 設計需求模板
 
 .mcp.json                 # Claude Code MCP 設定（從 .mcp.json.example 複製）
+.mcp.json.example         # MCP 設定範例
 ```
+
+> 💡 **一般使用者只需要** `.mcp.json` 設定檔，npm 套件會自動下載執行。
+> `stitch/mcp-server/` 是 MCP Server 的原始碼，已獨立發佈到：
+> - npm: [`@keeponfirst/kof-stitch-mcp`](https://www.npmjs.com/package/@keeponfirst/kof-stitch-mcp)
+> - GitHub: [`keeponfirst/kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
 
 ---
 

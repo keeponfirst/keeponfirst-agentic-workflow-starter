@@ -121,6 +121,10 @@ The story behind this workflow:
 - **Design**: Pencil (mobile apps, design systems)
 - **Code**: Codex CLI (local execution)
 
+**MCP Configuration**:
+- Stitch MCP wrapper: [`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
+- Example config: `.mcp.json.example`
+
 ---
 
 ## Execution Model
@@ -238,6 +242,8 @@ Antigravity will automatically execute the complete **PLAN → ASSETS → DESIGN
 | `design` | Prepare design tasks (Stitch) | Antigravity calls automatically |
 | `jules` | Prepare code tasks (Jules CLI) | Antigravity calls automatically |
 | `watch <id>` | Monitor Jules session | Antigravity calls automatically, or run manually |
+| `stitch-setup` | First-time Stitch extension setup | Run once to configure GCP Project ID |
+| `stitch-check` | Check Stitch MCP connection status | Troubleshooting MCP issues |
 | `verify` | Validate project structure | CI or manual checks |
 
 ---
@@ -335,6 +341,8 @@ This step confirms:
 ├── docs/                  # Workflow documentation
 │   ├── ARCHITECTURE.md    # Architecture evolution story
 │   ├── WORKFLOW.md        # Standard workflow
+│   ├── STITCH_INTEGRATION.md   # Stitch MCP integration guide
+│   ├── PENCIL_MCP_SETUP.md     # Pencil MCP setup (optional)
 │   ├── PROS_CONS.md       # Pros and cons analysis
 │   ├── QUOTA_STRATEGY.md  # Quota control strategy
 │   └── SECURITY.md        # Security practices
@@ -348,7 +356,12 @@ This step confirms:
 ├── scripts/               # Automation scripts
 │   ├── agent.sh           # Single entry point
 │   ├── bootstrap.sh       # Initialization
+│   ├── watcher.sh         # Jules session monitor
+│   ├── stitch_auth.py     # Stitch authentication helper
 │   └── check_secrets.sh   # Sensitive info check
+│
+├── skills/                # Antigravity Skill package
+│   └── keeponfirst-agentic-workflow/
 │
 ├── examples/              # Examples
 │   └── feature_tag_selector/
@@ -357,7 +370,8 @@ This step confirms:
 ├── assets/generated/      # Generated assets
 ├── stitch/                # Stitch design files
 │   ├── queue/             # Design task queue
-│   └── designs/           # Generated designs
+│   ├── designs/           # Generated designs
+│   └── completed/         # Completed design requests
 └── jules/tasks/           # Jules CLI task queue
 ```
 
@@ -370,7 +384,10 @@ This step confirms:
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | How this workflow evolved |
 | [WORKFLOW.md](docs/WORKFLOW.md) | Standard Feature Pipeline |
 | [STITCH_INTEGRATION.md](docs/STITCH_INTEGRATION.md) | Stitch UI design integration |
+| [STITCH_MCP_RUN_LOG.md](docs/STITCH_MCP_RUN_LOG.md) | Stitch MCP usage example (BabyLog) |
 | [PENCIL_MCP_SETUP.md](docs/PENCIL_MCP_SETUP.md) | Pencil MCP setup (optional) |
+| [PENCIL_MCP_AUTO_SETUP.md](docs/PENCIL_MCP_AUTO_SETUP.md) | How Pencil Extension auto-registers MCP |
+| [PENCIL_NEXT_STEPS.md](docs/PENCIL_NEXT_STEPS.md) | Pencil advanced usage & code generation |
 | [PROS_CONS.md](docs/PROS_CONS.md) | Pros, cons, and use cases |
 | [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md) | Quota control strategy |
 | [SECURITY.md](docs/SECURITY.md) | API Key security management |

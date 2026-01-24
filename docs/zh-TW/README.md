@@ -123,6 +123,10 @@ bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /
 - **設計**：Pencil（移動 app、設計系統）
 - **程式**：Codex CLI（本地執行）
 
+**MCP 設定**：
+- Stitch MCP wrapper：[`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
+- 設定範例：`.mcp.json.example`
+
 ---
 
 ## Execution Model
@@ -240,6 +244,8 @@ Antigravity 會自動執行完整的 **PLAN → ASSETS → DESIGN → CODE → R
 | `design` | 準備設計任務（Stitch） | Antigravity 會自動呼叫 |
 | `jules` | 準備程式任務（Jules CLI） | Antigravity 會自動呼叫 |
 | `watch <id>` | 監控 Jules session | Antigravity 會自動呼叫，或手動執行 |
+| `stitch-setup` | 首次設定 Stitch extension | 執行一次以設定 GCP Project ID |
+| `stitch-check` | 檢查 Stitch MCP 連線狀態 | 排除 MCP 連線問題時 |
 | `verify` | 驗證專案結構 | CI 或手動檢查時 |
 
 ---
@@ -342,6 +348,8 @@ gemini --version
 ├── docs/                  # 工作流程文件
 │   ├── ARCHITECTURE.md    # 架構演進故事
 │   ├── WORKFLOW.md        # 標準流程
+│   ├── STITCH_INTEGRATION.md   # Stitch MCP 整合指南
+│   ├── PENCIL_MCP_SETUP.md     # Pencil MCP 設定（可選）
 │   ├── PROS_CONS.md       # 優缺點分析
 │   ├── QUOTA_STRATEGY.md  # Quota 控制策略
 │   └── SECURITY.md        # 安全實踐
@@ -355,7 +363,12 @@ gemini --version
 ├── scripts/               # 自動化腳本
 │   ├── agent.sh           # 單一入口
 │   ├── bootstrap.sh       # 初始化
+│   ├── watcher.sh         # Jules session 監控器
+│   ├── stitch_auth.py     # Stitch 認證輔助工具
 │   └── check_secrets.sh   # 敏感資訊檢查
+│
+├── skills/                # Antigravity Skill 套件
+│   └── keeponfirst-agentic-workflow/
 │
 ├── examples/              # 範例
 │   └── feature_tag_selector/
@@ -364,7 +377,8 @@ gemini --version
 ├── assets/generated/      # 產出的素材
 ├── stitch/                # Stitch 設計檔案
 │   ├── queue/             # 設計任務佇列
-│   └── designs/           # 產出的設計
+│   ├── designs/           # 產出的設計
+│   └── completed/         # 已完成的設計請求
 └── jules/tasks/           # Jules CLI 任務佇列
 ```
 
@@ -377,7 +391,10 @@ gemini --version
 | [ARCHITECTURE.md](../ARCHITECTURE.md) | 這套 workflow 怎麼演進來的 |
 | [WORKFLOW.md](../WORKFLOW.md) | 標準 Feature Pipeline |
 | [STITCH_INTEGRATION.md](../STITCH_INTEGRATION.md) | Stitch UI 設計整合 |
+| [STITCH_MCP_RUN_LOG.md](../STITCH_MCP_RUN_LOG.md) | Stitch MCP 使用範例（BabyLog） |
 | [PENCIL_MCP_SETUP.md](../PENCIL_MCP_SETUP.md) | Pencil MCP 設定（可選） |
+| [PENCIL_MCP_AUTO_SETUP.md](../PENCIL_MCP_AUTO_SETUP.md) | Pencil Extension 如何自動註冊 MCP |
+| [PENCIL_NEXT_STEPS.md](../PENCIL_NEXT_STEPS.md) | Pencil 進階用法與程式碼轉換 |
 | [PROS_CONS.md](../PROS_CONS.md) | 優缺點與適用情境 |
 | [QUOTA_STRATEGY.md](../QUOTA_STRATEGY.md) | Quota 控制策略 |
 | [SECURITY.md](../SECURITY.md) | API Key 安全管理 |
