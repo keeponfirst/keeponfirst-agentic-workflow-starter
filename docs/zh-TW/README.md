@@ -10,9 +10,9 @@
 
 ---
 
-## 🧩 安裝為 Antigravity Skill（新功能！）
+## 🧩 安裝為 Skill（多 IDE 支援）
 
-這套 workflow 可以安裝為 **全域 Antigravity Skill** — 在任何專案中使用，無需 clone 整個 repo！
+這套 workflow 可以安裝為 **全域 Skill**，支援多種 AI-powered IDE — 在任何專案中使用，無需 clone 整個 repo！
 
 ### 前置需求
 
@@ -25,19 +25,45 @@ npm install -g @google/jules
 jules login
 ```
 
-> 💡 **Note**: Phase 2 (ASSETS) 使用瀏覽器自動化操作 Gemini 網頁版產圖。Antigravity 開啟瀏覽器後，若檢測到未登入，會提示您在該視窗完成登入。
+### 各 IDE 安裝方式
 
-### 安裝方式
+#### Antigravity
 
 ```bash
-# Clone 並安裝
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
 cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.gemini/antigravity/skills/
 ```
 
+#### Cursor
+
+```bash
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.cursor/skills/
+```
+
+> **說明**：Cursor 也可以加到 `.cursor/rules` 或專案層級的 `.cursorrules` 檔案。
+
+#### Claude Code (VS Code Extension)
+
+```bash
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.claude/skills/
+```
+
+> **說明**：Claude Code 讀取 `~/.claude/` 或專案層級的 `.claude/` 目錄。
+
+#### OpenAI Codex CLI
+
+```bash
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.codex/skills/
+```
+
+> **說明**：Codex CLI 讀取 `~/.codex/instructions.md` 或 `AGENTS.md`。將 `SKILL.md` 內容複製到相關檔案即可。
+
 ### 使用方式
 
-安裝後，在任何 workspace 對 Antigravity 說：
+安裝後，在任何 workspace 觸發 workflow：
 
 ```
 /kof                           # 簡短觸發詞
@@ -47,7 +73,7 @@ KOF workflow 新增深色模式       # 自然語言
 
 **觸發關鍵字**：`/kof`、`KOF workflow`、`KOF agentic`、`keeponfirst workflow`、`keeponfirst agentic`
 
-> 💡 **為什麼用 KOF？** 為了避免與其他 agentic 類型的 skill 衝突，我們特意使用專屬觸發詞。如果你想改成其他名稱，直接編輯 `skills/keeponfirst-agentic-workflow/SKILL.md` 中的 `description` 欄位即可。
+> 💡 **為什麼用 KOF？** 為了避免與其他 agentic 類型的 skill 衝突，我們特意使用專屬觸發詞。如果你想改成其他名稱，直接編輯 `SKILL.md` 中的 `description` 欄位即可。
 
 ### Skill 內容
 
@@ -56,18 +82,30 @@ KOF workflow 新增深色模式       # 自然語言
 | `SKILL.md` | 5 階段工作流程指南 (PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
 | `scripts/init.sh` | 在任何專案初始化 workflow 結構 |
 | `scripts/jules-watcher.sh` | 可攜式 Jules session 監控器 |
-| `assets/plan-template.md` | 即用的規劃文件範本 |
+| `templates/` | Human Gate 與 Tooling Checklist 範本 |
 
-> 💡 **注意**：Phase 2 (ASSETS) 使用瀏覽器自動化操作 Gemini 網頁版產圖。Phase 2.5 (DESIGN) 預設使用 Stitch（Google 生態系）。Phase 3 (CODE) 預設使用 Jules CLI（Google 生態系）。
+### 工作流程強化 (v2)
+
+本套工作流程包含 **7 項結構化檢查點**：
+
+| 強化項目 | 說明 |
+|----------|------|
+| **決策快照** | PLAN 階段摘要：已核准範圍、Open Questions |
+| **Human Gate 範本** | 結構化核准（功能範圍/視覺風格/資料模型/風險） |
+| **Design Verified Checklist** | Light/Dark Mode、核心元件、out-of-scope 刪除清單 |
+| **tokens.json 契約** | 設計系統 token（colors, typography, spacing, cornerRadius） |
+| **Stitch Clean Room** | 元素刪除清單 + HTML vs. 截圖衝突註記 |
+| **REVIEW 範圍規則** | 僅 bug/偏差修正；範圍變更回 PLAN |
+| **驗收快照** | 已完成/未完成驗收項目、已知限制、下一步建議 |
 
 ### 在新專案初始化 Workflow
 
 ```bash
-# 從 skill 目錄執行
+# 從 skill 目錄執行（以 Antigravity 為例）
 bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /path/to/your/project
 ```
 
-這會建立：`plans/`、`jules/tasks/`、`nanobanana/queue/`、`assets/generated/`
+這會建立：`plans/`、`jules/tasks/`、`nanobanana/queue/`、`assets/generated/`、`templates/`
 
 ---
 

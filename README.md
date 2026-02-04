@@ -10,9 +10,9 @@ An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano B
 
 ---
 
-## 🧩 Install as Antigravity Skill (NEW!)
+## 🧩 Install as Skill (Multi-IDE Support)
 
-This workflow can be installed as a **global Antigravity Skill** — use it in any project without cloning this repo!
+This workflow can be installed as a **global Skill** for multiple AI-powered IDEs — use it in any project without cloning this repo!
 
 ### Prerequisites
 
@@ -25,17 +25,45 @@ npm install -g @google/jules
 jules login
 ```
 
-### Installation
+### Installation by IDE
+
+#### Antigravity
 
 ```bash
-# Clone and install
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
 cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.gemini/antigravity/skills/
 ```
 
+#### Cursor
+
+```bash
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.cursor/skills/
+```
+
+> **Note**: For Cursor, you may also add this to `.cursor/rules` or project-level `.cursorrules` file.
+
+#### Claude Code (VS Code Extension)
+
+```bash
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.claude/skills/
+```
+
+> **Note**: Claude Code reads from `~/.claude/` or project-level `.claude/` directory.
+
+#### OpenAI Codex CLI
+
+```bash
+git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
+cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.codex/skills/
+```
+
+> **Note**: Codex CLI can read instructions from `~/.codex/instructions.md` or `AGENTS.md`. Copy `SKILL.md` content to relevant file.
+
 ### Usage
 
-Once installed, just say to Antigravity in any workspace:
+Once installed, trigger the workflow in any workspace:
 
 ```
 /kof                           # Shorthand trigger
@@ -45,7 +73,7 @@ KOF workflow add dark mode     # Natural language
 
 **Trigger Keywords**: `/kof`, `KOF workflow`, `KOF agentic`, `keeponfirst workflow`, `keeponfirst agentic`
 
-> 💡 **Why KOF?** We use specific trigger keywords to avoid conflicts with other agentic-type skills. Want different keywords? Just edit the `description` field in `skills/keeponfirst-agentic-workflow/SKILL.md`.
+> 💡 **Why KOF?** We use specific trigger keywords to avoid conflicts with other agentic-type skills. Want different keywords? Just edit the `description` field in `SKILL.md`.
 
 ### What the Skill Provides
 
@@ -54,18 +82,30 @@ KOF workflow add dark mode     # Natural language
 | `SKILL.md` | 5-phase workflow guide (PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
 | `scripts/init.sh` | Initialize workflow structure in any project |
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
-| `assets/plan-template.md` | Ready-to-use plan template |
+| `templates/` | Human Gate & Tooling Checklist templates |
 
-> 💡 **Note**: Phase 2 (ASSETS) uses Browser Generation to automate Gemini web UI. Phase 2.5 (DESIGN) defaults to Stitch (Google ecosystem). Phase 3 (CODE) defaults to Jules CLI (Google ecosystem). See [Nano Banana Limitation](#nano-banana-free-tier-limitation) for details.
+### Workflow Enhancements (v2)
+
+This workflow now includes **7 structured checkpoints**:
+
+| Enhancement | Description |
+|-------------|-------------|
+| **Decision Snapshot** | PLAN phase summary with approved scope & open questions |
+| **Human Gate Template** | Structured approval (scope/style/data model/risk) |
+| **Design Verified Checklist** | Light/Dark mode, core components, out-of-scope elements |
+| **tokens.json Contract** | Design system tokens (colors, typography, spacing, cornerRadius) |
+| **Stitch Clean Room** | Element deletion list + HTML vs. screenshot conflict notes |
+| **REVIEW Scope Rule** | Bug/偏差修正 only; scope changes return to PLAN |
+| **Release Snapshot** | Acceptance items, known limitations, next steps |
 
 ### Initialize Workflow in a New Project
 
 ```bash
-# From the skill directory
+# From the skill directory (example for Antigravity)
 bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /path/to/your/project
 ```
 
-This creates: `plans/`, `jules/tasks/`, `nanobanana/queue/`, `assets/generated/`
+This creates: `plans/`, `jules/tasks/`, `nanobanana/queue/`, `assets/generated/`, `templates/`
 
 ---
 
