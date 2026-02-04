@@ -146,10 +146,11 @@ stitch/designs/<feature>/
 
 #### 前置設定
 
-Pencil 透過 Cursor Extension 自動提供 MCP 功能，無需額外設定。
+Pencil 透過 Cursor/Antigravity Extension 提供 **Native Auto-Config** 功能，無需手動設定。
 
-1. 在 Cursor 中安裝 Pencil Extension
-2. 確認 MCP 已自動連接（Extension 會自動處理）
+1. 安裝 Pencil Extension
+2. 重啟 IDE 或 Refresh MCP 列表 (自動配置生效)
+3. **重要**：使用時必須在 IDE 中開啟並顯示 `.pen` 檔案
 
 詳見 [PENCIL_MCP_SETUP.md](./PENCIL_MCP_SETUP.md)。
 
@@ -280,13 +281,13 @@ export OPENAI_API_KEY="your-api-key"
 #### Codex 優勢
 
 - ✅ **即時回饋**：本地執行，立即看到結果
+- ✅ **MCP 整合**：自動讀取本地 `mcp_config.json`，可直接操作 Pencil 等工具
+- ✅ **雲端支援**：支援 `codex cloud` (實驗性)，提供類似 Jules 的雲端執行能力
 - ✅ **直接修改**：直接修改檔案，無需 patch
 - ✅ **靈活控制**：可隨時中斷和調整
 
 #### Codex 限制
 
-- ⚠️ **需要本地環境**：必須有完整的開發環境
-- ⚠️ **API 費用**：依 OpenAI API 計費
 - ⚠️ **需保持連線**：無法離線執行
 
 ---

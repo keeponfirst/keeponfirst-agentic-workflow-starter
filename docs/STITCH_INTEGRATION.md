@@ -343,3 +343,41 @@ prompts/stitch/
 - [Stitch Extension README](https://github.com/gemini-cli-extensions/stitch)
 - [Stitch Web App](https://stitch.withgoogle.com/)
 - [Gemini CLI Extensions](https://google-gemini.github.io/gemini-cli/docs/extensions/)
+
+---
+
+## 疑難排解與 Schema 筆記
+
+### 除錯工具
+
+若 MCP 工具呼叫失敗或 Agent 感到困惑，請使用專用除錯腳本直接與 Server 溝通：
+
+```bash
+python3 scripts/debug_stitch.py
+```
+
+此腳本會：
+1. 直接啟動 MCP Server (stdio)
+2. 呼叫 `tools/list` 列出完整 schema
+3. 允許你手動測試生成流程 (需修改腳本內的 main 函式)
+
+### 常見 Schema 陷阱
+
+根據實測，Stitch MCP tools 的參數有以下容易出錯點：
+
+1. **`create_project`**
+   - 參數是 **`title`** (string)，不是 `name` 或 `displayName`。
+   - 範例: `{ "title": "MyProject" }`
+
+2. **`generate_screen_from_text`**
+   - **`projectId`**: 必須是 **字串 ID** (e.g., `"123456"`)，**不是** 包含 projects/ 前綴的名稱 (e.g., `"projects/123456"`)。
+   - **`prompt`**: 必填。
+   - **`deviceType`**: 選填 (e.g., `"MOBILE"`).
+   - 錯誤範例: `{ "projectId": "projects/123..." }` ❌ -> 會導致 Invalid Argument
+   - 正確範例: `{ "projectId": "123..." }` ✅
+
+3. **`list_screens`** / **`get_screen`** / **`fetch_screen_code`**
+   - 這些工具通常也預期純數字的 `projectId`。
+   - `screenId` 通常是 UUID 字串 (e.g., `"44ff3489..."`)。
+
+> **黃金法則**：如果不確定參數，請執行 `scripts/debug_stitch.py` 查看 `tools/list` 的 outputSchema。
