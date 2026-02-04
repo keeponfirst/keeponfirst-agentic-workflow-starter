@@ -52,7 +52,7 @@ cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~
 
 > **說明**：Claude Code 讀取 `~/.claude/` 或專案層級的 `.claude/` 目錄。
 
-#### OpenAI Codex CLI
+#### OpenAI Codex App & CLI
 
 ```bash
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git

@@ -52,7 +52,7 @@ cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~
 
 > **Note**: Claude Code reads from `~/.claude/` or project-level `.claude/` directory.
 
-#### OpenAI Codex CLI
+#### OpenAI Codex App & CLI
 
 ```bash
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
