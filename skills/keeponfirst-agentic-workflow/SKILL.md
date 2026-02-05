@@ -30,206 +30,148 @@ jules --version && jules remote list
 
 ### Phase 1: PLAN
 
-Create a plan file with:
-- Feature overview
-- Technical design
-- Asset requirements (for Nano Banana)
-- Code tasks (for Jules)
-- Acceptance criteria
+1. Create `plans/<feature_name>.md`
+2. Define:
+   - Feature Overview
+   - Technical Design
+   - Asset Requirements (for Nano Banana)
+   - Code Tasks (for Jules)
+   - Acceptance Criteria
+3. **Wait for user approval.**
+
+#### Decision Snapshot
+Mandatory at the end of every `plans/<feature>.md`:
 
 ```markdown
-# plans/<feature_name>.md
+## Decision Snapshot
 
-## Feature Overview
-[What this feature does]
-
-## Technical Design
-[How it will be implemented]
-
-## Asset Requirements (Nano Banana)
-| Filename | Size | Purpose |
-|----------|------|---------|
-
-## Code Tasks (Jules)
-1. [Task 1]
-2. [Task 2]
-
-## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
+| Item | Content |
+|------|---------|
+| Feature Name | `<feature_name>` |
+| Decision Time | `YYYY-MM-DD HH:MM` |
+| Approved Scope | 1. ... 2. ... |
+| Rejected Items | - ... |
+| Human Gate Results | ✅ Scope / ✅ Style / ... |
+| Open Questions | ⚠️ Cannot proceed if any |
 ```
 
-**Wait for user approval before proceeding.**
+#### Human Gate Template
+User approval must use the fixed template (`templates/human_gate_template.md`):
+- [ ] **Scope**: Agree/Disagree
+- [ ] **Visual Style**: Agree/Disagree
+- [ ] **Data Model**: Agree/Disagree
+- [ ] **Risk/Compliance**: Agree/Disagree
 
 ---
 
-### Phase 2A: PROMPT DESIGN (Antigravity)
+### Phase 2: ASSETS (Browser Generation)
 
-If assets are needed, Antigravity creates detailed prompts for Nano Banana:
+**Agent**: Nano Banana (via Gemini CLI / Browser)
 
-1. **Create prompt files** in `nanobanana/queue/`:
-   ```markdown
-   # nanobanana/queue/<asset-name>.prompt.md
+1. Create prompt files in `nanobanana/queue/`
+2. **Hybrid Flow**:
+   - Antigravity opens Gemini Web in browser
+   - Checks login (pauses if not logged in)
+   - Submits prompt & captures screenshot to `assets/generated/`
+3. Validate assets and move prompt to `nanobanana/completed/`
 
-   ## Asset Information
-   - **Filename**: hero-illustration.png
-   - **Size**: 1200x630
-   - **Purpose**: Landing page hero image
-   - **Target**: assets/generated/heroes/
-
-   ## Prompt
-   A modern, minimalist illustration showing [detailed description].
-   The color palette should use [specific colors].
-   Style: [specific style instructions].
-   Mood: [emotional tone].
-
-   ## Acceptance Criteria
-   - [ ] High resolution, no artifacts
-   - [ ] Matches brand colors
-   - [ ] Works on light/dark backgrounds
-   ```
-
-2. **Proceed to Phase 2B** for browser-based generation
-
-**Prompt Design Principles**:
-- Explicit, detailed descriptions
-- Include style, mood, and color guidance
-- Specify exact dimensions and format
-- Define acceptance criteria upfront
+**Fallback**: If automation fails, user generates manually and says "/kof resume".
 
 ---
 
-### Phase 2B: BROWSER GENERATION (Antigravity + Gemini Web)
+### Phase 2.5: DESIGN (Optional)
 
-> 🌐 **Hybrid Flow**: Antigravity automates Gemini web UI for image generation
+**Default**: Stitch (Google Ecosystem)
+**Optional**: Pencil (Mobile Apps)
 
-**Pre-requisite**: **Interactive Login Required**. Since Antigravity starts a fresh browser instance, you may need to log in to Google within that window on the first run.
+#### Option A: Stitch (Default)
+1. Create design task in `stitch/queue/<feature>.md`
+2. Use Stitch MCP tools (`generate_screen_from_text`) to create UI
+3. **Artifact Contract**: Save to `stitch/designs/<feature>/`
+   - `tokens.json` (Required: colors, typography, spacing, cornerRadius)
+   - `screen_main.png`
+   - `screen_main.html`
+   - `screen_main.meta.json`
+4. **Stitch Clean Room**:
+   - List elements to delete/ignore (e.g., FAB, extra cards)
+   - Rule: HTML structure > Screenshot visual (unless flagged)
 
-1. **Open Gemini in browser**:
-   ```
-   browser_subagent → Navigate to gemini.google.com
-   ```
-
-2. **Check login status**:
-   - If logged in → Continue to step 3
-   - **If NOT logged in** → Antigravity pauses. User logs in manually in the open window. Then resume.
-
-3. **Submit prompt**:
-   - Read prompt from `nanobanana/queue/*.md`
-   - Type prompt in Gemini chat input
-   - Wait for image generation (30-60 seconds)
-
-4. **Save generated image**:
-   - Use `capture_browser_screenshot` with element targeting to capture the image
-   - Copy captured image to `assets/generated/` directory
-   - Note: Direct URL download (curl) doesn't work due to 403/CORS restrictions
-
-5. **Handle errors**:
-   - If generation fails → Retry with modified prompt
-   - If timeout → Notify user
-
-**Fallback**: If browser automation fails, revert to manual:
-- User copies prompt to Gemini manually
-- Downloads image to `assets/generated/`
-- Tells Antigravity: "圖產好了" or "/kof resume"
+#### Design Verified Checklist
+Before moving to CODE:
+- [ ] Light/Dark Mode variants exist (if applicable)
+- [ ] Core components ready (headers, cards, empty states)
+- [ ] Out-of-scope elements listed for deletion
 
 ---
 
-### Phase 2C: ASSET VALIDATION (Antigravity)
+### Phase 3: CODE
 
-After images are generated:
+**Default**: Jules CLI (Google Ecosystem, Cloud Async)
+**Optional**: Codex App & CLI (Local)
 
-1. **Verify images exist**:
-   ```bash
-   ls -la assets/generated/
-   ```
+#### Input Handover
+If Phase 2.5 used, explicitly list design artifacts in `jules/tasks/<task>.md` Inputs.
 
-2. **Validate file integrity**:
-   - File size > 0
-   - Correct format (PNG/JPEG)
-   - Dimensions match spec
+#### Option A: Jules CLI (Default)
+1. Create task file in `jules/tasks/`
+2. Submit: `jules new --repo ... "$(cat task.md)"`
+3. **Watch**: `./scripts/agent.sh watch <session_id>`
+   - Auto-polls status
+   - Auto-applies changes
+   - Auto-wakes Antigravity for Review
 
-3. **Update prompt status**:
-   ```bash
-   mv nanobanana/queue/<asset>.prompt.md nanobanana/completed/
-   ```
-
-4. **Record in plan file**:
-   ```markdown
-   ## Phase 2 ASSETS ✓
-   - [x] hero-image.png - Generated via Gemini (Browser)
-   - [x] app-icon.png - Generated via [tool used]
-   ```
-
-5. **Proceed to Phase 3**
-
-**Skip Phase 2 entirely if no assets needed.**
-
----
-
-### Phase 3: CODE (Jules)
-
-1. **Create task file**:
-   ```bash
-   # jules/tasks/<task_name>.md
-   ```
-
-2. **Submit to Jules**:
-   ```bash
-   jules new --repo <owner/repo> "$(cat jules/tasks/<task>.md)"
-   ```
-   Note the session ID from output.
-
-3. **Start background watcher** (see [watcher.md](references/watcher.md)):
-   ```bash
-   ./scripts/agent.sh watch <session_id>
-   ```
-   This monitors Jules and auto-notifies when complete.
-
-4. **Wait for completion** - watcher will ping when done.
-
-5. **Handle failures**: If Jules produces empty files, use retry mechanism.
+#### Option B: Codex App & CLI (Optional)
+1. Prepare task file
+2. Execute: `codex execute --task "jules/tasks/<task>.md"`
+3. Codex modifies local files directly
 
 ---
 
 ### Phase 4: REVIEW
 
-1. Check changes:
-   ```bash
-   git diff
-   ```
+> **Rule**: Bug fixes & deviations ONLY. Scope changes must return to Phase 1.
 
-2. Verify UI in browser (if applicable)
-
-3. Confirm acceptance criteria are met
-
-4. If issues found, return to Phase 3
+1. `git diff` to check changes
+2. Verify UI in browser
+3. Check Acceptance Criteria
+4. **Review Results**:
+   - ✅ Fixed
+   - ⚠️ Unresolved (Reason)
+   - 🔴 Residual Risk
 
 ---
 
 ### Phase 5: RELEASE
 
-1. Stage changes:
-   ```bash
-   git add -A && git status
-   ```
+#### Release Snapshot
+Mandatory before commit:
 
+```markdown
+## Release Snapshot
+
+| Item | Status |
+|------|--------|
+| Completed Items | 1. ... |
+| Uncompleted Items | - ... (Reason) |
+| Known Limitations | - ... |
+| Next Steps | - ... |
+```
+
+#### Execute Release
+1. `git add -A`
 2. Commit with workflow metadata:
    ```bash
-   git commit -m "feat: <feature name>
-   
+   git commit -m "feat: <feature>
+
    ## Workflow Executed
    - Phase 1 PLAN: plans/<feature>.md
-   - Phase 2 ASSETS: <assets created or N/A>
-   - Phase 3 CODE: Jules session <ID>
+   - Phase 2 ASSETS: ...
+   - Phase 2.5 DESIGN: Stitch/Pencil
+   - Phase 3 CODE: Jules <ID>
    - Phase 4 REVIEW: Verified
-   - Phase 5 RELEASE: This commit"
+   - Phase 5 RELEASE: Snapshot included"
    ```
-
-3. Push:
-   ```bash
-   git push
-   ```
+3. `git push`
 
 ---
 
