@@ -285,7 +285,13 @@ stitch/
 
 ## Phase 5: RELEASE
 
-### 驗收快照 (Release Snapshot)
+### 1. 更新文件 (Documentation Sync)
+
+RELEASE 前，請確認文件已反映現況：
+- [ ] **更新專案文件**：如 `README.md`、`docs/` 若功能影響使用方式或架構
+- [ ] **更新 PLAN 狀態**：將 `plans/<feature>.md` 中的待辦事項標記為完成
+
+### 2. 驗收快照 (Release Snapshot)
 
 RELEASE 前必須附上驗收快照：
 

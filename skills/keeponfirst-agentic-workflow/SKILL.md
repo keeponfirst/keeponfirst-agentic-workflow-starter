@@ -143,7 +143,12 @@ If Phase 2.5 used, explicitly list design artifacts in `jules/tasks/<task>.md` I
 
 ### Phase 5: RELEASE
 
-#### Release Snapshot
+#### 1. Documentation Sync
+Ensure docs reflect the current state:
+- [ ] **Update Project Docs**: `README.md`, `docs/`, etc. if feature affects usage/architecture.
+- [ ] **Update Plan Status**: Mark items in `plans/<feature>.md` as completed.
+
+#### 2. Release Snapshot
 Mandatory before commit:
 
 ```markdown
