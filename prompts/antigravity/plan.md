@@ -1,109 +1,88 @@
-# Plan Prompt
+# Plan Prompt (v2)
 
-Antigravity Orchestrator 專用的規劃 prompt 模板。
-
----
-
-## 使用時機
-
-當你要開始一個新功能或專案時，用這個 prompt 產生結構化的計畫。
+此模板用於輸出可執行、可審核、可交接的 `plans/<feature>.md`。
 
 ---
 
-## Prompt 模板
+## Prompt Template
 
-```
-你是一個資深軟體架構師，擅長將模糊的需求轉換成清楚的執行計畫。
+```text
+你是資深產品工程架構師。
+請將以下需求轉成可執行計畫，並保持可追溯性與可審核性。
 
-## 功能需求
-
+## Feature Request
 {{FEATURE_DESCRIPTION}}
 
-## 專案背景
+## Context
+- Product Type: {{PRODUCT_TYPE}}
+- Platform: {{PLATFORM}}
+- Tech Stack: {{TECH_STACK}}
+- Existing Architecture: {{EXISTING_ARCHITECTURE}}
 
-- 技術棧：{{TECH_STACK}}
-- 現有架構：{{EXISTING_ARCHITECTURE}}
+## Inputs
+- Insights File: {{INSIGHTS_FILE}}
+- Constraints: {{CONSTRAINTS}}
 
-## 請產出
+## 你必須輸出一份 plans/<feature>.md，包含以下章節：
 
-請產出一份 PLAN.md，包含以下章節：
+1. Feature Summary
+- One-liner
+- User Value
+- In Scope
+- Out of Scope
 
-### 1. 功能概述
-- 一句話描述
-- 使用者價值
+2. UX Contract
+- Primary user flow (step-by-step)
+- Error/empty/loading states
+- Accessibility notes (minimum)
 
-### 2. 技術設計
-- 需要的元件
-- 資料流
-- API 設計（如適用）
+3. Technical Design
+- Module boundaries
+- Data flow
+- API/Repository contract (if applicable)
+- Risks and fallback options
 
-### 3. 素材需求（給 Gemini CLI）
-列出需要產生的圖片素材，包含：
-- 檔名
-- 尺寸
-- 用途
-- Prompt 建議
+4. Asset Requirements
+- Filename
+- Size
+- Purpose
+- Priority (P0/P1)
+- Source (Nano Banana / Existing / N/A)
 
-### 4. 程式任務（給 Jules）
-列出需要 Jules 執行的任務，每個任務包含：
-- 任務名稱
-- 輸入
-- 輸出
-- 驗收條件
+5. Design Handover Contract
+- Required design artifacts paths
+- Stitch two-pass requirement
+- Items to ignore/delete from design if generated
 
-### 5. 驗收標準
-- 功能驗收條件
-- 品質標準
+6. Code Tasks
+每個 task 必須有：
+- Task name
+- Inputs
+- Outputs
+- Acceptance Criteria
+- Depends on
 
-### 6. 時程估計
-- 各階段預估時間
-```
+7. Test & Verification
+- Build command
+- Minimal verification command
+- Critical checks
 
----
+8. Human Gate
+- Scope
+- Data Model
+- Risk/Compliance
+- Enter Wireframe Gate? (Yes/No + reason)
 
-## 變數說明
+9. Decision Snapshot
+用表格輸出：
+- Feature Name
+- Decision Time
+- Approved Scope
+- Rejected Items
+- Open Questions (若非空，不可進下一階段)
 
-| 變數 | 說明 | 範例 |
-|------|------|------|
-| `{{FEATURE_DESCRIPTION}}` | 功能描述 | 「新增標籤選擇器，讓使用者可以選擇多個標籤」 |
-| `{{TECH_STACK}}` | 使用的技術 | 「SwiftUI, Combine, Core Data」 |
-| `{{EXISTING_ARCHITECTURE}}` | 現有架構 | 「MVVM，使用 Repository pattern」 |
-
----
-
-## 輸出範例
-
-```markdown
-# PLAN: 標籤選擇器功能
-
-## 1. 功能概述
-- **一句話描述**：讓使用者可以為筆記新增多個標籤
-- **使用者價值**：更靈活的筆記分類方式
-
-## 2. 技術設計
-- TagSelectorView（SwiftUI 元件）
-- TagRepository（資料層）
-- Tag model（Core Data entity）
-
-## 3. 素材需求
-| 檔名 | 尺寸 | 用途 |
-|------|------|------|
-| tag_icon.png | 24x24 | 標籤 icon |
-| empty_tags.png | 200x200 | 無標籤時的插圖 |
-
-## 4. 程式任務
-1. 建立 Tag Core Data entity
-2. 實作 TagRepository
-3. 實作 TagSelectorView
-4. 整合到 NoteDetailView
-
-## 5. 驗收標準
-- [ ] 使用者可以選擇多個標籤
-- [ ] 標籤顯示正確
-- [ ] 資料正確儲存
-
-## 6. 時程估計
-- 素材產生：1 天
-- 程式實作：2 天
-- 測試整合：1 天
+## Output Rules
+- 結果要直接可貼到 plans/<feature>.md
+- 不要省略 Out of Scope
+- 不要產生空泛任務，必須可執行
 ```

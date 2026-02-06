@@ -1,182 +1,141 @@
 ---
 name: keeponfirst-agentic-workflow
-description: "KeepOnFirst multi-agent development workflow (Antigravity + Nano Banana + Jules). Use ONLY when user explicitly mentions: 'KOF workflow', 'KOF agentic', 'keeponfirst workflow', 'keeponfirst agentic', or '/kof'. This is a specific workflow methodology, not a generic agentic pattern."
+description: "KeepOnFirst multi-agent development workflow v2 (Antigravity + Nano Banana + Stitch + Jules). Includes INSIGHTS and WIREFRAME GATE phases for UI quality. Use ONLY when user explicitly mentions: 'KOF workflow', 'KOF agentic', 'keeponfirst workflow', 'keeponfirst agentic', or '/kof'."
 ---
 
-# Agentic Workflow Skill
+# Agentic Workflow Skill (v2)
 
-A 5-phase development workflow that coordinates multiple AI agents to deliver complete features.
+An 8-phase development workflow that coordinates multiple AI agents to deliver high-quality features, with enhanced UI quality controls.
+
+## Pipeline
+
+```
+INSIGHTS(0) → PLAN(1) → WIREFRAME GATE(1.5) → ASSETS(2) → DESIGN(2.5) → CODE(3) → REVIEW(4) → RELEASE(5)
+```
+
+- **UI Tasks**: Full pipeline required
+- **Logic-only Tasks**: Skip phases 0, 1.5, 2.5 (note in PLAN)
 
 ## Agent Roles
 
 | Agent | Role | Tool |
 |-------|------|------|
 | **Antigravity** | Orchestrator - plans, reviews, releases | This AI |
-| **Nano Banana** | Asset Generator - creates images | External Tool |
-| **Jules** | Cloud Coder - implements code in background | `jules` CLI |
+| **Nano Banana** | Asset Generator - creates images | MCP |
+| **Stitch** | UI Designer - generates screens | MCP |
+| **Jules** | Cloud Coder - implements in background | CLI |
 
-## Prerequisites Check
+---
 
-Before starting, verify CLI tools are installed and authenticated:
+## Phase 0: INSIGHTS
 
-```bash
-# Check Jules
-jules --version && jules remote list
+**Output**: `research/<feature>.md`
+
+> Skip for logic-only tasks (note in PLAN).
+
+Required content:
+1. User pain points (Jobs-to-be-done)
+2. Similar patterns (3-5 examples)
+3. Anti-patterns to avoid
+4. Visual direction candidates (A/B/C)
+5. Recommendation
+
+**Human Gate**: Problem definition ✓, Visual direction (A/B/C) ✓
+
+---
+
+## Phase 1: PLAN
+
+**Output**: `plans/<feature>.md`
+
+Required content:
+1. Scope (In/Out)
+2. Technical Design
+3. Task breakdown
+4. Acceptance Criteria
+5. Decision Snapshot
+
+**Human Gate**: Scope ✓, Data Model ✓, Risk ✓, Enter Wireframe? ✓
+
+---
+
+## Phase 1.5: WIREFRAME GATE
+
+**Output**: `wireframes/<feature>_A.md`, `wireframes/<feature>_B.md`, `wireframes/<feature>_decision.md`
+
+> Skip for logic-only tasks.
+
+Compare structure before style. Each version must include:
+- Screen structure & info hierarchy
+- Primary flow (shortest path)
+- Tap map (thumb-zone analysis)
+
+**Human Gate**: Select A/B/Redo ✓, Critical interactions ✓
+
+---
+
+## Phase 2: ASSETS (Nano Banana MCP)
+
+**Output**: `assets/generated/<feature>/`
+
+> ⚠️ Gemini API Free Tier does NOT support image generation. Paid key required.
+
+```javascript
+nanobanana_generate_image({
+  prompt: "...",
+  output_path: "assets/generated/<feature>/hero.png",
+  model: "gemini-2.5-flash-image",
+  aspect_ratio: "16:9"
+})
 ```
 
-**If auth fails**: Ask user to run `jules auth login`.
+---
 
-## 5-Phase Workflow
+## Phase 2.5: DESIGN (Stitch MCP)
 
-### Phase 1: PLAN
+**Output**: `stitch/designs/<feature>/`
 
-1. Create `plans/<feature_name>.md`
-2. Define:
-   - Feature Overview
-   - Technical Design
-   - Asset Requirements (for Nano Banana)
-   - Code Tasks (for Jules)
-   - Acceptance Criteria
-3. **Wait for user approval.**
+### Stitch Two-Pass Strategy
 
-#### Decision Snapshot
-Mandatory at the end of every `plans/<feature>.md`:
+**Pass 1 (Structure)**: Information architecture only. No decorative elements.
 
-```markdown
-## Decision Snapshot
+**Pass 2 (Style)**: Inject brand colors, typography, visual polish. Generate 2+ variants.
 
-| Item | Content |
-|------|---------|
-| Feature Name | `<feature_name>` |
-| Decision Time | `YYYY-MM-DD HH:MM` |
-| Approved Scope | 1. ... 2. ... |
-| Rejected Items | - ... |
-| Human Gate Results | ✅ Scope / ✅ Style / ... |
-| Open Questions | ⚠️ Cannot proceed if any |
-```
+**Artifacts**: `tokens.json`, `screen_main.png`, `screen_main.html`, `screen_main.meta.json`
 
-#### Human Gate Template
-User approval must use the fixed template (`templates/human_gate_template.md`):
-- [ ] **Scope**: Agree/Disagree
-- [ ] **Visual Style**: Agree/Disagree
-- [ ] **Data Model**: Agree/Disagree
-- [ ] **Risk/Compliance**: Agree/Disagree
+**Checklist**: CTA hierarchy ✓, Empty/Error states ✓, Light/Dark ✓
 
 ---
 
-### Phase 2: ASSETS (Browser Generation)
+## Phase 3: CODE
 
-**Agent**: Nano Banana (via Gemini CLI / Browser)
+**Default**: Jules CLI | **Optional**: Codex
 
-1. Create prompt files in `nanobanana/queue/`
-2. **Hybrid Flow**:
-   - Antigravity opens Gemini Web in browser
-   - Checks login (pauses if not logged in)
-   - Submits prompt & captures screenshot to `assets/generated/`
-3. Validate assets and move prompt to `nanobanana/completed/`
-
-**Fallback**: If automation fails, user generates manually and says "/kof resume".
-
----
-
-### Phase 2.5: DESIGN (Optional)
-
-**Default**: Stitch (Google Ecosystem)
-**Optional**: Pencil (Mobile Apps)
-
-#### Option A: Stitch (Default)
-1. Create design task in `stitch/queue/<feature>.md`
-2. Use Stitch MCP tools (`generate_screen_from_text`) to create UI
-3. **Artifact Contract**: Save to `stitch/designs/<feature>/`
-   - `tokens.json` (Required: colors, typography, spacing, cornerRadius)
-   - `screen_main.png`
-   - `screen_main.html`
-   - `screen_main.meta.json`
-4. **Stitch Clean Room**:
-   - List elements to delete/ignore (e.g., FAB, extra cards)
-   - Rule: HTML structure > Screenshot visual (unless flagged)
-
-#### Design Verified Checklist
-Before moving to CODE:
-- [ ] Light/Dark Mode variants exist (if applicable)
-- [ ] Core components ready (headers, cards, empty states)
-- [ ] Out-of-scope elements listed for deletion
-
----
-
-### Phase 3: CODE
-
-**Default**: Jules CLI (Google Ecosystem, Cloud Async)
-**Optional**: Codex App & CLI (Local)
-
-#### Input Handover
-If Phase 2.5 used, explicitly list design artifacts in `jules/tasks/<task>.md` Inputs.
-
-#### Option A: Jules CLI (Default)
-1. Create task file in `jules/tasks/`
+1. Create task in `jules/tasks/`
 2. Submit: `jules new --repo ... "$(cat task.md)"`
-3. **Watch**: `./scripts/agent.sh watch <session_id>`
-   - Auto-polls status
-   - Auto-applies changes
-   - Auto-wakes Antigravity for Review
+3. Watch: `./scripts/agent.sh watch <session_id>`
 
-#### Option B: Codex App & CLI (Optional)
-1. Prepare task file
-2. Execute: `codex execute --task "jules/tasks/<task>.md"`
-3. Codex modifies local files directly
+Input files must include design/asset paths.
 
 ---
 
-### Phase 4: REVIEW
+## Phase 4: REVIEW
 
-> **Rule**: Bug fixes & deviations ONLY. Scope changes must return to Phase 1.
+> Bug fixes & deviations ONLY. Scope changes → back to PLAN.
 
 1. `git diff` to check changes
 2. Verify UI in browser
-3. Check Acceptance Criteria
-4. **Review Results**:
-   - ✅ Fixed
-   - ⚠️ Unresolved (Reason)
-   - 🔴 Residual Risk
+3. Mark results: ✅ Fixed | ⚠️ Unresolved | 🔴 Risk
 
 ---
 
-### Phase 5: RELEASE
+## Phase 5: RELEASE
 
-#### 1. Documentation Sync
-Ensure docs reflect the current state:
-- [ ] **Update Project Docs**: `README.md`, `docs/`, etc. if feature affects usage/architecture.
-- [ ] **Update Plan Status**: Mark items in `plans/<feature>.md` as completed.
-
-#### 2. Release Snapshot
-Mandatory before commit:
-
-```markdown
-## Release Snapshot
-
-| Item | Status |
-|------|--------|
-| Completed Items | 1. ... |
-| Uncompleted Items | - ... (Reason) |
-| Known Limitations | - ... |
-| Next Steps | - ... |
-```
-
-#### Execute Release
 1. `git add -A`
-2. Commit with workflow metadata:
-   ```bash
-   git commit -m "feat: <feature>
-
-   ## Workflow Executed
-   - Phase 1 PLAN: plans/<feature>.md
-   - Phase 2 ASSETS: ...
-   - Phase 2.5 DESIGN: Stitch/Pencil
-   - Phase 3 CODE: Jules <ID>
-   - Phase 4 REVIEW: Verified
-   - Phase 5 RELEASE: Snapshot included"
-   ```
+2. Commit with workflow metadata
 3. `git push`
+
+Include Release Snapshot: Completed items, Known limitations, Next steps.
 
 ---
 
@@ -184,38 +143,24 @@ Mandatory before commit:
 
 | Phase | Action | Agent |
 |-------|--------|-------|
-| PLAN | Create spec, get approval | Antigravity |
-| 2A: PROMPT | Design image prompts | Antigravity |
-| 2B: BROWSER | Generate images via Gemini web | Antigravity + User |
-| 2C: VALIDATE | Verify assets | Antigravity |
-| CODE | Submit task, monitor | Jules |
-| REVIEW | Verify changes | Antigravity |
-| RELEASE | Commit and push | Antigravity |
+| 0 INSIGHTS | Market research, visual direction | Orchestrator |
+| 1 PLAN | Create spec, get approval | Orchestrator |
+| 1.5 WIREFRAME | Low-fi comparison, select | Orchestrator |
+| 2 ASSETS | Generate images | Nano Banana MCP |
+| 2.5 DESIGN | Two-pass UI generation | Stitch MCP |
+| 3 CODE | Submit task, monitor | Jules CLI |
+| 4 REVIEW | Verify changes | Orchestrator |
+| 5 RELEASE | Commit and push | Orchestrator |
 
 ## Trigger Keywords
 
-Activate this workflow ONLY when user says:
-- "/kof"
-- "KOF workflow"
-- "KOF agentic"
+- "/kof", "/workflow"
+- "KOF workflow", "KOF agentic"
 - "keeponfirst workflow"
-- "keeponfirst agentic"
 - "用 KOF 開發..."
 
 ## Resume Keywords
 
-If browser automation fails and user completes generation manually:
 - "/kof resume"
 - "圖產好了"
-- "圖產好了，繼續 Phase 2C"
 - "assets ready"
-
-## Important Notes
-
-- Never skip phases
-- Phase 2 (ASSETS) is optional for code-only features
-- Phase 2B requires Google login (one-time setup)
-- If browser automation fails, fallback to manual mode
-- Update plan file status after each phase
-- Watch command runs in background - returns immediately
-
