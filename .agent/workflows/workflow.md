@@ -83,14 +83,29 @@ Human Gate：
 
 ---
 
-## Phase 2: ASSETS (Nano Banana MCP)
+## Phase 2: ASSETS
 
-執行者：Nano Banana MCP  
+執行者：Orchestrator  
 輸出：`assets/generated/<feature>/...`
+
+### 選項 A：產生 Prompt 檔案（預設）
+
+在 `nanobanana/queue/` 建立 `.prompt.md` 檔案，供手動或瀏覽器自動化執行：
+```markdown
+---
+output_path: assets/generated/<feature>/hero.png
+aspect_ratio: 16:9
+---
+
+# Hero Image
+
+Create a modern illustration showing...
+```
+
+### 選項 B：使用 Nano Banana MCP（可選）
 
 > ⚠️ Gemini API Free Tier 不支援產圖，需付費 Key。
 
-使用：
 ```javascript
 nanobanana_generate_image({
   prompt: "...",

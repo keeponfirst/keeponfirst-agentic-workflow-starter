@@ -84,10 +84,26 @@ KOF workflow 新增深色模式       # 自然語言
 | `scripts/jules-watcher.sh` | 可攜式 Jules session 監控器 |
 | `templates/` | Human Gate 與 Tooling Checklist 範本 |
 
-### 工作流程強化 (v2)
+### 工作流程強化 (v2.2)
 
-本套工作流程包含 **7 項結構化檢查點**：
+本套工作流程包含 **8 階段 Pipeline**，強化 UI 品質控制：
 
+#### v2.2 變更 (2026 年 2 月 6 日)
+| 強化項目 | 說明 |
+|----------|------|
+| **Phase 0: INSIGHTS** | Planning 前的市場洞察與視覺方向收斂 |
+| **Phase 1.5: WIREFRAME GATE** | Design 前的低保真線框比較 |
+| **Stitch Two-Pass** | 結構優先 → 風格其次，避免模板化 UI |
+| **Phase 2 ASSETS 重構** | Prompt 檔案為預設；Nano Banana MCP 為可選 |
+| **新目錄** | `research/`、`wireframes/` 存放新階段產出 |
+| **Prompt 模板** | `prompts/antigravity/*.md`（insights, plan, wireframe_gate）|
+
+#### v2.1 變更 (2026 年 2 月 5 日)
+| 強化項目 | 說明 |
+|----------|------|
+| **文件同步** | Phase 5 RELEASE 新增文件同步步驟 |
+
+#### v2 核心檢查點
 | 強化項目 | 說明 |
 |----------|------|
 | **決策快照** | PLAN 階段摘要：已核准範圍、Open Questions |

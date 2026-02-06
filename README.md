@@ -84,10 +84,26 @@ KOF workflow add dark mode     # Natural language
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
 | `templates/` | Human Gate & Tooling Checklist templates |
 
-### Workflow Enhancements (v2)
+### Workflow Enhancements (v2.2)
 
-This workflow now includes **7 structured checkpoints**:
+This workflow now includes **8-phase pipeline** with enhanced UI quality controls:
 
+#### v2.2 Changes (Feb 6, 2026)
+| Enhancement | Description |
+|-------------|-------------|
+| **Phase 0: INSIGHTS** | Market research & visual direction before planning |
+| **Phase 1.5: WIREFRAME GATE** | Low-fidelity wireframe comparison before design |
+| **Stitch Two-Pass** | Structure Pass first, then Style Pass to avoid templated UI |
+| **Phase 2 ASSETS refactor** | Prompt files are now default; Nano Banana MCP is optional |
+| **New directories** | `research/`, `wireframes/` for new phase outputs |
+| **Prompt templates** | `prompts/antigravity/*.md` for insights, plan, wireframe_gate |
+
+#### v2.1 Changes (Feb 5, 2026)
+| Enhancement | Description |
+|-------------|-------------|
+| **Documentation Sync** | Phase 5 RELEASE now includes documentation sync step |
+
+#### v2 Core Checkpoints
 | Enhancement | Description |
 |-------------|-------------|
 | **Decision Snapshot** | PLAN phase summary with approved scope & open questions |

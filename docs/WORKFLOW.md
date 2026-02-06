@@ -118,11 +118,9 @@ Human Gate：
 
 ## Phase 2: ASSETS
 
-執行者：Nano Banana MCP  
+執行者：Orchestrator  
 輸入：Plan 的資產清單 + Wireframe 決策  
 輸出：`assets/generated/<feature>/...`
-
-> **⚠️ 注意：Gemini API Free Tier 不支援產圖，需使用付費 API Key。**
 
 規則：
 
@@ -130,7 +128,24 @@ Human Gate：
 2. 命名固定，避免 CODE 找不到檔案。
 3. 每張圖要有用途說明與尺寸。
 
-MCP 呼叫：
+### 選項 A：產生 Prompt 檔案（預設）
+
+在 `nanobanana/queue/` 建立 `.prompt.md` 檔案，供手動或瀏覽器自動化執行：
+```markdown
+---
+output_path: assets/generated/<feature>/hero.png
+aspect_ratio: 16:9
+---
+
+# Hero Image
+
+Create a modern illustration showing...
+```
+
+### 選項 B：使用 Nano Banana MCP（可選）
+
+> **⚠️ 注意：Gemini API Free Tier 不支援產圖，需使用付費 API Key。**
+
 ```javascript
 nanobanana_generate_image({
   prompt: "...",

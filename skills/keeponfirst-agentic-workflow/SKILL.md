@@ -74,9 +74,25 @@ Compare structure before style. Each version must include:
 
 ---
 
-## Phase 2: ASSETS (Nano Banana MCP)
+## Phase 2: ASSETS
 
 **Output**: `assets/generated/<feature>/`
+
+### Option A: Generate Prompt Files (Default)
+
+Create `.prompt.md` files in `nanobanana/queue/` for manual or browser-automated execution:
+```markdown
+---
+output_path: assets/generated/<feature>/hero.png
+aspect_ratio: 16:9
+---
+
+# Hero Image
+
+Create a modern illustration showing...
+```
+
+### Option B: Use Nano Banana MCP (Optional)
 
 > ⚠️ Gemini API Free Tier does NOT support image generation. Paid key required.
 
