@@ -122,20 +122,54 @@ nanobanana_generate_image({
 執行者：Stitch MCP  
 輸出：`stitch/designs/<feature>/`
 
-### Stitch Two-Pass Strategy
+### Phase 2.5-A: Structured Prompt Generation
 
-**Pass 1（Structure）**：
-- 只描述資訊架構、版面區塊
-- 禁止加入風格形容詞
+> 目標：在呼叫 Stitch 之前，先建立絕對的設計基準。
 
-**Pass 2（Style）**：
-- 注入品牌語彙、色彩、字體
-- 至少產出 2 版比較
+1. **分析需求**：解構使用者的產品構想
+2. **定義 Design DNA** (存入 `design_dna.json`)：
+   - `visual_vibe`: 風格關鍵字 (e.g., "Soft Warmth", "Organic Modernism")
+   - `color_palette`: 精確 HEX Code (Primary, Secondary, Background, Surface) + **禁用色 (Negative Constraints)**
+   - `components`: 圓角 (Radius)、陰影 (Shadows)、字體 (Typography)
+3. **產出 Master Prompt**：包含所有 DNA 的全域描述
+4. **產出 Screen Prompts**：每個畫面獨立 Prompt，強制繼承 Design DNA
+
+### Phase 2.5-B: Visual Audit & QA
+
+> 目標：Stitch 產出後，對照 Design DNA 進行視覺審查。
+
+**一致性檢查 (Consistency)**：
+- Navigation Bar：所有畫面 Tab Bar 樣式是否相同？(Icon 風格、背景色、高度)
+- Status Bar：是否留出 Safe Area？
+
+**色彩準確度 (Color Accuracy)**：
+- 背景色是否為指定 HEX？(例：是否變成純白而非米色)
+- 是否出現未定義顏色？
+
+**元件完整性 (Component Integrity)**：
+- 按鈕對比度足夠？文字清晰可讀？
+- 插畫風格統一？(避免混用 3D/2D)
+
+### Phase 2.5-C: Refinement Loop
+
+> 目標：若審查發現問題，自動生成修正指令，直到通過為止。
+
+```
+IF Pass → Final Output (進入 Phase 3)
+IF Fail → Refinement Loop：
+  1. 列出具體錯誤 (e.g., "History screen nav bar ≠ Dashboard")
+  2. 生成 Refinement Prompt (使用強指令：FORCE REPLACE, RESET BACKGROUND, UNIFY ICONS)
+  3. 重新呼叫 Stitch
+  4. 返回 Phase 2.5-B 再次審查
+```
+
+**Artifacts**: `design_dna.json`, `master_prompt.md`, `screen_*.png`, `screen_*.html`, `audit_log.md`
 
 Design Verified Checklist：
+- [ ] Design DNA 符合
+- [ ] 一致性通過
 - [ ] CTA 層級清楚
 - [ ] 空狀態與錯誤狀態有定義
-- [ ] Light/Dark（若需要）
 
 ---
 

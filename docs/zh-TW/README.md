@@ -88,12 +88,19 @@ KOF workflow 新增深色模式       # 自然語言
 
 本套工作流程包含 **8 階段 Pipeline**，強化 UI 品質控制：
 
+#### v2.3 變更 (2026 年 2 月 7 日)
+| 強化項目 | 說明 |
+|----------|------|
+| **Stitch 三階段工作流程** | Design DNA → 視覺審查 → 迭代修正迴圈 |
+| **Design DNA 契約** | `design_dna.json` 包含色彩、元件規範、禁用色 |
+| **視覺審查 & QA** | 一致性檢查、色彩準確度、元件完整性 |
+| **迭代修正迴圈** | 自動生成修正指令，直到通過為止 |
+
 #### v2.2 變更 (2026 年 2 月 6 日)
 | 強化項目 | 說明 |
 |----------|------|
 | **Phase 0: INSIGHTS** | Planning 前的市場洞察與視覺方向收斂 |
 | **Phase 1.5: WIREFRAME GATE** | Design 前的低保真線框比較 |
-| **Stitch Two-Pass** | 結構優先 → 風格其次，避免模板化 UI |
 | **Phase 2 ASSETS 重構** | Prompt 檔案為預設；Nano Banana MCP 為可選 |
 | **新目錄** | `research/`、`wireframes/` 存放新階段產出 |
 | **Prompt 模板** | `prompts/antigravity/*.md`（insights, plan, wireframe_gate）|

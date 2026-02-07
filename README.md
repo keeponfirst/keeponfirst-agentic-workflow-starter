@@ -88,12 +88,19 @@ KOF workflow add dark mode     # Natural language
 
 This workflow now includes **8-phase pipeline** with enhanced UI quality controls:
 
+#### v2.3 Changes (Feb 7, 2026)
+| Enhancement | Description |
+|-------------|-------------|
+| **Stitch 3-Phase Workflow** | Design DNA → Visual Audit → Refinement Loop |
+| **Design DNA Contract** | `design_dna.json` with color palette, components, negative constraints |
+| **Visual Audit & QA** | Consistency check, color accuracy, component integrity |
+| **Refinement Loop** | Auto-generated correction prompts until pass |
+
 #### v2.2 Changes (Feb 6, 2026)
 | Enhancement | Description |
 |-------------|-------------|
 | **Phase 0: INSIGHTS** | Market research & visual direction before planning |
 | **Phase 1.5: WIREFRAME GATE** | Low-fidelity wireframe comparison before design |
-| **Stitch Two-Pass** | Structure Pass first, then Style Pass to avoid templated UI |
 | **Phase 2 ASSETS refactor** | Prompt files are now default; Nano Banana MCP is optional |
 | **New directories** | `research/`, `wireframes/` for new phase outputs |
 | **Prompt templates** | `prompts/antigravity/*.md` for insights, plan, wireframe_gate |
