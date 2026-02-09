@@ -10,6 +10,14 @@
 
 ---
 
+## ☕ 支持這個專案
+
+如果這個專案對你有幫助，歡迎請我喝杯咖啡：
+
+👉 https://buymeacoffee.com/keeponfirst
+
+---
+
 ## 🧩 安裝為 Skill（多 IDE 支援）
 
 這套 workflow 可以安裝為 **全域 Skill**，支援多種 AI-powered IDE — 在任何專案中使用，無需 clone 整個 repo！
@@ -512,14 +520,6 @@ agy chat --mode agent "請幫我 review"
 **期望的未來改進**：
 - Antigravity CLI 支援直接發送 prompt 並執行
 - 或提供 extension API 讓第三方 extension 可以控制 chat
-
----
-
-## ☕ 支持這個專案
-
-如果這個專案對你有幫助，歡迎請我喝杯咖啡：
-
-👉 https://buymeacoffee.com/keeponfirst
 
 ---
 

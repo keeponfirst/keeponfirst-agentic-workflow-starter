@@ -10,6 +10,14 @@ An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano B
 
 ---
 
+## ☕ Support this project
+
+If this project helps you, you can support development here:
+
+👉 https://buymeacoffee.com/keeponfirst
+
+---
+
 ## 🧩 Install as Skill (Multi-IDE Support)
 
 This workflow can be installed as a **global Skill** for multiple AI-powered IDEs — use it in any project without cloning this repo!
@@ -509,14 +517,6 @@ agy chat --mode agent "Please review for me"
 **Hoped Future Improvements**:
 - Antigravity CLI supports sending and executing prompts directly
 - Or provide extension API for third-party extensions to control chat
-
----
-
-## ☕ Support this project
-
-If this project helps you, you can support development here:
-
-👉 https://buymeacoffee.com/keeponfirst
 
 ---
 
