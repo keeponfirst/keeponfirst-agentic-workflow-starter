@@ -515,6 +515,14 @@ agy chat --mode agent "請幫我 review"
 
 ---
 
+## ☕ 支持這個專案
+
+如果這個專案對你有幫助，歡迎請我喝杯咖啡：
+
+👉 https://buymeacoffee.com/keeponfirst
+
+---
+
 ## License
 
 MIT License - 詳見 [LICENSE](../../LICENSE)

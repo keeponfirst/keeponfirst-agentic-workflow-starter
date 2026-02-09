@@ -512,6 +512,14 @@ agy chat --mode agent "Please review for me"
 
 ---
 
+## ☕ Support this project
+
+If this project helps you, you can support development here:
+
+👉 https://buymeacoffee.com/keeponfirst
+
+---
+
 ## License
 
 MIT License - See [LICENSE](LICENSE)
