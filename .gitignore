@@ -15,6 +15,19 @@ nanobanana-output/
 # Stitch MCP Server（獨立 repo: github:keeponfirst/kof-stitch-mcp）
 stitch/mcp-server/
 
+# Nano Banana MCP Server（獨立 package: @keeponfirst/kof-nanobanana-mcp）
+kof-nanobanana-mcp/
+
+# Pencil 專案檔案
+*.pen
+
+# Stitch tools dump（自動產生）
+stitch_tools.json
+
+# Scripts 的 node_modules
+scripts/node_modules/
+scripts/package-lock.json
+
 # 產出檔案（依專案需求決定是否 commit）
 assets/generated/*
 !assets/generated/.gitkeep

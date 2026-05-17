@@ -1,8 +1,8 @@
 # Stitch Integration 研究與決策
 
-> 文件版本: 2.0
-> 決策日期: 2026-01-23
-> 狀態: **採用 Strategy C (Direct MCP via stitch-mcp)**
+> 文件版本: 3.1
+> 最後更新: 2026-05-17
+> 狀態: **採用 Strategy C (Direct MCP via stitch-mcp) + Stitch Web**
 
 ## Executive Summary
 
@@ -14,7 +14,8 @@
 |------|------|------|
 | v1.0 | Strategy A (Gemini CLI) | MCP tools 未文件化、需手動 token |
 | v2.0 | Strategy C (社群 stitch-mcp) | MCP tools 已文件化 |
-| **v3.0** | **Strategy C (自建 MCP Server)** | 官方 API 已確認、自建可控性更高 |
+| v3.0 | Strategy C (自建 MCP Server) | 官方 API 已確認、自建可控性更高 |
+| **v3.1** | **Strategy C + Stitch Web** | 2026-03 Stitch 大改版：Infinite Canvas、Vibe Design、Code Export |
 
 ### 當前推薦
 
@@ -47,12 +48,16 @@
 
 ### Stitch 功能
 
+> **Note**: 2026-03 Stitch 大更新新增：Infinite Canvas、Voice Canvas、Vibe Design、Code Export（React/Vue/Flutter/SwiftUI）
+
 | 功能 | 指令範例 | 已驗證 |
 |------|---------|--------|
 | 列出專案 | `/stitch What projects do I have?` | 待測試 |
 | 生成設計 | `/stitch Design a mobile login screen` | 待測試 |
+| Vibe Design | `/stitch Design something premium and minimalist like Stripe` | 待測試 |
 | 下載圖片 | `/stitch Download the image of screen <id>` | 待測試 |
 | 下載 HTML | `/stitch Download the HTML of screen <id>` | 待測試 |
+| Code Export | Stitch Web → Export → React/Vue/Flutter | 待測試 |
 | 優化 Prompt | `/stitch Enhance this prompt: "..."` | 待測試 |
 
 ### Claude Code MCP 支援
@@ -341,7 +346,7 @@ prompts/stitch/
 ## 相關文件
 
 - [Stitch Extension README](https://github.com/gemini-cli-extensions/stitch)
-- [Stitch Web App](https://stitch.withgoogle.com/)
+- [Stitch Web App](https://stitch.google.com/)
 - [Gemini CLI Extensions](https://google-gemini.github.io/gemini-cli/docs/extensions/)
 
 ---

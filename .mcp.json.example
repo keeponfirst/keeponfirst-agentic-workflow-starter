@@ -6,6 +6,13 @@
       "env": {
         "GOOGLE_CLOUD_PROJECT": "YOUR_PROJECT_ID"
       }
+    },
+    "nanobanana": {
+      "command": "npx",
+      "args": ["-y", "@keeponfirst/kof-nanobanana-mcp"],
+      "env": {
+        "GEMINI_API_KEY": "YOUR_API_KEY"
+      }
     }
   }
 }

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BabyLog Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "background-light": "#FDFBF7", // Customized to Cream as per request
+                        "background-dark": "#101922",
+                        "text-main": "#4A4238", // Warm dark grey/brown
+                        "text-sub": "#8C857B",
+                        "card-cream": "#FFFFFF",
+                        "accent-blue": "#E3F2FD",
+                        "accent-green": "#E8F5E9",
+                        "accent-orange": "#FFF3E0",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "soft": "0 8px 30px rgba(0,0,0,0.04)",
+                        "card": "0 4px 12px rgba(74, 66, 56, 0.06)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for horizontal scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl pb-24">
+<!-- Header Section -->
+<header class="flex items-center justify-between p-6 pb-2 pt-8">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-full text-primary">
+<span class="material-symbols-outlined text-[28px]">child_care</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-text-main dark:text-white">BabyLog</h1>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-white dark:bg-gray-800 shadow-soft text-text-main dark:text-white hover:bg-gray-50 transition-colors">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+</header>
+<!-- Profile Greeting -->
+<div class="px-6 py-2">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="size-16 rounded-full bg-cover bg-center border-4 border-white dark:border-gray-700 shadow-soft" data-alt="Close up portrait of a smiling baby boy" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAz53HO54tDtl1UG9AXp0kvLV0RcRl5pXjR9KxjecZh8DRaFOi6TnLNgQyDg9Tswrzpfz2gvmvw4xJAFbHG6c2BQhI_ZtR3I7dlM-lFTW5Nh_zTKV1hP8bAM0w0obnBNdkUPGstFOu_UUZXbOCf4vJGd6kIQOeykVRLKlrHnmGeQUGQCkb5h02frb9gAZmB3kZ3NCj72ir7Ai3Xh8E5gmUYytU3cI7W8HS2birWEyLStg5Be_iDA9sWCaPpkkT6Ylt1MMZigpsZYZQ');">
+</div>
+<div class="absolute bottom-0 right-0 size-5 bg-green-400 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-text-sub text-sm font-medium">Good Morning,</span>
+<h2 class="text-2xl font-bold text-text-main dark:text-white leading-tight">Leo</h2>
+<span class="text-primary text-xs font-bold bg-primary/10 px-2 py-0.5 rounded-full w-fit mt-1">3 months old</span>
+</div>
+</div>
+</div>
+<!-- Current Status Card (Main Focus) -->
+<div class="px-6 py-4">
+<div class="relative overflow-hidden rounded-3xl bg-primary text-white shadow-lg p-6 flex flex-col items-center text-center group">
+<!-- Abstract dreamy background shapes -->
+<div class="absolute top-0 left-0 w-full h-full opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white to-transparent"></div>
+<span class="material-symbols-outlined text-[48px] mb-2 opacity-90 animate-pulse">bedtime</span>
+<p class="text-blue-100 text-sm font-medium uppercase tracking-wider relative z-10">Current Status</p>
+<h3 class="text-3xl font-bold mt-1 mb-2 relative z-10">Sound Asleep</h3>
+<div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full relative z-10">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-semibold tracking-wide">1h 20m</span>
+</div>
+</div>
+</div>
+<!-- One-Handed Quick Actions -->
+<div class="px-6 py-2">
+<h3 class="text-text-main dark:text-white text-lg font-bold mb-4 px-1">Quick Log</h3>
+<div class="grid grid-cols-3 gap-4">
+<!-- Feed Button -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-16 rounded-2xl bg-accent-orange dark:bg-orange-900/30 flex items-center justify-center text-orange-500 shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[32px]">water_drop</span>
+</div>
+<span class="text-sm font-bold text-text-sub group-hover:text-primary transition-colors">Feed</span>
+</button>
+<!-- Sleep Button -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-16 rounded-2xl bg-accent-blue dark:bg-blue-900/30 flex items-center justify-center text-primary shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[32px]">nightlight</span>
+</div>
+<span class="text-sm font-bold text-text-sub group-hover:text-primary transition-colors">Sleep</span>
+</button>
+<!-- Diaper Button -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-16 rounded-2xl bg-accent-green dark:bg-green-900/30 flex items-center justify-center text-green-600 shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[32px]">child_care</span>
+</div>
+<span class="text-sm font-bold text-text-sub group-hover:text-primary transition-colors">Diaper</span>
+</button>
+</div>
+</div>
+<!-- Stats Overview (Horizontal Scroll) -->
+<div class="pl-6 py-4 mt-2">
+<div class="flex gap-4 overflow-x-auto no-scrollbar pr-6 pb-2">
+<!-- Stat 1 -->
+<div class="min-w-[140px] p-4 rounded-2xl bg-white dark:bg-gray-800 shadow-card border border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-text-sub">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+<span class="text-xs font-bold uppercase">Total Sleep</span>
+</div>
+<p class="text-2xl font-bold text-text-main dark:text-white">4h 15m</p>
+</div>
+<!-- Stat 2 -->
+<div class="min-w-[140px] p-4 rounded-2xl bg-white dark:bg-gray-800 shadow-card border border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-text-sub">
+<span class="material-symbols-outlined text-[20px]">local_cafe</span>
+<span class="text-xs font-bold uppercase">Total Feed</span>
+</div>
+<p class="text-2xl font-bold text-text-main dark:text-white">12 oz</p>
+</div>
+<!-- Stat 3 -->
+<div class="min-w-[140px] p-4 rounded-2xl bg-white dark:bg-gray-800 shadow-card border border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-text-sub">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+<span class="text-xs font-bold uppercase">Diapers</span>
+</div>
+<p class="text-2xl font-bold text-text-main dark:text-white">5x</p>
+</div>
+</div>
+</div>
+<!-- Today's Story / Timeline -->
+<div class="px-6 py-4">
+<h3 class="text-text-main dark:text-white text-lg font-bold mb-4">Today's Story</h3>
+<div class="relative flex flex-col gap-6 pl-2">
+<!-- Vertical Line -->
+<div class="absolute left-[19px] top-2 bottom-4 w-0.5 bg-gray-200 dark:bg-gray-700 border-l-2 border-dotted border-gray-300 dark:border-gray-600"></div>
+<!-- Item 1 -->
+<div class="relative flex items-start gap-4 z-10">
+<div class="size-10 shrink-0 rounded-full bg-white dark:bg-gray-800 border-4 border-background-light dark:border-background-dark shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">water_drop</span>
+</div>
+<div class="flex-1 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-card rounded-tl-none border border-gray-50 dark:border-gray-700">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-text-main dark:text-white">Bottle Feed</h4>
+<span class="text-xs font-medium text-text-sub">12:30 PM</span>
+</div>
+<p class="text-sm text-text-sub">Leo drank 4oz of formula happily.</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="relative flex items-start gap-4 z-10">
+<div class="size-10 shrink-0 rounded-full bg-white dark:bg-gray-800 border-4 border-background-light dark:border-background-dark shadow-sm flex items-center justify-center text-green-500">
+<span class="material-symbols-outlined text-[20px]">child_care</span>
+</div>
+<div class="flex-1 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-card rounded-tl-none border border-gray-50 dark:border-gray-700">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-text-main dark:text-white">Diaper Change</h4>
+<span class="text-xs font-medium text-text-sub">10:15 AM</span>
+</div>
+<p class="text-sm text-text-sub">Wet diaper changed.</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="relative flex items-start gap-4 z-10">
+<div class="size-10 shrink-0 rounded-full bg-white dark:bg-gray-800 border-4 border-background-light dark:border-background-dark shadow-sm flex items-center justify-center text-purple-500">
+<span class="material-symbols-outlined text-[20px]">bedtime</span>
+</div>
+<div class="flex-1 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-card rounded-tl-none border border-gray-50 dark:border-gray-700">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-text-main dark:text-white">Morning Nap</h4>
+<span class="text-xs font-medium text-text-sub">08:45 AM</span>
+</div>
+<p class="text-sm text-text-sub">Slept for 1h 30m.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for Bottom Nav -->
+<div class="h-24"></div>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 pb-safe z-50">
+<div class="flex justify-around items-center h-20 px-4">
+<button class="flex flex-col items-center gap-1 p-2 text-primary">
+<span class="material-symbols-outlined text-[28px] filled">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-text-sub hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[28px]">bar_chart</span>
+<span class="text-[10px] font-bold">Trends</span>
+</button>
+<!-- Floating Add Button in Nav -->
+<button class="flex items-center justify-center size-14 bg-primary text-white rounded-full shadow-lg -mt-8 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-text-sub hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[28px]">photo_library</span>
+<span class="text-[10px] font-bold">Memories</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-text-sub hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[28px]">settings</span>
+<span class="text-[10px] font-bold">Settings</span>
+</button>
+</div>
+</nav>
+</body></html>

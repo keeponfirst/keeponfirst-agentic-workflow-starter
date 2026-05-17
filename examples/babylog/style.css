@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    --bg-cream: #FDFBF7;
+    --card-white: #FFFFFF;
+    --text-primary: #4A4A4A;
+    --text-secondary: #8C8C8C;
+    --accent-sage: #B5C99A;
+    --accent-sage-light: #E8EFE0;
+    --accent-rose: #EBCBCB;
+    --accent-rose-light: #F7EBEB;
+    --accent-blue: #A9C5C9;
+    --accent-blue-light: #E4EFF0;
+    --shadow-soft: 0 8px 24px rgba(149, 157, 165, 0.08);
+    --shadow-hover: 0 12px 32px rgba(149, 157, 165, 0.12);
+    --radius-lg: 24px;
+    --radius-sm: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background-color: var(--bg-cream); font-family: 'Nunito', sans-serif; color: var(--text-primary); line-height: 1.5; min-height: 100vh; display: flex; justify-content: center; }
+.app-container { width: 100%; max-width: 430px; padding: 24px; display: flex; flex-direction: column; gap: 32px; }
+
+header { margin-top: 16px; text-align: center; }
+h1 { font-weight: 800; font-size: 28px; margin-bottom: 4px; }
+.subtitle { color: var(--text-secondary); font-weight: 600; font-size: 16px; }
+
+.status-card { background: var(--card-white); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-soft); text-align: center; }
+.baby-status { font-size: 14px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 8px; }
+.time-display { font-size: 48px; font-weight: 800; margin-bottom: 4px; }
+.last-activity { font-size: 14px; color: var(--text-secondary); }
+
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.action-card { background: var(--card-white); border-radius: var(--radius-lg); padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; box-shadow: var(--shadow-soft); border: none; cursor: pointer; aspect-ratio: 1; transition: transform 0.2s; }
+.action-card:active { transform: scale(0.96); }
+.icon-circle { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.action-label { font-weight: 700; font-size: 16px; color: var(--text-primary); }
+
+.card-feeding .icon-circle { background: var(--accent-rose-light); color: #C88A8A; }
+.card-sleep .icon-circle { background: var(--accent-blue-light); color: #7A9AA0; }
+.card-diaper .icon-circle { background: var(--accent-sage-light); color: #8DA573; }
+.card-play .icon-circle { background: #FFF8E6; color: #D4B268; }
+
+.section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-left: 4px; }
+.log-item { background: var(--card-white); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+.log-title { font-weight: 700; font-size: 16px; }
+.log-time { font-size: 13px; color: var(--text-secondary); }
+
+@keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.animate-pop { animation: popIn 0.3s forwards; }

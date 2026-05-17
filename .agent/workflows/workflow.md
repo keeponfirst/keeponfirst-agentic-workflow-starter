@@ -1,8 +1,8 @@
 ---
-description: 使用 Agentic Workflow 開發新功能（INSIGHTS → PLAN → WIREFRAME → ASSETS → DESIGN → CODE → REVIEW → RELEASE）。v2 版本強化 UI 品質控制。
+description: 使用 Agentic Workflow 開發新功能（INSIGHTS → PLAN → WIREFRAME → ASSETS → DESIGN → CODE → REVIEW → RELEASE）。v2.4 版本整合 Stitch Vibe Design、Jules 平行任務、最新 Gemini 模型。
 ---
 
-# Agentic Workflow 開發流程 (v2)
+# Agentic Workflow 開發流程 (v2.4)
 
 當用戶要求開發新功能時，請按照以下 Pipeline 執行：
 
@@ -104,23 +104,32 @@ Create a modern illustration showing...
 
 ### 選項 B：使用 Nano Banana MCP（可選）
 
-> ⚠️ Gemini API Free Tier 不支援產圖，需付費 Key。
+> ⚠️ Gemini API Free Tier 有嚴格配額限制，Pro 模型需付費 Key。Flash 模型可能可用但有用量限制。
 
 ```javascript
 nanobanana_generate_image({
   prompt: "...",
   output_path: "assets/generated/<feature>/hero.png",
-  model: "gemini-2.5-flash-image",
+  model: "gemini-3.1-flash-image-preview",
   aspect_ratio: "16:9"
 })
 ```
+
+> **模型選擇**：
+> - `gemini-3.1-flash-image-preview`（預設，快速迭代）
+> - `gemini-3-pro-image-preview`（高品質，僅付費）
 
 ---
 
 ## Phase 2.5: DESIGN (Stitch)
 
-執行者：Stitch MCP  
+執行者：Stitch MCP 或 Stitch Web (stitch.google.com)  
 輸出：`stitch/designs/<feature>/`
+
+> **Stitch 模式選擇**：
+> - **Flash Mode**（Gemini Flash）：快速迭代，適合探索多版方向
+> - **Thinking Mode**（Gemini Pro）：深度推理，適合最終定稿
+> - **Vibe Design**：描述「感覺」而非結構，適合 INSIGHTS 階段收斂後的設計
 
 ### Phase 2.5-A: Structured Prompt Generation
 
@@ -133,6 +142,8 @@ nanobanana_generate_image({
    - `components`: 圓角 (Radius)、陰影 (Shadows)、字體 (Typography)
 3. **產出 Master Prompt**：包含所有 DNA 的全域描述
 4. **產出 Screen Prompts**：每個畫面獨立 Prompt，強制繼承 Design DNA
+
+> **Vibe Design 替代路徑**：若已有明確風格方向（從 INSIGHTS 收斂），可改用 Stitch Vibe Design 模式 —— 描述商業目標與期望感受（如「premium and minimalist, like Stripe」），讓 AI 直接生成設計方向。
 
 ### Phase 2.5-B: Visual Audit & QA
 
@@ -163,6 +174,8 @@ IF Fail → Refinement Loop：
   4. 返回 Phase 2.5-B 再次審查
 ```
 
+**Code Export**：Stitch 現支援匯出 HTML/CSS、React、Vue.js、Angular、Flutter、SwiftUI。Phase 3 CODE 可直接使用匯出程式碼作為起點。
+
 **Artifacts**: `design_dna.json`, `master_prompt.md`, `screen_*.png`, `screen_*.html`, `audit_log.md`
 
 Design Verified Checklist：
@@ -181,12 +194,16 @@ Design Verified Checklist：
 1. 在 `jules/tasks/` 建立任務檔案
 
 // turbo
-2. 使用 `jules new --repo <repo> "$(cat jules/tasks/<task>.md)"` 提交
+2. 使用 `jules remote new --repo <repo> "$(cat jules/tasks/<task>.md)"` 提交
+   > Jules CLI 現支援 `--parallel` 旗標，可同時執行多個獨立任務
+   > 若在 repo 目錄內執行，可省略 `--repo` 參數（自動推斷）
 
 // turbo
 3. 執行 `./scripts/agent.sh watch <session_id>` 監控
 
-4. 等待完成後進入 REVIEW
+4. 若 Stitch 產出有 code export，可作為 Jules 任務的 Input Files
+
+5. 等待完成後進入 REVIEW
 
 ---
 

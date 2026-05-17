@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BabyLog - Calm Baby Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#FDFBF7">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>BabyLog</h1>
+            <p class="subtitle">Hi, Mama & Papa</p>
+        </header>
+
+        <div class="status-card">
+            <div class="baby-status">Last Sleep</div>
+            <div class="time-display">2h 15m</div>
+            <div class="last-activity">ago</div>
+        </div>
+
+        <div class="action-grid">
+            <button class="action-card card-feeding">
+                <div class="icon-circle">🍼</div>
+                <span class="action-label">Feed</span>
+            </button>
+            <button class="action-card card-sleep">
+                <div class="icon-circle">🌙</div>
+                <span class="action-label">Sleep</span>
+            </button>
+            <button class="action-card card-diaper">
+                <div class="icon-circle">💧</div>
+                <span class="action-label">Diaper</span>
+            </button>
+            <button class="action-card card-play">
+                <div class="icon-circle">🧸</div>
+                <span class="action-label">Play</span>
+            </button>
+        </div>
+
+        <div class="recent-log">
+            <h2 class="section-title">Today's Journey</h2>
+            <div id="log-list"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,10 +1,15 @@
-# Standard Workflow (v2)
+# Standard Workflow (v2.4)
 
 此版本在原本主幹 `PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE` 之外，
 新增兩個前置品質閘門，避免 UI 結果過於模板化：
 
 1. `Phase 0: INSIGHTS`（市場洞察與視覺方向收斂）
 2. `Phase 1.5: WIREFRAME GATE`（低保真線框確認）
+
+同時整合了 2026 Q1-Q2 的工具鏈更新：
+- Stitch Vibe Design / Infinite Canvas / Code Export
+- Jules CLI `--parallel` / `jules remote new`
+- Gemini API 模型名稱更新（`gemini-3.1-flash-image-preview`）
 
 ---
 
@@ -36,8 +41,8 @@ INSIGHTS(0) → PLAN(1) → WIREFRAME GATE(1.5) → ASSETS(2) → DESIGN(2.5) �
 
 - [ ] Git 狀態可用（branch 與變更狀態清楚）
 - [ ] Orchestrator 可用（Antigravity / Codex）
-- [ ] 設計工具可用（Stitch MCP）
-- [ ] 資產工具可用（Nano Banana MCP）
+- [ ] 設計工具可用（Stitch Web / Stitch MCP）
+- [ ] 資產工具可用（Nano Banana MCP / Prompt Files）
 - [ ] Code Executor 決定（Jules 或 Codex）
 - [ ] 專案執行命令已確認（build/test/lint 任一最小可驗證命令）
 - [ ] 若有雲端工具，登入與權限已確認
@@ -144,24 +149,33 @@ Create a modern illustration showing...
 
 ### 選項 B：使用 Nano Banana MCP（可選）
 
-> **⚠️ 注意：Gemini API Free Tier 不支援產圖，需使用付費 API Key。**
+> **⚠️ 注意：Gemini API Free Tier 有嚴格配額限制。Pro 模型僅付費，Flash 模型可能可用但有用量限制。**
 
 ```javascript
 nanobanana_generate_image({
   prompt: "...",
   output_path: "assets/generated/<feature>/hero.png",
-  model: "gemini-2.5-flash-image",
+  model: "gemini-3.1-flash-image-preview",
   aspect_ratio: "16:9"
 })
 ```
+
+> **模型選擇**：
+> - `gemini-3.1-flash-image-preview`（預設，快速迭代）
+> - `gemini-3-pro-image-preview`（高品質，僅付費）
 
 ---
 
 ## Phase 2.5: DESIGN (Stitch Default)
 
-執行者：Stitch MCP  
+執行者：Stitch MCP 或 Stitch Web (stitch.google.com)  
 輸入：Wireframe 決策 + Assets + Plan  
 輸出：`stitch/designs/<feature>/`
+
+> **Stitch 模式選擇**：
+> - **Flash Mode**（Gemini Flash）：快速迭代，適合探索多版方向
+> - **Thinking Mode**（Gemini Pro）：深度推理，適合最終定稿
+> - **Vibe Design**：描述「感覺」而非結構，適合 INSIGHTS 階段收斂後的設計
 
 必要檔案：
 
@@ -205,7 +219,7 @@ nanobanana_generate_image({
 
 ## Phase 3: CODE
 
-執行者：Jules（預設）或 Codex  
+執行者：Jules（預設，支援 `--parallel` 平行執行）或 Codex  
 輸入：Plan + Design Artifacts + Assets  
 輸出：可執行程式碼變更
 
@@ -214,6 +228,17 @@ nanobanana_generate_image({
 1. 任務檔必列 Input Files（含 design/asset 實際路徑）
 2. 未經核准不得擴 scope
 3. 每次提交都需可編譯或最小可驗證
+4. 若 Stitch 產出有 code export（React/Vue/Flutter/SwiftUI），可作為起始程式碼
+
+CLI 語法：
+```bash
+# 基本用法（在 repo 目錄內可省略 --repo）
+jules remote new "$(cat jules/tasks/<task>.md)"
+
+# 平行執行多個任務
+jules remote new --parallel "task 1"
+jules remote new --parallel "task 2"
+```
 
 ---
 

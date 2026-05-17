@@ -1,11 +1,11 @@
 ---
 name: keeponfirst-agentic-workflow
-description: "KeepOnFirst multi-agent development workflow v2 (Antigravity + Nano Banana + Stitch + Jules). Includes INSIGHTS and WIREFRAME GATE phases for UI quality. Use ONLY when user explicitly mentions: 'KOF workflow', 'KOF agentic', 'keeponfirst workflow', 'keeponfirst agentic', or '/kof'."
+description: "KeepOnFirst multi-agent development workflow v2.4 (Antigravity + Nano Banana + Stitch + Jules). Includes INSIGHTS, WIREFRAME GATE, Stitch Vibe Design, and parallel Jules tasks. Use ONLY when user explicitly mentions: 'KOF workflow', 'KOF agentic', 'keeponfirst workflow', 'keeponfirst agentic', or '/kof'."
 ---
 
-# Agentic Workflow Skill (v2)
+# Agentic Workflow Skill (v2.4)
 
-An 8-phase development workflow that coordinates multiple AI agents to deliver high-quality features, with enhanced UI quality controls.
+An 8-phase development workflow that coordinates multiple AI agents to deliver high-quality features, with enhanced UI quality controls and updated toolchain integration.
 
 ## Pipeline
 
@@ -21,9 +21,9 @@ INSIGHTS(0) → PLAN(1) → WIREFRAME GATE(1.5) → ASSETS(2) → DESIGN(2.5) �
 | Agent | Role | Tool |
 |-------|------|------|
 | **Antigravity** | Orchestrator - plans, reviews, releases | This AI |
-| **Nano Banana** | Asset Generator - creates images | MCP |
-| **Stitch** | UI Designer - generates screens | MCP |
-| **Jules** | Cloud Coder - implements in background | CLI |
+| **Nano Banana** | Asset Generator - creates images | MCP / Prompt Files |
+| **Stitch** | UI Designer - generates screens (Vibe Design / Infinite Canvas) | MCP / Web |
+| **Jules** | Cloud Coder - implements in background (parallel supported) | CLI |
 
 ---
 
@@ -94,22 +94,26 @@ Create a modern illustration showing...
 
 ### Option B: Use Nano Banana MCP (Optional)
 
-> ⚠️ Gemini API Free Tier does NOT support image generation. Paid key required.
+> ⚠️ Gemini API Free Tier has strict quotas. Pro models are paid-only. Flash models may be available with rate limits.
 
 ```javascript
 nanobanana_generate_image({
   prompt: "...",
   output_path: "assets/generated/<feature>/hero.png",
-  model: "gemini-2.5-flash-image",
+  model: "gemini-3.1-flash-image-preview",
   aspect_ratio: "16:9"
 })
 ```
 
+> **Models**: `gemini-3.1-flash-image-preview` (default, fast) | `gemini-3-pro-image-preview` (high quality, paid)
+
 ---
 
-## Phase 2.5: DESIGN (Stitch MCP)
+## Phase 2.5: DESIGN (Stitch)
 
 **Output**: `stitch/designs/<feature>/`
+
+> **Stitch Modes**: Flash Mode (fast iteration) | Thinking Mode (deep reasoning, final) | Vibe Design (describe feeling, not structure)
 
 ### Phase 2.5-A: Structured Prompt Generation
 
@@ -122,6 +126,8 @@ nanobanana_generate_image({
    - `components`: 圓角 (Radius)、陰影 (Shadows)、字體 (Typography)
 3. **產出 Master Prompt**：包含所有 DNA 的全域描述
 4. **產出 Screen Prompts**：每個畫面獨立 Prompt，強制繼承 Design DNA
+
+> **Vibe Design alternative**: If you have a clear visual direction from INSIGHTS, use Stitch Vibe Design — describe business goals and desired feeling (e.g., "premium and minimalist, like Stripe") to generate design directions directly.
 
 ### Phase 2.5-B: Visual Audit & QA
 
@@ -152,6 +158,8 @@ IF Fail → Refinement Loop：
   4. 返回 Phase 2.5-B 再次審查
 ```
 
+**Code Export**: Stitch now exports HTML/CSS, React, Vue.js, Angular, Flutter, SwiftUI. Phase 3 CODE can use exports as starting point.
+
 **Artifacts**: `design_dna.json`, `master_prompt.md`, `screen_*.png`, `screen_*.html`, `audit_log.md`
 
 **Final Checklist**: Design DNA 符合 ✓, 一致性通過 ✓, CTA hierarchy ✓, Empty/Error states ✓
@@ -160,13 +168,12 @@ IF Fail → Refinement Loop：
 
 ## Phase 3: CODE
 
-**Default**: Jules CLI | **Optional**: Codex
+**Default**: Jules CLI (supports `--parallel` for concurrent sessions) | **Optional**: Codex
 
 1. Create task in `jules/tasks/`
-2. Submit: `jules new --repo ... "$(cat task.md)"`
+2. Submit: `jules remote new --repo ... "$(cat task.md)"` (omit `--repo` if in repo dir)
 3. Watch: `./scripts/agent.sh watch <session_id>`
-
-Input files must include design/asset paths.
+4. If Stitch produced code exports, reference them as Input Files
 
 ---
 
@@ -197,9 +204,9 @@ Include Release Snapshot: Completed items, Known limitations, Next steps.
 | 0 INSIGHTS | Market research, visual direction | Orchestrator |
 | 1 PLAN | Create spec, get approval | Orchestrator |
 | 1.5 WIREFRAME | Low-fi comparison, select | Orchestrator |
-| 2 ASSETS | Generate images | Nano Banana MCP |
-| 2.5 DESIGN | Design DNA → Audit → Refine Loop | Stitch MCP |
-| 3 CODE | Submit task, monitor | Jules CLI |
+| 2 ASSETS | Generate images | Nano Banana MCP / Prompt Files |
+| 2.5 DESIGN | Design DNA → Audit → Refine (Vibe Design optional) | Stitch MCP / Web |
+| 3 CODE | Submit task, monitor (parallel supported) | Jules CLI |
 | 4 REVIEW | Verify changes | Orchestrator |
 | 5 RELEASE | Commit and push | Orchestrator |
 

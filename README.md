@@ -14,7 +14,9 @@ An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano B
 
 If this project helps you, you can support development here:
 
-👉 https://buymeacoffee.com/keeponfirst
+<a href="https://www.buymeacoffee.com/keeponfirst" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="45" />
+</a>
 
 ---
 
@@ -31,6 +33,9 @@ Before using this skill, install the required CLI tools:
 # See: https://jules.google
 npm install -g @google/jules
 jules login
+
+# Or via Gemini CLI extension:
+# gemini extensions install jules
 ```
 
 ### Installation by IDE
@@ -87,14 +92,28 @@ KOF workflow add dark mode     # Natural language
 
 | Component | Description |
 |-----------|-------------|
-| `SKILL.md` | 5-phase workflow guide (PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
+| `SKILL.md` | 8-phase workflow guide (INSIGHTS → PLAN → WIREFRAME → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
 | `scripts/init.sh` | Initialize workflow structure in any project |
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
 | `templates/` | Human Gate & Tooling Checklist templates |
 
-### Workflow Enhancements (v2.2)
+### Workflow Enhancements (v2.4)
 
 This workflow now includes **8-phase pipeline** with enhanced UI quality controls:
+
+#### v2.4 Changes (May 17, 2026)
+| Enhancement | Description |
+|-------------|-------------|
+| **Stitch Vibe Design** | Phase 2.5 integrates Stitch's new Vibe Design mode for feeling-first UI generation |
+| **Stitch Mode Guidance** | Flash Mode (ideation) vs Thinking Mode (final) documented |
+| **Stitch Code Export** | Phase 3 can directly use Stitch's code export (React, Vue, Flutter, etc.) |
+| **Parallel Jules Tasks** | Phase 3 CODE supports `--parallel` for concurrent sessions |
+| **Jules Auto Repo Inference** | `--repo` flag optional when in repo directory |
+| **Updated CLI Syntax** | `jules remote new` replaces `jules new` |
+| **Updated Gemini Models** | `gemini-3.1-flash-image-preview` (default), `gemini-3-pro-image-preview` (paid) |
+| **Free Tier Guidance** | Updated Nano Banana free tier limitations (April 2026 changes) |
+| **Repo Cleanup** | BabyLog demo moved to `examples/`, experimental files cleaned |
+| **MCP Config** | `.mcp.json.example` now includes both Stitch and Nano Banana |
 
 #### v2.3 Changes (Feb 7, 2026)
 | Enhancement | Description |
@@ -185,8 +204,8 @@ The story behind this workflow:
 ```
 
 **Default Tools (Google Ecosystem)**:
-- **Design**: Stitch (via Gemini CLI or MCP)
-- **Code**: Jules CLI (cloud async execution)
+- **Design**: Stitch (Infinite Canvas, Vibe Design, Voice Canvas)
+- **Code**: Jules CLI (cloud async execution, parallel sessions)
 
 **Optional Alternatives**:
 - **Design**: Pencil (mobile apps, design systems)
@@ -194,6 +213,7 @@ The story behind this workflow:
 
 **MCP Configuration**:
 - Stitch MCP wrapper: [`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
+- Nano Banana MCP: [`kof-nanobanana-mcp`](https://github.com/keeponfirst/kof-nanobanana-mcp)
 - Example config: `.mcp.json.example`
 
 ---
@@ -208,8 +228,8 @@ This repo is designed around a **Google-first toolchain** with the following cor
 |-------|------|-------------|
 | Orchestrator | Antigravity | Planning, decision-making, coordinating Agents |
 | Agent (Asset) | Nano Banana | Design asset prompts for external generation |
-| Agent (Design) | Stitch (default) / Pencil (optional) | UI design and layout |
-| Agent (Code) | Jules CLI (default) / Codex CLI (optional) | Execute code tasks |
+| Agent (Design) | Stitch (default) / Pencil (optional) | UI design and layout (Vibe Design, Infinite Canvas) |
+| Agent (Code) | Jules CLI (default) / Codex CLI (optional) | Execute code tasks (parallel sessions supported) |
 | Adapter | `scripts/agent.sh` | Unified CLI entry point, bridging Orchestrator and Agents |
 
 ### agent.sh Positioning
@@ -234,8 +254,8 @@ Scripts in this repo **do not directly call external APIs** — you can safely e
 
 Actual Agent execution is done manually:
 - Nano Banana: Generate via Web/App using prepared prompts
-- Stitch: Use Gemini CLI `/stitch` command or MCP tools (default)
-- Jules CLI: Use `jules new` command (default)
+- Stitch: Use Stitch web (stitch.google.com), Gemini CLI `/stitch` command, or MCP tools (default)
+- Jules CLI: Use `jules remote new` command (default)
 - Optional: Pencil (via Cursor Extension) or Codex CLI
 
 This design lets you **dry-run** the entire workflow, confirm task content, then execute.
@@ -359,14 +379,14 @@ cd keeponfirst-agentic-workflow-starter
 ```bash
 ./scripts/agent.sh jules
 # Output: jules/tasks/*.md
-# Use: jules new "task description"
+# Use: jules remote new "task description"
 ```
 
 ### 6. Monitor Jules & Auto-Review (Optional)
 
 ```bash
 # Create Jules session
-jules new "implement feature X"
+jules remote new "implement feature X"
 
 # Get session ID
 jules remote list --session
@@ -470,9 +490,11 @@ This step confirms:
 
 ### Nano Banana Free Tier Limitation
 
-> ⚠️ **Important**: Gemini CLI's Nano Banana extension does **NOT** support Free Tier API keys for image generation.
+> ⚠️ **Important**: Gemini API Free Tier has **strict quota limits** for image generation models.
 
-The image generation models (`gemini-2.5-flash-preview-image`, `gemini-3-pro-image`) have **quota limit: 0** on Free Tier accounts.
+- **Pro models** (`gemini-3-pro-image-preview`): **Paid-only** since April 2026
+- **Flash models** (`gemini-3.1-flash-image-preview`): May be available with rate limits
+- Always check [Google AI Studio](https://aistudio.google.com) for your current quota
 
 **Current Solution: Browser Generation Hybrid Flow**
 
