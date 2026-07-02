@@ -1,81 +1,45 @@
-# keeponfirst-agentic-workflow-starter
+<div align="center">
 
-> 人不一定在場，任務也能前進。
+# KOF Agentic Workflow
 
-一套以 **Antigravity（主控）+ Nano Banana（瀏覽器自動化產圖）+ Stitch（UI 設計）+ Jules CLI（雲端程式執行）** 為核心的 Agentic Workflow 起手式。
+**人不一定在場，任務也能前進。**
 
-> **Google-first 概念**：預設工具來自 Google 生態系（Stitch + Jules CLI）。Pencil 和 Codex CLI 為可選替代方案。
+一套 8 階段的 Agentic 開發工作流，把 AI 開發工具組成一個分工團隊——
+規劃者、素材產生器、UI 設計師、雲端工程師——並在每個關鍵決策點設置人工審核關卡（Human Gate）。
 
-**[🚀 互動式新手引導 (Onboarding Guide)](../onboarding/index.html)**
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
+[![Version](https://img.shields.io/badge/version-v2.4-brightgreen.svg)](../../CHANGELOG.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](../../CONTRIBUTING.md)
 
----
+[快速開始](#-快速開始) •
+[運作方式](#-運作方式) •
+[安裝為-skill](#-安裝為-skill多-ide-支援) •
+[English](../../README.md)
 
-## ☕ 支持這個專案
-
-如果這個專案對你有幫助，歡迎請我喝杯咖啡：
-
-👉 https://buymeacoffee.com/keeponfirst
-
-<a href="https://www.buymeacoffee.com/keeponfirst" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="45" />
-</a>
+</div>
 
 ---
 
-## 🧩 安裝為 Skill（多 IDE 支援）
+## 為什麼做這個
 
-這套 workflow 可以安裝為 **全域 Skill**，支援多種 AI-powered IDE — 在任何專案中使用，無需 clone 整個 repo！
+大多數 AI 開發流程是同步的：下 prompt、等待、審查、重複。這套工作流把功能開發拆給多個專職 agent，讓工作**非同步**推進：
 
-### 前置需求
+- 🌙 **非同步協作** — 雲端 coding agent（Jules）在你睡覺時繼續工作；watcher 腳本會在完成時喚醒你的 orchestrator 進行審查
+- 🧯 **避免單點配額耗盡** — 規劃、產圖、設計、寫程式分散在不同工具上，各自有獨立配額
+- 🧾 **完整可追溯** — 每個 prompt、計畫、任務都是 repo 裡的版本化檔案，不會只存在於聊天視窗
+- ✅ **Human Gate** — 結構化的審核清單（範圍、線框、Design DNA），agent 永遠不會越過你的意圖
 
-使用此 skill 前，請先安裝必要的 CLI 工具：
+**適配你的工具組合。** Pipeline 本身與工具無關：預設組合是 Google-first（Antigravity + Nano Banana + Stitch + Jules CLI），但每條線都可以替換——Skill 可安裝到 **Antigravity、Cursor、Claude Code、Codex**，設計與程式端也可換用 Pencil / Codex CLI。
 
-```bash
-# Jules CLI（用於雲端程式執行）
-# 參考: https://jules.google
-npm install -g @google/jules
-jules login
-```
+## 🚀 快速開始
 
-### 各 IDE 安裝方式
-
-#### Antigravity
+一行指令安裝為全域 Skill（自動偵測 IDE）：
 
 ```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.gemini/antigravity/skills/
+curl -fsSL https://raw.githubusercontent.com/keeponfirst/keeponfirst-agentic-workflow-starter/main/scripts/install.sh | bash
 ```
 
-#### Cursor
-
-```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.cursor/skills/
-```
-
-> **說明**：Cursor 也可以加到 `.cursor/rules` 或專案層級的 `.cursorrules` 檔案。
-
-#### Claude Code (VS Code Extension)
-
-```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.claude/skills/
-```
-
-> **說明**：Claude Code 讀取 `~/.claude/` 或專案層級的 `.claude/` 目錄。
-
-#### OpenAI Codex App & CLI
-
-```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.codex/skills/
-```
-
-> **說明**：Codex CLI 讀取 `~/.codex/instructions.md` 或 `AGENTS.md`。將 `SKILL.md` 內容複製到相關檔案即可。
-
-### 使用方式
-
-安裝後，在任何 workspace 觸發 workflow：
+之後在任何專案觸發：
 
 ```
 /kof                           # 簡短觸發詞
@@ -83,456 +47,124 @@ KOF workflow 新增深色模式       # 自然語言
 用 KOF 開發新功能               # 中文也可以
 ```
 
-**觸發關鍵字**：`/kof`、`KOF workflow`、`KOF agentic`、`keeponfirst workflow`、`keeponfirst agentic`
-
-> 💡 **為什麼用 KOF？** 為了避免與其他 agentic 類型的 skill 衝突，我們特意使用專屬觸發詞。如果你想改成其他名稱，直接編輯 `SKILL.md` 中的 `description` 欄位即可。
-
-### Skill 內容
-
-| 元件 | 說明 |
-|------|------|
-| `SKILL.md` | 5 階段工作流程指南 (PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
-| `scripts/init.sh` | 在任何專案初始化 workflow 結構 |
-| `scripts/jules-watcher.sh` | 可攜式 Jules session 監控器 |
-| `templates/` | Human Gate 與 Tooling Checklist 範本 |
-
-### 工作流程強化 (v2.2)
-
-本套工作流程包含 **8 階段 Pipeline**，強化 UI 品質控制：
-
-#### v2.3 變更 (2026 年 2 月 7 日)
-| 強化項目 | 說明 |
-|----------|------|
-| **Stitch 三階段工作流程** | Design DNA → 視覺審查 → 迭代修正迴圈 |
-| **Design DNA 契約** | `design_dna.json` 包含色彩、元件規範、禁用色 |
-| **視覺審查 & QA** | 一致性檢查、色彩準確度、元件完整性 |
-| **迭代修正迴圈** | 自動生成修正指令，直到通過為止 |
-
-#### v2.2 變更 (2026 年 2 月 6 日)
-| 強化項目 | 說明 |
-|----------|------|
-| **Phase 0: INSIGHTS** | Planning 前的市場洞察與視覺方向收斂 |
-| **Phase 1.5: WIREFRAME GATE** | Design 前的低保真線框比較 |
-| **Phase 2 ASSETS 重構** | Prompt 檔案為預設；Nano Banana MCP 為可選 |
-| **新目錄** | `research/`、`wireframes/` 存放新階段產出 |
-| **Prompt 模板** | `prompts/antigravity/*.md`（insights, plan, wireframe_gate）|
-
-#### v2.1 變更 (2026 年 2 月 5 日)
-| 強化項目 | 說明 |
-|----------|------|
-| **文件同步** | Phase 5 RELEASE 新增文件同步步驟 |
-
-#### v2 核心檢查點
-| 強化項目 | 說明 |
-|----------|------|
-| **決策快照** | PLAN 階段摘要：已核准範圍、Open Questions |
-| **Human Gate 範本** | 結構化核准（功能範圍/視覺風格/資料模型/風險） |
-| **Design Verified Checklist** | Light/Dark Mode、核心元件、out-of-scope 刪除清單 |
-| **tokens.json 契約** | 設計系統 token（colors, typography, spacing, cornerRadius） |
-| **Stitch Clean Room** | 元素刪除清單 + HTML vs. 截圖衝突註記 |
-| **REVIEW 範圍規則** | 僅 bug/偏差修正；範圍變更回 PLAN |
-| **驗收快照** | 已完成/未完成驗收項目、已知限制、下一步建議 |
-
-### 在新專案初始化 Workflow
+選用——雲端程式執行需安裝 Jules CLI：
 
 ```bash
-# 從 skill 目錄執行（以 Antigravity 為例）
-bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /path/to/your/project
+npm install -g @google/jules && jules login
 ```
 
-這會建立：`plans/`、`jules/tasks/`、`nanobanana/queue/`、`assets/generated/`、`templates/`
+## 🔄 運作方式
 
----
-
-## 我為什麼做這個 Repo
-
-這套 workflow 的誕生過程：
-
-1. **訂閱 Gemini Pro** → 開始研究 Google 生態系的 AI 工具
-2. **發現 Gemini CLI** → 嘗試用來產圖、做素材；但很快就遇到 **quota limit**
-3. **看到 Jules 開放試用** → 發現每日 100 tasks 的雲端 executor 潛力
-4. **整合思路成形** → Antigravity 做主控規劃、Gemini CLI 只負責輕量產圖（Nano Banana 策略）、Jules 處理需要時間的程式任務
-
-**核心價值：**
-- **非同步協作**：人睡覺時，Jules 還在工作
-- **避免單點 Quota 崩潰**：分散任務到不同工具
-- **可追溯**：所有 prompt 和 task 都有留存
-
----
-
-## 工作流程 Pipeline
-
-| 階段 | 預設工具 | 可選工具 | 職責 |
-|------|---------|---------|------|
-| **PLAN** | Antigravity | - | 規劃、決策 |
-| **ASSETS** | Nano Banana | - | 產生圖片、Icon、UI 素材 |
-| **DESIGN** | Stitch (Google) | Pencil | UI layout、wireframe、設計系統 |
-| **CODE** | Jules CLI (Google) | Codex CLI | 實作 UI、寫程式、重構 |
-| **REVIEW** | Antigravity | - | Code review、品質檢查 |
-| **RELEASE** | Antigravity | - | Release notes、版本 tag |
-
-```
-┌─────────────────┐
-│   Antigravity   │  ← 你的大腦延伸，做規劃與決策
-│  (Orchestrator) │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌───────┐  ┌───────┐
-│素材產出│  │設計+程式│  ← Executors，各司其職
-│       │  │       │
-└───────┘  └───────┘
-    │           │
-    ▼           ▼
- assets/    程式碼
+```mermaid
+flowchart LR
+    subgraph Orchestrator
+        A[0 INSIGHTS] --> B[1 PLAN] --> C[1.5 WIREFRAME GATE]
+    end
+    C --> D[2 ASSETS<br/>Nano Banana]
+    C --> E[2.5 DESIGN<br/>Stitch]
+    D --> F[3 CODE<br/>Jules CLI]
+    E --> F
+    F --> G[4 REVIEW] --> H[5 RELEASE]
 ```
 
-**預設工具（Google 生態系）**：
-- **設計**：Stitch（透過 Gemini CLI 或 MCP）
-- **程式**：Jules CLI（雲端非同步執行）
+| 階段 | 內容 | 預設 Agent | 替代方案 |
+|------|------|-----------|---------|
+| **0 · INSIGHTS** | 市場洞察、視覺方向（A/B/C） | Orchestrator | — |
+| **1 · PLAN** | 範圍、技術設計、Decision Snapshot | Orchestrator | — |
+| **1.5 · WIREFRAME GATE** | 上色前的低保真結構比較 | Orchestrator | — |
+| **2 · ASSETS** | 圖片、icon、插畫 | Nano Banana | 任何產圖模型 |
+| **2.5 · DESIGN** | Design DNA → 視覺審查 → 修正迴圈 | Stitch | Pencil |
+| **3 · CODE** | 實作（支援平行雲端 session） | Jules CLI | Codex CLI |
+| **4 · REVIEW** | Diff 審查、UI 驗證 | Orchestrator | — |
+| **5 · RELEASE** | Release Snapshot、commit、文件同步 | Orchestrator | — |
 
-**可選替代方案**：
-- **設計**：Pencil（移動 app、設計系統）
-- **程式**：Codex CLI（本地執行）
+每個階段結束於一個 **Human Gate**——由你核准的結構化清單，agent 才能繼續。純邏輯任務可跳過視覺階段（0、1.5、2.5）。
 
-**MCP 設定**：
-- Stitch MCP wrapper：[`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
-- 設定範例：`.mcp.json.example`
+沿途的關鍵設計契約：
 
----
+- **`design_dna.json`** — 色盤（精確 HEX + 禁用色）、字體、圓角；所有畫面 prompt 強制繼承
+- **視覺審查（Visual Audit）** — 產出的設計會對照 DNA 檢查（導覽一致性、色彩準確度、元件完整性），不通過就自動生成修正 prompt 重跑
+- **任務檔案** — 程式工作先寫進 `jules/tasks/*.md`，你先審過任務內容，agent 才執行
 
-## Execution Model
+## 🧩 安裝為 Skill（多 IDE 支援）
 
-本 repo 基於 **Google-first 工具鏈**設計，核心概念如下：
+上面的安裝腳本會自動處理。手動安裝則是把 `skills/keeponfirst-agentic-workflow/` 複製到 IDE 的 skills 目錄：
 
-### 角色定義
+| IDE | Skill 目錄 |
+|-----|-----------|
+| Antigravity | `~/.gemini/antigravity/skills/` |
+| Cursor | `~/.cursor/skills/`（或從 `.cursor/rules` 引用） |
+| Claude Code | `~/.claude/skills/`（或專案層級 `.claude/skills/`） |
+| OpenAI Codex | `~/.codex/skills/`（或將 `SKILL.md` 內容併入 `AGENTS.md`） |
 
-| 層級 | 角色 | 說明 |
-|------|------|------|
-| Orchestrator | Antigravity | 規劃、決策、協調各 Agent |
-| Agent (Asset) | Nano Banana | 透過瀏覽器自動化執行產圖任務 |
-| Agent (Design) | Stitch（預設）/ Pencil（可選） | UI 設計與 layout |
-| Agent (Code) | Jules CLI（預設）/ Codex CLI（可選） | 執行程式碼任務 |
-| Adapter | `scripts/agent.sh` | CLI 統一入口，銜接 Orchestrator 與 Agents |
+**觸發關鍵字**：`/kof`、`KOF workflow`、`KOF agentic`、`keeponfirst workflow`——刻意使用專屬詞避免和其他 agentic skill 衝突。想改名就編輯 `SKILL.md` 的 `description` 欄位。
 
-### agent.sh 的定位
+## 📦 作為專案起手式使用
 
-`agent.sh` 是 **Orchestrator Adapter**，不是單一工具：
-
-- **plan**：產生規劃模板（供 Antigravity 使用）
-- **assets**：準備產圖任務到 `nanobanana/queue/`（供 Gemini CLI 執行）
-- **design**：準備設計任務到 `stitch/queue/`（供 Stitch 執行，預設）
-- **jules**：準備程式任務到 `jules/tasks/`（供 Jules CLI 執行，預設）
-- **verify**：驗證專案結構
-
-### 預設安全模式
-
-本 repo 的腳本 **不會直接呼叫外部 API**，你可以安全地執行所有指令：
-
-```bash
-./scripts/agent.sh plan    # 產生 PLAN.md 模板，不消耗 quota
-./scripts/agent.sh assets  # 產生任務 queue，不消耗 quota
-./scripts/agent.sh jules   # 產生任務檔案，不消耗 quota
-```
-
-實際執行 Agent 是由你手動進行：
-- Gemini CLI：透過瀏覽器自動化產圖
-- Stitch：使用 Gemini CLI `/stitch` 命令或 MCP tools（預設）
-- Jules CLI：使用 `jules new` 命令（預設）
-- 可選：Pencil（透過 Cursor Extension）或 Codex CLI
-
-這樣的設計讓你可以先 **dry-run** 整個流程，確認任務內容正確後再執行。
-
-> **簡單說**：`agent.sh` 是「任務準備工具」。它只負責產生 plan、prompts、tasks 等檔案，不會呼叫 Gemini API 也不會觸發 Jules。你可以放心執行，不會消耗任何 quota。
-
-### 關於 API Key 與登入
-
-Gemini CLI 和 Jules **不一定需要手動設定 API Key**：
-
-- **多數情況**：安裝後登入 Google 帳戶即可使用
-- **API Key 主要用於**：非互動式環境、自動化腳本、或特定 API 呼叫
-
-本 repo 的 `.env.example` 提供 API Key 設定欄位，但這**並非必要條件**。如果你只是互動式使用 Gemini CLI 或 Jules，登入即可開始。
-
----
-
-## 實際使用流程
-
-> 💡 **重點**：日常使用時，你只需要對 Antigravity 下指令。腳本是輔助工具，不是必須手動執行。
-
-### 啟動 Workflow
-
-對 Antigravity（如本 IDE）說以下任一指令：
-
-```
-/workflow 幫我新增一個「暗黑模式切換」功能
-```
-
-```
-按照 agentic workflow 幫我實作一個收藏功能
-```
-
-```
-使用這個 repo 的 workflow 開發 XXX
-```
-
-Antigravity 會自動執行完整的 **PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE** 流程。
-
-> **預設工具**：Stitch（設計）+ Jules CLI（程式）— 兩者皆為 Google 生態系。
-
-### 典型工作流程（手動）
-
-1. **在 Antigravity 中描述需求**
-   ```
-   我要新增一個 Tag Selector 功能，請幫我規劃並產生 Jules task
-   ```
-
-2. **Antigravity 會自動**：
-   - 產生 `PLAN.md`
-   - 如需產圖，準備 prompts 到 `nanobanana/queue/`
-   - 如需設計，準備設計任務到 `stitch/queue/`（預設：Stitch）
-   - 準備程式任務到 `jules/tasks/`（預設：Jules CLI）
-
-3. **提交 Jules 任務後，對 Antigravity 說**：
-   ```
-   我已經提交 Jules task，session ID 是 123456，請幫我監控
-   ```
-
-4. **Antigravity 執行 watch**，Jules 完成後自動進入 Review
-
-5. **Review 完成後**：
-   ```
-   確認無誤，請幫我整理 commit message 並提交
-   ```
-
-### 腳本用途說明
-
-`scripts/agent.sh` 是給進階使用者或自動化場景使用：
-
-| 指令 | 用途 | 通常何時用 |
-|------|------|-----------|
-| `plan` | 產生 PLAN.md 模板 | Antigravity 會自動呼叫 |
-| `assets` | 準備產圖任務 | Antigravity 會自動呼叫 |
-| `design` | 準備設計任務（Stitch） | Antigravity 會自動呼叫 |
-| `jules` | 準備程式任務（Jules CLI） | Antigravity 會自動呼叫 |
-| `watch <id>` | 監控 Jules session | Antigravity 會自動呼叫，或手動執行 |
-| `stitch-setup` | 首次設定 Stitch extension | 執行一次以設定 GCP Project ID |
-| `stitch-check` | 檢查 Stitch MCP 連線狀態 | 排除 MCP 連線問題時 |
-| `verify` | 驗證專案結構 | CI 或手動檢查時 |
-
----
-
-## 快速開始（初次設定）
-
-### 1. Clone & Bootstrap
+Clone（或用 template）取得完整鷹架——prompt 庫、任務佇列、自動化腳本：
 
 ```bash
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
 cd keeponfirst-agentic-workflow-starter
-
-# 初始化資料夾與環境變數
 ./scripts/bootstrap.sh
 ```
 
-### 2. 產生一份 Plan
+`scripts/agent.sh` 是 orchestrator 的 adapter——它只**準備**任務檔案，不會呼叫任何外部 API，所以每個指令都是安全的 dry-run、零配額消耗：
 
 ```bash
-./scripts/agent.sh plan
-# 輸出：PLAN.md
+./scripts/agent.sh plan          # 產生 PLAN.md 模板
+./scripts/agent.sh assets        # 排入產圖任務 → nanobanana/queue/
+./scripts/agent.sh design        # 排入設計任務 → stitch/queue/
+./scripts/agent.sh jules         # 排入程式任務 → jules/tasks/
+./scripts/agent.sh watch <id>    # 監控 Jules session，完成後自動進入審查
+./scripts/agent.sh verify        # 驗證結構與敏感資訊掃描
 ```
 
-### 3. 產生產圖任務（給 Gemini CLI）
+實際執行發生在各 agent 端（Stitch web/MCP、`jules remote new`、Gemini web）——你先審過準備好的任務檔，再執行。
 
-```bash
-./scripts/agent.sh assets
-# 輸出：nanobanana/queue/*.md
-# 你可以用 Gemini CLI 逐一執行
-```
-
-### 4. 產生設計任務（給 Stitch，可選）
-
-```bash
-./scripts/agent.sh design
-# 輸出：stitch/queue/*.md
-# 使用 Gemini CLI /stitch 命令或 MCP tools
-```
-
-### 5. 產生程式任務（給 Jules CLI）
-
-```bash
-./scripts/agent.sh jules
-# 輸出：jules/tasks/*.md
-# 使用：jules new "task description"
-```
-
-### 6. 監控 Jules 並自動 Review（可選）
-
-```bash
-# 建立 Jules session
-jules new "implement feature X"
-
-# 取得 session ID
-jules remote list --session
-
-# 啟動監控 - 完成後自動喚醒 Antigravity agent 進行 Review
-./scripts/agent.sh watch <session_id>
-```
-
-`watch` 命令會：
-- 每 30 秒輪詢 Jules session 狀態
-- 偵測到 completed 後自動執行 `jules remote pull --apply`
-- 使用 `agy chat --mode agent` 喚醒 Antigravity 進行 code review
-- 發送系統通知
-
-### 7. 驗證專案結構
-
-```bash
-./scripts/agent.sh verify
-```
-
----
-
-## 快速驗證（Optional）
-
-完成 Quick Start 後，可執行以下指令確認環境正確：
-
-```bash
-# 檢查 Gemini CLI 是否已安裝（可選，僅供確認）
-gemini --version
-
-# 驗證專案結構與安全性
-./scripts/agent.sh verify
-```
-
-這一步的目的是確認：
-- 專案目錄結構完整
-- 沒有敏感資訊被意外 commit
-- 環境設定正確
-
-> **注意**：`gemini --version` 只是確認工具已安裝，不會消耗 quota。如果你尚未安裝 Gemini CLI，可以跳過此步驟。
-
----
-
-## 目錄結構
+日常使用不需要碰腳本，直接對 orchestrator 說話即可：
 
 ```
-.
-├── docs/                  # 工作流程文件
-│   ├── ARCHITECTURE.md    # 架構演進故事
-│   ├── WORKFLOW.md        # 標準流程
-│   ├── STITCH_INTEGRATION.md   # Stitch MCP 整合指南
-│   ├── PENCIL_MCP_SETUP.md     # Pencil MCP 設定（可選）
-│   ├── PROS_CONS.md       # 優缺點分析
-│   ├── QUOTA_STRATEGY.md  # Quota 控制策略
-│   └── SECURITY.md        # 安全實踐
-│
-├── prompts/               # 可直接使用的 Prompt 模板
-│   ├── antigravity/       # 給 Orchestrator 的 prompts
-│   ├── gemini-cli/        # 給 Gemini CLI 的產圖 prompts
-│   ├── stitch/            # 給 Stitch 的設計任務模板
-│   └── jules/             # 給 Jules CLI 的任務模板
-│
-├── scripts/               # 自動化腳本
-│   ├── agent.sh           # 單一入口
-│   ├── bootstrap.sh       # 初始化
-│   ├── watcher.sh         # Jules session 監控器
-│   ├── stitch_auth.py     # Stitch 認證輔助工具
-│   └── check_secrets.sh   # 敏感資訊檢查
-│
-├── skills/                # Antigravity Skill 套件
-│   └── keeponfirst-agentic-workflow/
-│
-├── examples/              # 範例
-│   └── feature_tag_selector/
-│
-├── nanobanana/queue/      # Gemini CLI 任務佇列
-├── assets/generated/      # 產出的素材
-├── stitch/                # Stitch 設計檔案
-│   ├── queue/             # 設計任務佇列
-│   ├── designs/           # 產出的設計
-│   └── completed/         # 已完成的設計請求
-└── jules/tasks/           # Jules CLI 任務佇列
+/kof 我想做一個 Tag Selector 功能，請規劃並建立 Jules 任務
+...
+Jules 任務已送出，session ID 是 123456，請幫我監控
 ```
 
----
+Watcher 會輪詢 session，完成時以 `jules remote pull --apply` 套用結果並通知你審查。
 
-## 文件導覽
+## 📚 文件
 
 | 文件 | 說明 |
 |------|------|
-| [ARCHITECTURE.md](../ARCHITECTURE.md) | 這套 workflow 怎麼演進來的 |
-| [WORKFLOW.md](../WORKFLOW.md) | 標準 Feature Pipeline |
+| [ARCHITECTURE.md](../ARCHITECTURE.md) | 這套工作流的演進過程 |
+| [WORKFLOW.md](../WORKFLOW.md) | 標準功能開發流程細節 |
 | [STITCH_INTEGRATION.md](../STITCH_INTEGRATION.md) | Stitch UI 設計整合 |
-| [STITCH_MCP_RUN_LOG.md](../STITCH_MCP_RUN_LOG.md) | Stitch MCP 使用範例（BabyLog） |
-| [PENCIL_MCP_SETUP.md](../PENCIL_MCP_SETUP.md) | Pencil MCP 設定（可選） |
-| [PENCIL_MCP_AUTO_SETUP.md](../PENCIL_MCP_AUTO_SETUP.md) | Pencil Extension 如何自動註冊 MCP |
-| [PENCIL_NEXT_STEPS.md](../PENCIL_NEXT_STEPS.md) | Pencil 進階用法與程式碼轉換 |
-| [PROS_CONS.md](../PROS_CONS.md) | 優缺點與適用情境 |
-| [QUOTA_STRATEGY.md](../QUOTA_STRATEGY.md) | Quota 控制策略 |
+| [STITCH_MCP_RUN_LOG.md](../STITCH_MCP_RUN_LOG.md) | Stitch MCP 實測紀錄（BabyLog 範例） |
+| [PENCIL_MCP_SETUP.md](../PENCIL_MCP_SETUP.md) | Pencil MCP 設定（選用的設計替代方案） |
+| [PENCIL_NEXT_STEPS.md](../PENCIL_NEXT_STEPS.md) | Pencil 進階用法與程式碼產生 |
+| [PROS_CONS.md](../PROS_CONS.md) | 誠實的取捨分析與適用場景 |
+| [QUOTA_STRATEGY.md](../QUOTA_STRATEGY.md) | 配額分散策略 |
 | [SECURITY.md](../SECURITY.md) | API Key 安全管理 |
-| [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) | 常見問題排除（quota、Jules、重試） |
+| [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) | 常見問題（配額、Jules、重試） |
+| [CHANGELOG.md](../../CHANGELOG.md) | 版本歷史（v1.0 → v2.4） |
 
----
+**MCP 整合**：[`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp) · [`kof-nanobanana-mcp`](https://github.com/keeponfirst/kof-nanobanana-mcp) · 設定範例見 [`.mcp.json.example`](../../.mcp.json.example)
 
-## 已知限制
+## ⚠️ 已知限制
 
-### Nano Banana Free Tier 限制
+- **Nano Banana 免費層** — Gemini 產圖模型的免費層配額嚴格（Pro 模型自 2026 年 4 月起僅付費可用）。預設採用瀏覽器產圖混合流程：orchestrator 準備 prompt 檔案、以瀏覽器自動化操作 [Gemini web](https://gemini.google.com)，失敗時退回手動產圖（以 `/kof resume` 或「圖產好了」續跑）。詳見 [QUOTA_STRATEGY.md](../QUOTA_STRATEGY.md)。
+- **`agy chat` 無法自動執行 prompt** — Jules session 完成後，watcher 只能打開 Antigravity 視窗，需手動請它進行審查。期待上游改進。
 
-> ⚠️ **重要**：Gemini CLI 的 Nano Banana 擴充套件在 Free Tier API Key 下**無法**使用圖片生成功能。
+## 🤝 貢獻
 
-**當前方案：Browser Generation Hybrid Flow**
+歡迎貢獻 prompt、範例與 IDE adapter——見 [CONTRIBUTING.md](../../CONTRIBUTING.md)。
 
-```mermaid
-flowchart LR
-    A[Phase 2A: Prompt Design] --> B{已登入?}
-    B -->|是| C[Phase 2B: Browser Generation]
-    B -->|否| D[用戶登入 Google]
-    D --> C
-    C --> E[Phase 2C: Asset Validation]
-```
+## ☕ 支持
 
-1. **Phase 2A**：Antigravity 在 `nanobanana/queue/` 建立詳細的 `.prompt.md` 檔案
-2. **Phase 2B**：Antigravity 使用 `browser_subagent` ：
-   - 在瀏覽器中開啟 [Gemini 網頁版](https://gemini.google.com)
-   - **檢查登入狀態**：若未登入，Antigravity 會暫停並請您在該視窗完成登入
-   - 提交 prompt 並等待圖片生成
-   - 透過 element screenshot 擷取生成的圖片
-3. **Phase 2C**：Antigravity 驗證素材並將 prompt 移到 `completed/`
+如果這個專案幫你省下時間，歡迎請我喝杯咖啡：
 
-**Fallback（手動模式）**：如果瀏覽器自動化失敗：
-- 用戶在 Gemini 手動產圖
-- 完成後告訴 Antigravity：「圖產好了」或 "/kof resume"
+<a href="https://www.buymeacoffee.com/keeponfirst" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="40" alt="Buy Me a Coffee" /></a>
 
-**恢復關鍵字**：`/kof resume`、`圖產好了`、`assets ready`
+## 📄 授權
 
----
-
-### agy chat 無法自動執行 prompt
-
-目前 `agy chat` CLI 只能**開啟視窗**，但**無法自動填入並執行 prompt**。
-
-```bash
-# 這個命令只會開啟 Antigravity，不會執行 prompt
-agy chat --mode agent "請幫我 review"
-```
-
-**影響**：
-- Watch 命令完成後，無法自動喚醒 Antigravity 執行 Review
-- 需要手動對 Antigravity 說：「請 review 剛才 Jules 完成的變更」
-
-**期望的未來改進**：
-- Antigravity CLI 支援直接發送 prompt 並執行
-- 或提供 extension API 讓第三方 extension 可以控制 chat
-
----
-
-## License
-
-MIT License - 詳見 [LICENSE](../../LICENSE)
-
----
-
-## Contributing
-
-歡迎貢獻 prompts 和 examples！詳見 [CONTRIBUTING.md](../../CONTRIBUTING.md)
+[MIT](../../LICENSE)

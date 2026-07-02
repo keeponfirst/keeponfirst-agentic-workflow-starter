@@ -1,553 +1,203 @@
-# keeponfirst-agentic-workflow-starter
+<div align="center">
 
-> Tasks keep moving forward, even when you're not around.
+# KOF Agentic Workflow
 
-An Agentic Workflow starter kit powered by **Antigravity (Orchestrator) + Nano Banana (Asset Generation) + Stitch (UI Design) + Jules CLI (Cloud Code Execution)**.
+**Tasks keep moving forward, even when you're not around.**
 
-> **Google-first concept**: Default tools are from Google ecosystem (Stitch + Jules CLI). Pencil and Codex CLI are optional alternatives.
+An 8-phase agentic development workflow that turns AI coding tools into a coordinated team —
+a planner, an asset generator, a UI designer, and a cloud coder — with human approval gates at every critical decision.
 
-**[🚀 Interactive Onboarding Guide](docs/onboarding/index.html)** | **[🇹🇼 繁體中文版](docs/zh-TW/README.md)**
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-v2.4-brightgreen.svg)](CHANGELOG.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](CONTRIBUTING.md)
+[![GitHub stars](https://img.shields.io/github/stars/keeponfirst/keeponfirst-agentic-workflow-starter?style=social)](https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter/stargazers)
+
+[Quick Start](#-quick-start) •
+[How It Works](#-how-it-works) •
+[Install as Skill](#-install-as-a-skill-multi-ide) •
+[Docs](#-documentation) •
+[🇹🇼 繁體中文](docs/zh-TW/README.md)
+
+</div>
 
 ---
 
-## ☕ Support this project
+## Why this exists
 
-If this project helps you, you can support development here:
+Most AI coding sessions are synchronous: you prompt, you wait, you review, you repeat.
+This workflow splits feature development across specialized agents so work continues **asynchronously**:
 
-<a href="https://www.buymeacoffee.com/keeponfirst" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="45" />
-</a>
+- 🌙 **Async collaboration** — cloud coding agents (Jules) keep working while you sleep; a watcher script wakes your orchestrator for review when they finish
+- 🧯 **No single-point quota failures** — planning, asset generation, design, and coding run on different tools with independent quotas
+- 🧾 **Full traceability** — every prompt, plan, and task is a versioned file in your repo; nothing lives only in a chat window
+- ✅ **Human gates** — structured approval checkpoints (scope, wireframe, design DNA) so agents never run past your intent
 
----
+**Works with your stack.** The pipeline is tool-agnostic: the default lineup is Google-first (Antigravity + Nano Banana + Stitch + Jules CLI), but each lane is swappable — the skill installs into **Antigravity, Cursor, Claude Code, or Codex**, and Pencil / Codex CLI slot in as design/code alternatives.
 
-## 🧩 Install as Skill (Multi-IDE Support)
+## 🚀 Quick Start
 
-This workflow can be installed as a **global Skill** for multiple AI-powered IDEs — use it in any project without cloning this repo!
-
-### Prerequisites
-
-Before using this skill, install the required CLI tools:
+Install the workflow as a global skill (auto-detects your IDE):
 
 ```bash
-# Jules CLI (for cloud code execution)
-# See: https://jules.google
-npm install -g @google/jules
-jules login
-
-# Or via Gemini CLI extension:
-# gemini extensions install jules
+curl -fsSL https://raw.githubusercontent.com/keeponfirst/keeponfirst-agentic-workflow-starter/main/scripts/install.sh | bash
 ```
 
-### Installation by IDE
+Then trigger it in any project:
 
-#### Antigravity
+```
+/kof                           # shorthand trigger
+KOF workflow add dark mode     # natural language
+用 KOF 開發新功能               # Chinese works too
+```
+
+Optional — for cloud code execution, install the Jules CLI:
 
 ```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.gemini/antigravity/skills/
+npm install -g @google/jules && jules login
 ```
 
-#### Cursor
+> Prefer a full project scaffold instead? See [Use as a project starter](#-use-as-a-project-starter).
 
-```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.cursor/skills/
+## 🔄 How It Works
+
+```mermaid
+flowchart LR
+    subgraph Orchestrator
+        A[0 INSIGHTS] --> B[1 PLAN] --> C[1.5 WIREFRAME GATE]
+    end
+    C --> D[2 ASSETS<br/>Nano Banana]
+    C --> E[2.5 DESIGN<br/>Stitch]
+    D --> F[3 CODE<br/>Jules CLI]
+    E --> F
+    F --> G[4 REVIEW] --> H[5 RELEASE]
 ```
 
-> **Note**: For Cursor, you may also add this to `.cursor/rules` or project-level `.cursorrules` file.
+| Phase | What happens | Default agent | Alternative |
+|-------|--------------|---------------|-------------|
+| **0 · INSIGHTS** | Market research, visual direction (A/B/C) | Orchestrator | — |
+| **1 · PLAN** | Scope, technical design, decision snapshot | Orchestrator | — |
+| **1.5 · WIREFRAME GATE** | Low-fi structure comparison before styling | Orchestrator | — |
+| **2 · ASSETS** | Images, icons, illustrations | Nano Banana | any image model |
+| **2.5 · DESIGN** | Design DNA → Visual Audit → Refinement Loop | Stitch | Pencil |
+| **3 · CODE** | Implementation (parallel cloud sessions) | Jules CLI | Codex CLI |
+| **4 · REVIEW** | Diff review, UI verification | Orchestrator | — |
+| **5 · RELEASE** | Release snapshot, commit, docs sync | Orchestrator | — |
 
-#### Claude Code (VS Code Extension)
+Each phase ends with a **Human Gate** — a structured checklist you approve before agents proceed.
+Logic-only tasks skip the visual phases (0, 1.5, 2.5).
 
-```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.claude/skills/
-```
+Key design contracts along the way:
 
-> **Note**: Claude Code reads from `~/.claude/` or project-level `.claude/` directory.
+- **`design_dna.json`** — color palette (exact HEX + forbidden colors), typography, radii; every screen prompt inherits it
+- **Visual Audit** — generated designs are checked against the DNA (nav consistency, color accuracy, component integrity) and auto-refined until they pass
+- **Task files** — code work is written to `jules/tasks/*.md` first, so you review the brief before any agent runs
 
-#### OpenAI Codex App & CLI
+## 🧩 Install as a Skill (Multi-IDE)
 
-```bash
-git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
-cp -r keeponfirst-agentic-workflow-starter/skills/keeponfirst-agentic-workflow ~/.codex/skills/
-```
+The installer above handles this automatically. To install manually, copy `skills/keeponfirst-agentic-workflow/` into your IDE's skills directory:
 
-> **Note**: Codex CLI can read instructions from `~/.codex/instructions.md` or `AGENTS.md`. Copy `SKILL.md` content to relevant file.
+| IDE | Skill directory |
+|-----|-----------------|
+| Antigravity | `~/.gemini/antigravity/skills/` |
+| Cursor | `~/.cursor/skills/` (or reference from `.cursor/rules`) |
+| Claude Code | `~/.claude/skills/` (or project-level `.claude/skills/`) |
+| OpenAI Codex | `~/.codex/skills/` (or copy `SKILL.md` into `AGENTS.md`) |
 
-### Usage
+**Trigger keywords:** `/kof`, `KOF workflow`, `KOF agentic`, `keeponfirst workflow` — deliberately specific to avoid clashing with other agentic skills. Edit the `description` field in `SKILL.md` to change them.
 
-Once installed, trigger the workflow in any workspace:
-
-```
-/kof                           # Shorthand trigger
-KOF workflow add dark mode     # Natural language
-用 KOF 開發新功能               # Chinese also works
-```
-
-**Trigger Keywords**: `/kof`, `KOF workflow`, `KOF agentic`, `keeponfirst workflow`, `keeponfirst agentic`
-
-> 💡 **Why KOF?** We use specific trigger keywords to avoid conflicts with other agentic-type skills. Want different keywords? Just edit the `description` field in `SKILL.md`.
-
-### What the Skill Provides
+The skill package contains:
 
 | Component | Description |
 |-----------|-------------|
-| `SKILL.md` | 8-phase workflow guide (INSIGHTS → PLAN → WIREFRAME → ASSETS → DESIGN → CODE → REVIEW → RELEASE) |
-| `scripts/init.sh` | Initialize workflow structure in any project |
+| `SKILL.md` | The 8-phase workflow guide agents follow |
+| `scripts/init.sh` | Initialize the workflow structure in any project |
 | `scripts/jules-watcher.sh` | Portable Jules session monitor |
-| `templates/` | Human Gate & Tooling Checklist templates |
+| `templates/` | Human Gate & tooling checklist templates |
 
-### Workflow Enhancements (v2.4)
+## 📦 Use as a project starter
 
-This workflow now includes **8-phase pipeline** with enhanced UI quality controls:
-
-#### v2.4 Changes (May 17, 2026)
-| Enhancement | Description |
-|-------------|-------------|
-| **Stitch Vibe Design** | Phase 2.5 integrates Stitch's new Vibe Design mode for feeling-first UI generation |
-| **Stitch Mode Guidance** | Flash Mode (ideation) vs Thinking Mode (final) documented |
-| **Stitch Code Export** | Phase 3 can directly use Stitch's code export (React, Vue, Flutter, etc.) |
-| **Parallel Jules Tasks** | Phase 3 CODE supports `--parallel` for concurrent sessions |
-| **Jules Auto Repo Inference** | `--repo` flag optional when in repo directory |
-| **Updated CLI Syntax** | `jules remote new` replaces `jules new` |
-| **Updated Gemini Models** | `gemini-3.1-flash-image-preview` (default), `gemini-3-pro-image-preview` (paid) |
-| **Free Tier Guidance** | Updated Nano Banana free tier limitations (April 2026 changes) |
-| **Repo Cleanup** | BabyLog demo moved to `examples/`, experimental files cleaned |
-| **MCP Config** | `.mcp.json.example` now includes both Stitch and Nano Banana |
-
-#### v2.3 Changes (Feb 7, 2026)
-| Enhancement | Description |
-|-------------|-------------|
-| **Stitch 3-Phase Workflow** | Design DNA → Visual Audit → Refinement Loop |
-| **Design DNA Contract** | `design_dna.json` with color palette, components, negative constraints |
-| **Visual Audit & QA** | Consistency check, color accuracy, component integrity |
-| **Refinement Loop** | Auto-generated correction prompts until pass |
-
-#### v2.2 Changes (Feb 6, 2026)
-| Enhancement | Description |
-|-------------|-------------|
-| **Phase 0: INSIGHTS** | Market research & visual direction before planning |
-| **Phase 1.5: WIREFRAME GATE** | Low-fidelity wireframe comparison before design |
-| **Phase 2 ASSETS refactor** | Prompt files are now default; Nano Banana MCP is optional |
-| **New directories** | `research/`, `wireframes/` for new phase outputs |
-| **Prompt templates** | `prompts/antigravity/*.md` for insights, plan, wireframe_gate |
-
-#### v2.1 Changes (Feb 5, 2026)
-| Enhancement | Description |
-|-------------|-------------|
-| **Documentation Sync** | Phase 5 RELEASE now includes documentation sync step |
-
-#### v2 Core Checkpoints
-| Enhancement | Description |
-|-------------|-------------|
-| **Decision Snapshot** | PLAN phase summary with approved scope & open questions |
-| **Human Gate Template** | Structured approval (scope/style/data model/risk) |
-| **Design Verified Checklist** | Light/Dark mode, core components, out-of-scope elements |
-| **tokens.json Contract** | Design system tokens (colors, typography, spacing, cornerRadius) |
-| **Stitch Clean Room** | Element deletion list + HTML vs. screenshot conflict notes |
-| **REVIEW Scope Rule** | Bug/偏差修正 only; scope changes return to PLAN |
-| **Release Snapshot** | Acceptance items, known limitations, next steps |
-
-### Initialize Workflow in a New Project
-
-```bash
-# From the skill directory (example for Antigravity)
-bash ~/.gemini/antigravity/skills/keeponfirst-agentic-workflow/scripts/init.sh /path/to/your/project
-```
-
-This creates: `plans/`, `jules/tasks/`, `nanobanana/queue/`, `assets/generated/`, `templates/`
-
----
-
-## Why I Built This Repo
-
-The story behind this workflow:
-
-1. **Subscribed to Gemini Pro** → Started exploring Google's AI tools ecosystem
-2. **Discovered Nano Banana** → Tried using it for asset generation; quickly hit **quota limits**
-3. **Jules opened for beta** → Found potential in 100 daily tasks as a cloud executor
-4. **Integration concept formed** → Antigravity handles planning, Nano Banana handles prompt design (for external generation), Jules processes time-consuming coding tasks
-
-**Core Values:**
-- **Asynchronous Collaboration**: Jules keeps working while you sleep
-- **Avoid Single-Point Quota Failures**: Distribute tasks across different tools
-- **Full Traceability**: All prompts and tasks are preserved
-
----
-
-## Workflow Pipeline
-
-| Phase | Default Tool | Optional Tool | Responsibility |
-|-------|-------------|---------------|----------------|
-| **PLAN** | Antigravity | - | Planning, Decision-making |
-| **ASSETS** | Nano Banana | - | Generate images, icons, UI assets |
-| **DESIGN** | Stitch (Google) | Pencil | UI layout, wireframe, design system |
-| **CODE** | Jules CLI (Google) | Codex CLI | Implement UI, write code, refactor |
-| **REVIEW** | Antigravity | - | Code review, quality check |
-| **RELEASE** | Antigravity | - | Release notes, version tag |
-
-```
-┌─────────────────┐
-│   Antigravity   │  ← Extension of your brain for planning & decisions
-│  (Orchestrator) │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌───────┐  ┌───────┐
-│ Asset │  │Design │  ← Executors, each with its own role
-│  Gen  │  │ Code  │
-└───────┘  └───────┘
-    │           │
-    ▼           ▼
- assets/     code
-```
-
-**Default Tools (Google Ecosystem)**:
-- **Design**: Stitch (Infinite Canvas, Vibe Design, Voice Canvas)
-- **Code**: Jules CLI (cloud async execution, parallel sessions)
-
-**Optional Alternatives**:
-- **Design**: Pencil (mobile apps, design systems)
-- **Code**: Codex CLI (local execution)
-
-**MCP Configuration**:
-- Stitch MCP wrapper: [`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp)
-- Nano Banana MCP: [`kof-nanobanana-mcp`](https://github.com/keeponfirst/kof-nanobanana-mcp)
-- Example config: `.mcp.json.example`
-
----
-
-## Execution Model
-
-This repo is designed around a **Google-first toolchain** with the following core concepts:
-
-### Role Definitions
-
-| Layer | Role | Description |
-|-------|------|-------------|
-| Orchestrator | Antigravity | Planning, decision-making, coordinating Agents |
-| Agent (Asset) | Nano Banana | Design asset prompts for external generation |
-| Agent (Design) | Stitch (default) / Pencil (optional) | UI design and layout (Vibe Design, Infinite Canvas) |
-| Agent (Code) | Jules CLI (default) / Codex CLI (optional) | Execute code tasks (parallel sessions supported) |
-| Adapter | `scripts/agent.sh` | Unified CLI entry point, bridging Orchestrator and Agents |
-
-### agent.sh Positioning
-
-`agent.sh` is an **Orchestrator Adapter**, not a standalone tool:
-
-- **plan**: Generate planning templates (for Antigravity)
-- **assets**: Prepare asset tasks to `nanobanana/queue/` (for Nano Banana)
-- **design**: Prepare design tasks to `stitch/queue/` (for Stitch, default)
-- **jules**: Prepare code tasks to `jules/tasks/` (for Jules CLI, default)
-- **verify**: Validate project structure
-
-### Safe Mode by Default
-
-Scripts in this repo **do not directly call external APIs** — you can safely execute all commands:
-
-```bash
-./scripts/agent.sh plan    # Generates PLAN.md template, no quota consumed
-./scripts/agent.sh assets  # Generates task queue, no quota consumed
-./scripts/agent.sh jules   # Generates task files, no quota consumed
-```
-
-Actual Agent execution is done manually:
-- Nano Banana: Generate via Web/App using prepared prompts
-- Stitch: Use Stitch web (stitch.google.com), Gemini CLI `/stitch` command, or MCP tools (default)
-- Jules CLI: Use `jules remote new` command (default)
-- Optional: Pencil (via Cursor Extension) or Codex CLI
-
-This design lets you **dry-run** the entire workflow, confirm task content, then execute.
-
-> **In short**: `agent.sh` is a "task preparation tool". It only generates plan, prompts, and task files — it won't call external APIs or trigger Jules. You can run it safely without consuming any quota.
-
-### API Keys & Login
-
-**Jules** doesn't necessarily require manual API key setup:
-
-- **Most cases**: Just log in with your Google account after installation
-- **API Keys are mainly for**: Non-interactive environments, automation scripts, or specific API calls
-
-The `.env.example` in this repo provides API key fields, but this is **not required**. For interactive use of Jules, just log in to get started.
-
----
-
-## Practical Usage Flow
-
-> 💡 **Key Point**: In daily use, you only need to give commands to Antigravity. Scripts are helper tools, not required for manual execution.
-
-### Starting the Workflow
-
-Tell Antigravity (e.g., this IDE) any of the following:
-
-```
-/workflow Add a "dark mode toggle" feature for me
-```
-
-```
-Follow the agentic workflow to implement a favorites feature
-```
-
-```
-Use this repo's workflow to develop XXX
-```
-
-Antigravity will automatically execute the complete **PLAN → ASSETS → DESIGN → CODE → REVIEW → RELEASE** flow.
-
-> **Default tools**: Stitch (Design) + Jules CLI (Code) - both from Google ecosystem.
-
-### Typical Workflow (Manual)
-
-1. **Describe requirements in Antigravity**
-   ```
-   I want to add a Tag Selector feature, please plan and generate a Jules task
-   ```
-
-2. **Antigravity will automatically**:
-   - Generate `PLAN.md`
-   - If assets needed, prepare prompts to `nanobanana/queue/`
-   - If design needed, prepare design tasks to `stitch/queue/` (default: Stitch)
-   - Prepare code tasks to `jules/tasks/` (default: Jules CLI)
-
-3. **After submitting Jules task, tell Antigravity**:
-   ```
-   I've submitted the Jules task, session ID is 123456, please monitor it
-   ```
-
-4. **Antigravity runs watch**, automatically enters Review when Jules completes
-
-5. **After Review is complete**:
-   ```
-   Looks good, please help organize the commit message and submit
-   ```
-
-### Script Command Reference
-
-`scripts/agent.sh` is for advanced users or automation scenarios:
-
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `plan` | Generate PLAN.md template | Antigravity calls automatically |
-| `assets` | Prepare asset tasks | Antigravity calls automatically |
-| `design` | Prepare design tasks (Stitch) | Antigravity calls automatically |
-| `jules` | Prepare code tasks (Jules CLI) | Antigravity calls automatically |
-| `watch <id>` | Monitor Jules session | Antigravity calls automatically, or run manually |
-| `stitch-setup` | First-time Stitch extension setup | Run once to configure GCP Project ID |
-| `stitch-check` | Check Stitch MCP connection status | Troubleshooting MCP issues |
-| `verify` | Validate project structure | CI or manual checks |
-
----
-
-## Quick Start (Initial Setup)
-
-### 1. Clone & Bootstrap
+Clone (or use as a template) to get the full scaffold — prompt libraries, task queues, and automation scripts:
 
 ```bash
 git clone https://github.com/keeponfirst/keeponfirst-agentic-workflow-starter.git
 cd keeponfirst-agentic-workflow-starter
-
-# Initialize folders and environment variables
 ./scripts/bootstrap.sh
 ```
 
-### 2. Generate a Plan
+`scripts/agent.sh` is the orchestrator's adapter — it **prepares** task files; it never calls external APIs, so every command is a safe dry-run that consumes zero quota:
 
 ```bash
-./scripts/agent.sh plan
-# Output: PLAN.md
+./scripts/agent.sh plan          # generate PLAN.md template
+./scripts/agent.sh assets        # queue asset prompts → nanobanana/queue/
+./scripts/agent.sh design        # queue design tasks  → stitch/queue/
+./scripts/agent.sh jules         # queue code tasks    → jules/tasks/
+./scripts/agent.sh watch <id>    # monitor a Jules session, auto-review on completion
+./scripts/agent.sh verify        # validate structure & scan for secrets
 ```
 
-### 3. Generate Asset Tasks (for Nano Banana)
+Actual execution happens in the agents themselves (Stitch web/MCP, `jules remote new`, Gemini web) — you review the prepared task files first, then run them.
 
-```bash
-./scripts/agent.sh assets
-# Output: nanobanana/queue/*.md
-# Execute with Nano Banana Web/App one by one
+In day-to-day use you don't touch the scripts at all — you just talk to your orchestrator:
+
+```
+/kof I want a Tag Selector feature — plan it and create the Jules task
+...
+I've submitted the Jules task, session ID is 123456, please monitor it
 ```
 
-### 4. Generate Design Tasks (for Stitch, optional)
+The watcher polls the session, applies the result with `jules remote pull --apply` on completion, and notifies you for review.
 
-```bash
-./scripts/agent.sh design
-# Output: stitch/queue/*.md
-# Use Gemini CLI /stitch command or MCP tools
-```
-
-### 5. Generate Code Tasks (for Jules CLI)
-
-```bash
-./scripts/agent.sh jules
-# Output: jules/tasks/*.md
-# Use: jules remote new "task description"
-```
-
-### 6. Monitor Jules & Auto-Review (Optional)
-
-```bash
-# Create Jules session
-jules remote new "implement feature X"
-
-# Get session ID
-jules remote list --session
-
-# Start monitoring - auto-triggers Antigravity for code review upon completion
-./scripts/agent.sh watch <session_id>
-```
-
-The `watch` command will:
-- Poll Jules session status every 30 seconds
-- Auto-execute `jules remote pull --apply` upon completion
-- Wake Antigravity for code review via `agy chat --mode agent`
-- Send system notifications
-
-### 7. Validate Project Structure
-
-```bash
-./scripts/agent.sh verify
-```
-
----
-
-## Quick Verification (Optional)
-
-After Quick Start, run these commands to confirm the environment is correct:
-
-```bash
-# Validate project structure and security
-./scripts/agent.sh verify
-```
-
-This step confirms:
-- Project directory structure is complete
-- No sensitive information accidentally committed
-- Environment is configured correctly
-
----
-
-## Directory Structure
+## 📁 Directory Structure
 
 ```
 .
-├── docs/                  # Workflow documentation
-│   ├── ARCHITECTURE.md    # Architecture evolution story
-│   ├── WORKFLOW.md        # Standard workflow
-│   ├── STITCH_INTEGRATION.md   # Stitch MCP integration guide
-│   ├── PENCIL_MCP_SETUP.md     # Pencil MCP setup (optional)
-│   ├── PROS_CONS.md       # Pros and cons analysis
-│   ├── QUOTA_STRATEGY.md  # Quota control strategy
-│   └── SECURITY.md        # Security practices
-│
-├── prompts/               # Ready-to-use prompt templates
-│   ├── antigravity/       # Prompts for Orchestrator
-│   ├── gemini-cli/        # Asset generation prompts for Nano Banana
-│   ├── stitch/            # Design task templates for Stitch
-│   └── jules/             # Task templates for Jules CLI
-│
-├── scripts/               # Automation scripts
-│   ├── agent.sh           # Single entry point
-│   ├── bootstrap.sh       # Initialization
-│   ├── watcher.sh         # Jules session monitor
-│   ├── stitch_auth.py     # Stitch authentication helper
-│   └── check_secrets.sh   # Sensitive info check
-│
-├── skills/                # Antigravity Skill package
-│   └── keeponfirst-agentic-workflow/
-│
-├── examples/              # Examples
-│   └── feature_tag_selector/
-│
-├── nanobanana/queue/      # Gemini CLI task queue
-├── assets/generated/      # Generated assets
-├── stitch/                # Stitch design files
-│   ├── queue/             # Design task queue
-│   ├── designs/           # Generated designs
-│   └── completed/         # Completed design requests
-└── jules/tasks/           # Jules CLI task queue
+├── skills/keeponfirst-agentic-workflow/   # The installable skill (SKILL.md + scripts + templates)
+├── prompts/                # Prompt libraries per agent (antigravity / gemini-cli / jules)
+├── scripts/                # agent.sh, install.sh, bootstrap.sh, watcher.sh, check_secrets.sh
+├── plans/                  # PLAN outputs
+├── nanobanana/queue/       # Asset prompt queue
+├── stitch/                 # Design task queue & outputs
+├── jules/tasks/            # Code task queue
+├── assets/generated/       # Generated assets
+├── examples/               # Worked examples (BabyLog app, feature specs)
+└── docs/                   # Architecture, integrations, troubleshooting
 ```
 
----
-
-## Documentation
+## 📚 Documentation
 
 | Document | Description |
 |----------|-------------|
+| [Interactive Onboarding](docs/onboarding/index.html) | Visual step-by-step guide (served via GitHub Pages) |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | How this workflow evolved |
-| [WORKFLOW.md](docs/WORKFLOW.md) | Standard Feature Pipeline |
+| [WORKFLOW.md](docs/WORKFLOW.md) | Standard feature pipeline in detail |
 | [STITCH_INTEGRATION.md](docs/STITCH_INTEGRATION.md) | Stitch UI design integration |
-| [STITCH_MCP_RUN_LOG.md](docs/STITCH_MCP_RUN_LOG.md) | Stitch MCP usage example (BabyLog) |
-| [PENCIL_MCP_SETUP.md](docs/PENCIL_MCP_SETUP.md) | Pencil MCP setup (optional) |
-| [PENCIL_MCP_AUTO_SETUP.md](docs/PENCIL_MCP_AUTO_SETUP.md) | How Pencil Extension auto-registers MCP |
+| [STITCH_MCP_RUN_LOG.md](docs/STITCH_MCP_RUN_LOG.md) | Real Stitch MCP session log (BabyLog example) |
+| [PENCIL_MCP_SETUP.md](docs/PENCIL_MCP_SETUP.md) | Pencil MCP setup (optional design alternative) |
 | [PENCIL_NEXT_STEPS.md](docs/PENCIL_NEXT_STEPS.md) | Pencil advanced usage & code generation |
-| [PROS_CONS.md](docs/PROS_CONS.md) | Pros, cons, and use cases |
-| [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md) | Quota control strategy |
-| [SECURITY.md](docs/SECURITY.md) | API Key security management |
+| [PROS_CONS.md](docs/PROS_CONS.md) | Honest trade-offs and when to use this |
+| [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md) | Quota distribution strategy |
+| [SECURITY.md](docs/SECURITY.md) | API key security management |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues (quota, Jules, retries) |
+| [CHANGELOG.md](CHANGELOG.md) | Version history (v1.0 → v2.4) |
 
----
+**MCP integrations:** [`kof-stitch-mcp`](https://github.com/keeponfirst/kof-stitch-mcp) · [`kof-nanobanana-mcp`](https://github.com/keeponfirst/kof-nanobanana-mcp) · example config in [`.mcp.json.example`](.mcp.json.example)
 
-## Known Limitations
+## ⚠️ Known Limitations
 
-### Nano Banana Free Tier Limitation
+- **Nano Banana free tier** — Gemini image models have strict free-tier quotas (Pro models are paid-only since April 2026). The workflow's default is a browser-generation hybrid flow: the orchestrator prepares prompt files, drives [Gemini web](https://gemini.google.com) via browser automation, and falls back to manual generation (resume with `/kof resume` or `assets ready`). See [QUOTA_STRATEGY.md](docs/QUOTA_STRATEGY.md).
+- **`agy chat` can't auto-execute prompts** — after a Jules session completes, the watcher opens Antigravity but you must manually ask it to review. Tracked as a hoped-for upstream improvement.
 
-> ⚠️ **Important**: Gemini API Free Tier has **strict quota limits** for image generation models.
+## 🤝 Contributing
 
-- **Pro models** (`gemini-3-pro-image-preview`): **Paid-only** since April 2026
-- **Flash models** (`gemini-3.1-flash-image-preview`): May be available with rate limits
-- Always check [Google AI Studio](https://aistudio.google.com) for your current quota
+Contributions to prompts, examples, and IDE adapters are very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+Good first contributions: a new worked example, a prompt template for your stack, or an adapter guide for another IDE.
 
-**Current Solution: Browser Generation Hybrid Flow**
+## ☕ Support
 
-```mermaid
-flowchart LR
-    A[Phase 2A: Prompt Design] --> B{Logged in?}
-    B -->|Yes| C[Phase 2B: Browser Generation]
-    B -->|No| D[User logs in to Google]
-    D --> C
-    C --> E[Phase 2C: Asset Validation]
-```
+If this project saves you time, you can support development here:
 
-1. **Phase 2A**: Antigravity creates detailed `.prompt.md` files in `nanobanana/queue/`
-2. **Phase 2B**: Antigravity uses `browser_subagent` to:
-   - Open [Gemini Web](https://gemini.google.com) in browser
-   - **Check login status**: If not logged in, pauses and asks you to log in within that window
-   - Submit prompt and wait for image generation
-   - Capture generated image via element screenshot
-3. **Phase 2C**: Antigravity validates assets and moves prompt to `completed/`
+<a href="https://www.buymeacoffee.com/keeponfirst" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="40" alt="Buy Me a Coffee" /></a>
 
-**Fallback (Manual Mode)**: If browser automation fails:
-- User generates images manually at Gemini
-- Tells Antigravity "圖產好了" or "/kof resume" to continue
+## 📄 License
 
-**Resume Keywords**: `/kof resume`, `圖產好了`, `assets ready`
-
----
-
-### agy chat Cannot Auto-Execute Prompts
-
-Currently, `agy chat` CLI can only **open the window** but **cannot auto-fill and execute prompts**.
-
-```bash
-# This command only opens Antigravity, doesn't execute the prompt
-agy chat --mode agent "Please review for me"
-```
-
-**Impact**:
-- After watch completes, cannot automatically wake Antigravity for Review
-- Need to manually tell Antigravity: "Please review the changes Jules just completed"
-
-**Hoped Future Improvements**:
-- Antigravity CLI supports sending and executing prompts directly
-- Or provide extension API for third-party extensions to control chat
-
----
-
-## License
-
-MIT License - See [LICENSE](LICENSE)
-
----
-
-## Contributing
-
-Contributions to prompts and examples are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
+[MIT](LICENSE)
