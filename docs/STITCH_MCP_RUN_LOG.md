@@ -57,7 +57,7 @@
 ```json
 {
   "projectId": "5804119508173637902",
-  "prompt": "<stitch/queue/babylog_home_screen.md 的 Design Prompt for Stitch 區塊>",
+  "prompt": "<examples/babylog/stitch/babylog_home_screen.md 的 Design Prompt for Stitch 區塊>",
   "deviceType": "MOBILE",
   "modelId": "GEMINI_3_FLASH"
 }
@@ -93,16 +93,16 @@
 落到固定位置（建議用固定檔名），例如：
 
 ```
-stitch/designs/babylog/
+examples/babylog/stitch/designs/
   screen_main.png
   screen_main.html
   screen_main.meta.json
 ```
 
 本次實測落地結果（已存在於 repo 工作區）：
-- `stitch/designs/babylog/babylog_home_screen.png`
-- `stitch/designs/babylog/babylog_home_screen.html`
-- `stitch/designs/babylog/babylog_home_screen.meta.json`
+- `examples/babylog/stitch/designs/babylog_home_screen.png`
+- `examples/babylog/stitch/designs/babylog_home_screen.html`
+- `examples/babylog/stitch/designs/babylog_home_screen.meta.json`
 
 ---
 

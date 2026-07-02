@@ -117,52 +117,52 @@ nanobanana_generate_image({
 
 ### Phase 2.5-A: Structured Prompt Generation
 
-> 目標：在呼叫 Stitch 之前，先建立絕對的設計基準。
+> Goal: establish an absolute design baseline BEFORE calling Stitch.
 
-1. **分析需求**：解構使用者的產品構想
-2. **定義 Design DNA** (存入 `design_dna.json`)：
-   - `visual_vibe`: 風格關鍵字 (e.g., "Soft Warmth", "Organic Modernism")
-   - `color_palette`: 精確 HEX Code (Primary, Secondary, Background, Surface) + **禁用色 (Negative Constraints)**
-   - `components`: 圓角 (Radius)、陰影 (Shadows)、字體 (Typography)
-3. **產出 Master Prompt**：包含所有 DNA 的全域描述
-4. **產出 Screen Prompts**：每個畫面獨立 Prompt，強制繼承 Design DNA
+1. **Analyze requirements**: deconstruct the user's product concept
+2. **Define the Design DNA** (save to `design_dna.json`):
+   - `visual_vibe`: style keywords (e.g., "Soft Warmth", "Organic Modernism")
+   - `color_palette`: exact HEX codes (Primary, Secondary, Background, Surface) + **forbidden colors (Negative Constraints)**
+   - `components`: corner radius, shadows, typography
+3. **Produce a Master Prompt**: a global description containing the full DNA
+4. **Produce Screen Prompts**: one prompt per screen, each forced to inherit the Design DNA
 
 > **Vibe Design alternative**: If you have a clear visual direction from INSIGHTS, use Stitch Vibe Design — describe business goals and desired feeling (e.g., "premium and minimalist, like Stripe") to generate design directions directly.
 
 ### Phase 2.5-B: Visual Audit & QA
 
-> 目標：Stitch 產出後，對照 Design DNA 進行視覺審查。
+> Goal: after Stitch produces output, audit it against the Design DNA.
 
-**一致性檢查 (Consistency)**：
-- Navigation Bar：所有畫面 Tab Bar 樣式是否相同？(Icon 風格、背景色、高度)
-- Status Bar：是否留出 Safe Area？
+**Consistency**:
+- Navigation Bar: is the tab bar identical across all screens? (icon style, background color, height)
+- Status Bar: is the safe area respected?
 
-**色彩準確度 (Color Accuracy)**：
-- 背景色是否為指定 HEX？(例：是否變成純白而非米色)
-- 是否出現未定義顏色？
+**Color Accuracy**:
+- Is the background the exact specified HEX? (e.g., did beige silently become pure white?)
+- Do any undefined colors appear?
 
-**元件完整性 (Component Integrity)**：
-- 按鈕對比度足夠？文字清晰可讀？
-- 插畫風格統一？(避免混用 3D/2D)
+**Component Integrity**:
+- Sufficient button contrast? Text clearly readable?
+- Illustration style unified? (no mixing 3D/2D)
 
 ### Phase 2.5-C: Refinement Loop
 
-> 目標：若審查發現問題，自動生成修正指令，直到通過為止。
+> Goal: when the audit finds problems, auto-generate correction prompts until it passes.
 
 ```
-IF Pass → Final Output (進入 Phase 3)
-IF Fail → Refinement Loop：
-  1. 列出具體錯誤 (e.g., "History screen nav bar ≠ Dashboard")
-  2. 生成 Refinement Prompt (使用強指令：FORCE REPLACE, RESET BACKGROUND, UNIFY ICONS)
-  3. 重新呼叫 Stitch
-  4. 返回 Phase 2.5-B 再次審查
+IF Pass → Final Output (proceed to Phase 3)
+IF Fail → Refinement Loop:
+  1. List concrete errors (e.g., "History screen nav bar ≠ Dashboard")
+  2. Generate a Refinement Prompt (use strong directives: FORCE REPLACE, RESET BACKGROUND, UNIFY ICONS)
+  3. Call Stitch again
+  4. Return to Phase 2.5-B and re-audit
 ```
 
 **Code Export**: Stitch now exports HTML/CSS, React, Vue.js, Angular, Flutter, SwiftUI. Phase 3 CODE can use exports as starting point.
 
 **Artifacts**: `design_dna.json`, `master_prompt.md`, `screen_*.png`, `screen_*.html`, `audit_log.md`
 
-**Final Checklist**: Design DNA 符合 ✓, 一致性通過 ✓, CTA hierarchy ✓, Empty/Error states ✓
+**Final Checklist**: Design DNA compliance ✓, Consistency pass ✓, CTA hierarchy ✓, Empty/Error states ✓
 
 ---
 
